@@ -1,0 +1,9 @@
+{
+  "name": "@g4/course-template",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  }
+}

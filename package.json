@@ -1,0 +1,15 @@
+{
+  "name": "g4-courses",
+  "private": true,
+  "description": "Slidev presentations for Master Ingénierie Informatique et Management courses",
+  "scripts": {
+    "dev": "echo 'Usage: npm run dev -- <course-name>' && exit 1",
+    "build": "echo 'Usage: npm run build -- <course-name>' && exit 1",
+    "export": "echo 'Usage: npm run export -- <course-name>' && exit 1"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^0.50.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest"
+  }
+}
