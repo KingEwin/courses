@@ -11,7 +11,7 @@ defineProps({
     <div class="text-xl text-muted">{{ duration }}</div>
     <div class="mt-8 w-16 h-1 bg-gradient-to-r from-[#2563eb] to-[#7c3aed] rounded-full mx-auto" />
     <div class="mt-6 text-sm text-muted opacity-60">
-      <slot>On se retrouve dans quelques minutes</slot>
+      <slot>On se retrouve dans quelques minutes...</slot>
     </div>
   </div>
 </template>

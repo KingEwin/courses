@@ -15,7 +15,7 @@ defineProps({
       <!-- Section number -->
       <div v-if="section" class="mb-4">
         <span class="inline-block px-4 py-1 rounded-full bg-white/15 text-white/90 text-sm font-mono font-bold tracking-wider">
-          SECTION {{ section }}
+          {{ section }}
         </span>
       </div>
 
