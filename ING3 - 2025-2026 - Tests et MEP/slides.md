@@ -3,7 +3,7 @@ theme: seriph
 title: "Recette et Mise en Production"
 info: |
   ## Recette et Mise en Production
-  Master Ingénierie Informatique et Management — G4
+  Master Ingénierie Informatique et Management - G4
 transition: slide-left
 mdc: true
 fonts:
@@ -14,7 +14,7 @@ drawings:
 layout: course-cover
 subtitle: De la qualité logicielle au run en production
 session: 2 journées
-instructor: Yoann Bohssain — Formateur
+instructor: Yoann Bohssain - Formateur
 ---
 
 # Recette et Mise en Production
@@ -24,18 +24,28 @@ Se présenter rapidement : expérience QA, CI/CD, incidents de prod vécus.
 
 L'objectif central de ces 2 jours : comment livrer vite, sans casser la production.
 
-Format du cours : on alterne entre théorie, exercices en groupe, TPs et retours d'expérience — c'est participatif, hésitez pas à intervenir.
+Format du cours : on alterne entre théorie, exercices en groupe, TPs et retours d'expérience - c'est participatif, hésitez pas à intervenir.
 -->
 
 ---
 
-# Plan du cours
-## torework
+# Plan des 2 jours
 
-<Toc columns="2" maxDepth="1" />
+<v-clicks>
+
+- **Jour 1 matin** - Stratégie et culture qualité
+  <span class="text-sm opacity-70">Pyramide des tests, plan de recette, gestion des anomalies, environnements</span>
+- **Jour 1 après-midi** - Tests automatisés en pratique
+  <span class="text-sm opacity-70">Unitaire, intégration, E2E, performance, sécurité, accessibilité</span>
+- **Jour 2 matin** - Stratégies de déploiement
+  <span class="text-sm opacity-70">Pipeline CI/CD, planification MEP, go/no-go, blue/green, canary, SLO</span>
+- **Jour 2 après-midi** - Monitoring, incidents et gouvernance
+  <span class="text-sm opacity-70">Observabilité, rollback, hotfix, post-mortem, documentation, REX</span>
+
+</v-clicks>
 
 <!--
-Voici le plan des 2 jours. Jour 1 on se concentre sur la recette, jour 2 sur la mise en prod — le fil rouge c'est qualité → livraison → exploitation.
+Voici le plan des 2 jours. Jour 1 on se concentre sur la recette, jour 2 sur la mise en prod - le fil rouge c'est qualité → livraison → exploitation.
 
 On va alterner blocs courts et pratique, avec des pauses régulières. Notez vos questions au fil de l'eau, on prendra le temps d'y répondre.
 -->
@@ -50,8 +60,10 @@ On va alterner blocs courts et pratique, avec des pauses régulières. Notez vos
 - Rédiger un plan de recette exploitable par l'équipe
 - Automatiser des tests unitaires, intégration et E2E
 - Analyser et renforcer un pipeline CI/CD
+- Organiser le go/no-go de mise en production
 - Choisir une stratégie de déploiement selon le contexte
 - Définir des indicateurs SLI/SLO/SLA et diagnostiquer un incident
+- Documenter et capitaliser les processus de déploiement
 
 </v-clicks>
 
@@ -163,7 +175,7 @@ Les chiffres exacts varient selon les études, mais la tendance est toujours la 
 
 Et au-delà du coût direct, y'a les coûts invisibles : surcharge de l'équipe, dette technique accumulée, réputation abîmée auprès des clients.
 
-Un bug en prod c'est pas juste un fix technique — c'est du hotfix en urgence, de la communication de crise, parfois de l'image de marque perdue.
+Un bug en prod c'est pas juste un fix technique - c'est du hotfix en urgence, de la communication de crise, parfois de l'image de marque perdue.
 -->
 
 ---
@@ -243,6 +255,41 @@ Noter impacts sur management : prédictabilité, planning, etc..
 
 ---
 
+# Critères d'entrée et de sortie de recette
+
+<Comparison left="Critères d'entrée" right="Critères de sortie" leftColor="blue" rightColor="green">
+  <template #left>
+
+  - Build stable et déployable
+  - Environnement de recette disponible
+  - Jeux de données prêts
+  - Cas de test rédigés et priorisés
+  - Équipe de recette identifiée
+
+  </template>
+  <template #right>
+
+  - Tous les tests critiques exécutés
+  - Aucune anomalie bloquante ouverte
+  - Taux de défauts sous le seuil défini
+  - PV de recette signé
+  - Décision go/no-go formalisée
+
+  </template>
+</Comparison>
+
+<!--
+Avant de démarrer la recette, il faut vérifier qu'on a les conditions minimales - sinon on perd du temps sur des problèmes d'environnement ou de données.
+
+Critères d'entrée : le build est stable, l'env est prêt, les données sont chargées, les cas de test sont écrits. Si un de ces critères manque, on ne démarre pas - on perd plus de temps à recetter dans de mauvaises conditions qu'à attendre.
+
+Critères de sortie : ils formalisent quand la recette est terminée. C'est pas "on a fini quand on n'a plus le temps" mais "on a fini quand les conditions sont remplies". C'est directement lié au PV de recette qu'on verra juste après.
+
+Question : dans vos projets, qui définit ces critères ? Est-ce qu'ils sont explicites ou implicites ?
+-->
+
+---
+
 # La pyramide des tests
 
 ```mermaid
@@ -282,6 +329,31 @@ Globalement besoin de tous les tests, à leur juste degré pour chacuns.
 -->
 
 ---
+
+# Niveaux de recette
+
+| Niveau | Qui | Objectif |
+|---|---|---|
+| Tests unitaires | Développeurs | Valider chaque fonction isolément |
+| Tests d'intégration | Dev / QA | Vérifier les interactions entre modules |
+| Tests système | QA | Valider le système complet de bout en bout |
+| UAT (recette utilisateur) | Métier / PO | Confirmer l'adéquation au besoin réel |
+
+<Tip type="info">
+  Les tests système valident le "comment ça marche techniquement". L'UAT valide le "est-ce que ça répond au besoin métier".
+</Tip>
+
+<!--
+Distinction importante : les tests système sont techniques (tout le système fonctionne ensemble), l'UAT est métier (le produit répond au besoin exprimé par l'utilisateur final).
+
+En pratique, l'UAT est souvent négligée ou réduite à "le PO clique 5 minutes". Mais c'est la dernière ligne de défense avant la prod - si le métier n'a pas validé, on ne devrait pas déployer.
+
+Qui parmi vous a déjà participé ou assisté à une session d'UAT ? Comment ça se passait ?
+
+L'UAT nécessite des scénarios écrits en langage métier, pas technique. C'est le PO ou le client qui exécute, pas l'équipe dev.
+-->
+
+---
 layout: exercise
 duration: 15 min
 type: group
@@ -291,39 +363,112 @@ type: group
 
 ## Consigne
 
-1. Classez 10 scénarios de test en unitaire / intégration / E2E / exploratoire.
-2. Identifiez les zones non couvertes dans la stratégie proposée.
-3. Proposez 2 ajustements prioritaires.
+Par groupes de 4, classez chaque scénario en **unitaire / intégration / E2E / exploratoire**.
 
 <Tip type="success">
   Livrable : un tableau de classification + 3 minutes de restitution par groupe.
 </Tip>
 
 <!--
-Former des groupes de 4. Passer dans les groupes pour challenger les choix.
+Former des groupes de 4. Distribuer la liste de scénarios (slide suivante).
 
-Attention : confusion très fréquente entre intégration et E2E — les aider à distinguer si besoin.
+Attention : confusion très fréquente entre intégration et E2E - les aider à distinguer si besoin.
 
-Correction rapide en plénière après, avant de passer au shift-left.
+10 min de travail en groupe, puis 5 min de restitution.
 -->
 
 ---
 
-# Débrief exercice 1
+# Exercice 1 - Les 10 scénarios
+
+| # | Scénario |
+|---|---|
+| 1 | Vérifier que `calculerPrix(100, 0.2)` retourne `80` |
+| 2 | L'utilisateur s'inscrit, reçoit un email et peut se connecter |
+| 3 | L'API `/events` retourne bien les données stockées en base |
+| 4 | Naviguer sur le site sans souris, uniquement au clavier |
+| 5 | Le formulaire d'inscription rejette un email invalide |
+| 6 | Publier un événement déclenche une notification push via le service de messaging |
+| 7 | L'application tient 500 utilisateurs simultanés pendant 10 min |
+| 8 | Tenter des actions inattendues : double-clic rapide, retour arrière, refresh pendant un paiement |
+| 9 | Le service de paiement répond correctement quand l'API bancaire est lente (timeout 5s) |
+| 10 | Un admin crée un événement, un utilisateur s'y inscrit, reçoit la confirmation et retrouve l'événement dans son historique |
+
+<!--
+Laisser les groupes travailler. Passer dans les rangs pour poser des questions :
+- "Pourquoi E2E et pas intégration pour celui-ci ?"
+- "Celui-là teste combien de composants ?"
+- "Est-ce qu'un test unitaire suffirait ici ?"
+
+Les scénarios 4, 7 et 8 sont volontairement des cas limites pour provoquer le débat.
+-->
+
+---
+
+# Correction exercice 1
+
+| # | Scénario | Type | Justification |
+|---|---|---|---|
+| 1 | `calculerPrix(100, 0.2)` → `80` | **Unitaire** | Fonction pure, pas de dépendance |
+| 2 | Inscription → email → connexion | **E2E** | Parcours complet multi-couches |
+| 3 | API `/events` → données en base | **Intégration** | API + base de données |
+| 4 | Navigation au clavier | **Exploratoire** | Test d'accessibilité manuel |
+| 5 | Rejet email invalide | **Unitaire** | Validation d'un champ isolé |
+
+<!--
+Parcourir les 5 premiers. Insister sur la distinction : le scénario 3 c'est de l'intégration (2 composants : API + BDD), pas du E2E (pas de parcours utilisateur complet).
+
+Le scénario 4 est exploratoire car il n'y a pas de script figé - on explore le comportement de l'UI au clavier. Certains pourraient argumenter E2E si c'est scripté, les deux sont acceptables.
+
+Le 5 peut aussi être intégration si on teste via le formulaire complet, mais si c'est juste la fonction de validation, c'est unitaire.
+-->
+
+---
+
+# Correction exercice 1 (suite)
+
+| # | Scénario | Type | Justification |
+|---|---|---|---|
+| 6 | Événement → notification push | **Intégration** | Service métier + service messaging |
+| 7 | 500 utilisateurs simultanés | **Performance** | Test de charge (hors pyramide classique) |
+| 8 | Double-clic, retour, refresh paiement | **Exploratoire** | Comportements inattendus, pas scriptable |
+| 9 | Paiement avec API bancaire lente | **Intégration** | Service interne + dépendance externe |
+| 10 | Admin crée → user s'inscrit → historique | **E2E** | Chaîne complète multi-acteurs |
+
+<Tip type="info">
+  Les scénarios 7 et 8 ne rentrent pas dans la pyramide classique - c'est normal. La pyramide ne couvre pas tout.
+</Tip>
+
+<!--
+Points clés à faire ressortir :
+
+1. Le scénario 7 est un piège : c'est un test de performance, pas un E2E même s'il implique "tout le système". Le but n'est pas de vérifier un parcours mais de mesurer la tenue en charge.
+
+2. Le scénario 8 est exploratoire par nature : on ne peut pas anticiper tous les comportements utilisateur bizarres, il faut explorer.
+
+3. La frontière intégration/E2E dépend du nombre de couches traversées et de la présence d'un parcours utilisateur complet.
+
+Demander : "Quels types de tests manquent dans cette liste ?" → sécurité, accessibilité automatisée, non-régression visuelle.
+-->
+
+---
+
+# Débrief exercice 1 - Ce qu'il faut retenir
 
 <v-clicks>
 
+- La frontière intégration / E2E = nombre de couches + présence d'un parcours utilisateur
+- Les tests de performance et exploratoires sortent de la pyramide classique
 - Erreur fréquente : trop de tests E2E pour des cas simples
 - Trou typique : pas de tests d'échec (cas nominaux uniquement)
-- Bonne pratique : ajouter des tests de contrat API
-- Prioriser les chemins critiques métier
+- Bonne pratique : ajouter des tests de contrat API entre services
 
 </v-clicks>
 
 <!--
 Faire parler 2 groupes qui ont fait des choix différents. Y'a pas une seule bonne réponse, on cherche une classification raisonnable.
 
-Erreur qu'on voit souvent : tout mettre en E2E pour des cas simples qu'un test unitaire couvrirait mieux. Autre oubli classique : tester uniquement le cas nominal, jamais les cas d'erreur.
+Insister sur le fait que la pyramide est un guide, pas un dogme. Certains scénarios ne rentrent dans aucune case, et c'est normal.
 
 Question de transition : comment on pourrait détecter ces problèmes plus tôt dans le cycle ?
 -->
@@ -431,7 +576,7 @@ Important à garder en tête, car on parle ici de réel "plan" où tout doit êt
 <!--
 Ce qui est important ici c'est la traçabilité : on doit pouvoir remonter de la user story au cas de test, et du cas de test à la preuve d'exécution.
 
-C'est pas juste de la rigueur pour le plaisir — en cas d'audit ou de litige contractuel, c'est ce qui vous sauve.
+C'est pas juste de la rigueur pour le plaisir - en cas d'audit ou de litige contractuel, c'est ce qui vous sauve.
 
 Question : et une fois qu'on a exécuté tous ces tests, comment on formalise la décision ? C'est là qu'intervient le PV de recette.
 -->
@@ -462,9 +607,83 @@ Question : et une fois qu'on a exécuté tous ces tests, comment on formalise la
 <!--
 Sans PV, tout repose sur des validations orales. Quand y'a un incident en prod, personne sait qui a dit "go".
 
-Exemple de réserve typique : "export PDF partiellement KO sur les tableaux complexes — accepté en réserve mineure, correctif prévu sprint suivant."
+Exemple de réserve typique : "export PDF partiellement KO sur les tableaux complexes - accepté en réserve mineure, correctif prévu sprint suivant."
 
-Le PV c'est pas de la bureaucratie, c'est une protection pour tout le monde — côté client comme côté équipe.
+Le PV c'est pas de la bureaucratie, c'est une protection pour tout le monde - côté client comme côté équipe.
+-->
+
+---
+
+# Cycle de vie d'un bug
+
+```mermaid
+graph LR
+  A[Ouvert] --> B[Qualifié]
+  B --> C[Assigné]
+  C --> D[Corrigé]
+  D --> E[Vérifié]
+  E --> F[Fermé]
+  B -->|Rejeté| G[Fermé sans suite]
+  E -->|KO| C
+```
+
+<!--
+Chaque bug suit un cycle de vie formalisé. C'est important pour la traçabilité et pour que tout le monde parle le même langage.
+
+Ouvert : quelqu'un a détecté un problème. Qualifié : on a confirmé que c'est bien un bug, pas un comportement attendu ou un doublon. Assigné : un développeur est responsable de la correction. Corrigé : le fix est prêt. Vérifié : la QA confirme que le fix fonctionne. Fermé : le bug est résolu.
+
+Deux chemins alternatifs importants : le rejet (c'était pas un vrai bug) et le retour en correction (le fix ne fonctionne pas).
+
+Question : dans vos projets, vous utilisez quoi pour tracer les bugs ? Jira, GitHub Issues, un tableau blanc ?
+-->
+
+---
+
+# Classification des anomalies
+
+| Sévérité | Définition | Exemple | Impact recette |
+|---|---|---|---|
+| Bloquant | Empêche la recette de continuer | Crash au login | Arrêt immédiat |
+| Majeur | Fonctionnalité KO, pas de contournement | Paiement échoue | Bloque le go/no-go |
+| Mineur | Fonctionnalité dégradée, contournement existe | Tri par date KO | Réserve acceptée |
+| Cosmétique | Visuel ou confort, pas d'impact fonctionnel | Faute d'orthographe | Backlog |
+
+<Tip type="warning">
+  Sans classification partagée, chaque bug devient "urgent" - et plus rien ne l'est.
+</Tip>
+
+<!--
+La classification c'est ce qui permet de prioriser. Sans elle, chaque bug remonté est "urgent" et on ne sait plus quoi traiter en premier.
+
+En pratique, définissez la grille de sévérité en début de projet avec le PO. Un bloquant pour le métier c'est pas forcément un bloquant technique et vice versa.
+
+Le critère pour distinguer majeur et mineur : est-ce qu'il existe un contournement raisonnable ? Si oui, c'est mineur. Si non, c'est majeur.
+
+Exemple vécu : un bouton mal aligné de 2 pixels remonté en "bloquant" par un client. Sans grille, on perd du temps à discuter de la sévérité au lieu de corriger les vrais problèmes.
+-->
+
+---
+
+# Triage et métriques de recette
+
+<v-clicks>
+
+- **Réunion de triage** : quotidienne en phase de recette, priorise les anomalies ouvertes
+- **Taux d'avancement** : cas exécutés / cas prévus (objectif : 100% des critiques)
+- **Taux de défauts** : bugs trouvés / cas exécutés (tendance décroissante attendue)
+- **Courbe en S** : progression de la recette dans le temps (détecter retards tôt)
+- **Critères d'arrêt** : quand arrêter la recette même si pas finie (seuil qualité non atteignable)
+
+</v-clicks>
+
+<!--
+Le triage c'est une réunion courte et régulière (15-20 min max) où on passe en revue les bugs ouverts : est-ce bien qualifié ? Quelle priorité ? Qui prend ?
+
+Les métriques servent à piloter la recette, pas juste à faire des reporting. Le taux d'avancement dit "est-ce qu'on avance au bon rythme". Le taux de défauts dit "est-ce que la qualité s'améliore".
+
+La courbe en S c'est la progression cumulée des tests exécutés. Si elle stagne, c'est qu'on est bloqué quelque part - environnement down, trop de bloquants, équipe sous-dimensionnée.
+
+Critères d'arrêt : parfois on arrête la recette alors qu'il reste des cas à exécuter, parce que le niveau de qualité atteint est suffisant ou parce que continuer n'apporterait plus d'information utile.
 -->
 
 ---
@@ -473,23 +692,134 @@ duration: 20 min
 type: solo
 ---
 
-# Exercice 2 — Mini plan de recette
+# Exercice 2 - Mini plan de recette
 
 ## Contexte
 
-Fonctionnalité : inscription à un événement sportif.
+Vous êtes QA sur une app d'événements sportifs. La user story suivante arrive en recette :
 
-## À produire
+> *En tant qu'utilisateur connecté, je veux m'inscrire à un événement sportif pour réserver ma place.*
 
-1. 5 cas de test prioritaires
-2. 3 critères d'acceptation
-3. 2 risques et plan de mitigation
-4. Une décision go/no-go argumentée
+**Règles métier** : places limitées (max 50), inscription possible jusqu'à 24h avant l'événement, un utilisateur ne peut s'inscrire qu'une seule fois, email de confirmation envoyé à l'inscription.
+
+<!--
+Lire le contexte à voix haute. S'assurer que tout le monde comprend les règles métier avant de commencer.
+
+Insister : les cas de test doivent avoir des résultats attendus précis et observables, pas "ça marche".
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: solo
+---
+
+# Exercice 2 - À produire
+
+## En 10 min, individuellement :
+
+1. **5 cas de test** prioritaires (ID, étapes, résultat attendu)
+2. **3 critères d'acceptation** mesurables
+3. **2 risques** identifiés + plan de mitigation
+4. **Décision go/no-go** argumentée si : 4 tests OK, 1 test KO (mineur)
+
 
 <!--
 10 min solo puis 10 min mise en commun. Passer dans les rangs pour voir comment ils structurent.
 
-Challenger surtout la qualité des résultats attendus — ils doivent être observables et vérifiables, pas vagues genre "ça marche".
+Challenger surtout la qualité des résultats attendus - ils doivent être observables et vérifiables, pas vagues genre "ça marche".
+
+Si un étudiant bloque, lui suggérer de commencer par le cas nominal (inscription réussie) puis de lister les cas d'erreur.
+-->
+
+---
+
+# Correction exercice 2 - Cas de test
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| REC-01 | Inscription nominale (places dispo, > 24h avant) | Inscription confirmée + email reçu |
+| REC-02 | Inscription quand événement complet (50/50) | Message "complet", pas d'inscription |
+| REC-03 | Inscription < 24h avant l'événement | Message "inscriptions fermées" |
+| REC-04 | Double inscription même utilisateur | Message "déjà inscrit", pas de doublon |
+| REC-05 | Inscription utilisateur non connecté | Redirection vers login |
+
+<!--
+Parcourir chaque cas. Insister sur la qualité du résultat attendu : "email reçu" c'est vérifiable, "ça marche" ne l'est pas.
+
+Demander : "Quels cas manquent ?" → cas de concurrence (2 users sur la dernière place), annulation après inscription, inscription avec données invalides.
+
+Le cas REC-02 est souvent oublié par les étudiants car il nécessite de préparer un jeu de données spécifique (événement avec 50 inscrits).
+-->
+
+---
+
+# Correction exercice 2 - Critères et risques
+
+**Critères d'acceptation :**
+
+<v-clicks>
+
+- L'inscription est enregistrée en base et visible dans l'historique utilisateur
+- L'email de confirmation est reçu dans les 2 minutes suivant l'inscription
+- Le compteur de places restantes est décrémenté en temps réel
+
+</v-clicks>
+
+**Risques identifiés :**
+
+<v-clicks>
+
+| Risque | Probabilité | Mitigation |
+|---|---|---|
+| Concurrence : 2 inscriptions simultanées sur la dernière place | Moyenne | Verrouillage optimiste en base, test de charge ciblé |
+| Email non reçu (service de mail indisponible) | Faible | File d'attente + retry, vérification en recette avec mail test |
+
+</v-clicks>
+
+<!--
+Les critères d'acceptation doivent être mesurables. "L'email est envoyé" c'est pas assez - "reçu dans les 2 minutes" c'est mesurable.
+
+Le risque de concurrence est le plus intéressant à discuter : comment gérer 2 personnes qui cliquent en même temps sur la dernière place ? C'est un problème classique en conception.
+
+Demander : quelles solutions techniques pour ce problème ? → lock optimiste, transaction, queue.
+-->
+
+---
+
+# Correction exercice 2 - Go/No-go
+
+**Situation** : 4 tests OK, REC-03 KO (inscription possible < 24h)
+
+<Comparison left="Arguments Go" right="Arguments No-go" leftColor="orange" rightColor="red">
+  <template #left>
+
+  - Bug mineur, contournement possible (fermeture manuelle)
+  - Parcours critique (inscription) fonctionne
+  - Correctif planifiable sprint suivant
+  - Impact limité (peu d'événements dans les 24h)
+
+  </template>
+  <template #right>
+
+  - Règle métier non respectée = risque fonctionnel
+  - Pas de contournement automatique fiable
+  - Crée une dette opérationnelle immédiate
+  - Confiance utilisateur en jeu
+
+  </template>
+</Comparison>
+
+<Tip type="warning">
+  Réponse attendue : **Go avec réserve** - bug documenté dans le PV, correctif engagé sous 1 sprint, contournement manuel en attendant.
+</Tip>
+
+<!--
+C'est un cas volontairement ambigu. Les deux positions sont défendables - l'important c'est l'argumentation, pas la réponse.
+
+En pratique, la réponse dépend du contexte : si c'est un MVP, on go avec réserve. Si c'est une app bancaire, on no-go.
+
+Insister sur la formalisation : quelle que soit la décision, elle doit être documentée dans le PV avec les réserves, les responsables du correctif et l'échéance.
 
 Transition : pour exécuter cette recette correctement, encore faut-il avoir les bons environnements. On va voir ça maintenant.
 -->
@@ -515,7 +845,7 @@ graph LR
 </v-clicks>
 
 <!--
-L'idée c'est que le code passe par ces environnements successivement, et qu'on promeut le même artefact d'un env à l'autre — on rebuild pas à chaque fois.
+L'idée c'est que le code passe par ces environnements successivement, et qu'on promeut le même artefact d'un env à l'autre - on rebuild pas à chaque fois.
 
 La phrase qu'on entend partout : "ça marchait en staging". Justement, l'enjeu c'est que la preprod soit la plus proche possible de la prod pour éviter les surprises.
 
@@ -543,9 +873,37 @@ Question : et les données dans ces environnements, on met quoi ? On va voir que
 <!--
 Exemple concret : un dev qui met un screenshot d'un bug tracker dans un ticket Jira, sauf que le screenshot contient des données perso de vrais clients. Ça arrive plus souvent qu'on croit.
 
-La conformité RGPD c'est pas un bonus, c'est une obligation légale — les sanctions peuvent aller jusqu'à 4% du CA.
+La conformité RGPD c'est pas un bonus, c'est une obligation légale - les sanctions peuvent aller jusqu'à 4% du CA.
 
 Qui parmi vous utilise des données réelles en environnement de test ?
+-->
+
+---
+
+# Isolation et cloisonnement des environnements
+
+<v-clicks>
+
+- **Réseau** : chaque environnement dans son propre segment (VLAN, VPC)
+- **Données** : bases séparées, pas de partage entre envs
+- **Accès** : droits différenciés (dev n'accède pas à la prod)
+- **Configurations** : variables d'env distinctes, secrets séparés
+- **Déploiements** : un env ne peut pas impacter un autre
+
+</v-clicks>
+
+<Tip type="danger">
+  Un environnement de recette connecté à la base de prod = incident garanti.
+</Tip>
+
+<!--
+L'isolation c'est ce qui empêche qu'un test en recette supprime des données de prod, ou qu'un déploiement raté en staging impacte la preprod.
+
+Cas vécu classique : un développeur lance un script de purge sur ce qu'il croit être la base de staging, sauf que la variable d'environnement pointait vers la prod. Résultat : perte de données clients.
+
+Chaque environnement doit être un silo indépendant : sa propre base, ses propres credentials, son propre réseau. Ça a un coût infra, mais c'est le prix de la sécurité.
+
+Question : sur vos projets, vos environnements sont-ils bien isolés ? Ou est-ce qu'il y a des connexions croisées ?
 -->
 
 ---
@@ -555,10 +913,6 @@ Qui parmi vous utilise des données réelles en environnement de test ?
 - Comment testez-vous aujourd'hui ?
 - Où perdez-vous le plus de temps ?
 - Quel est le risque principal avant mise en prod ?
-
-<Tip type="info">
-  Objectif : identifier 2 quick wins à appliquer dès cette semaine.
-</Tip>
 
 <!--
 Discussion ouverte, mode facilitation. Laisser parler, noter les thèmes qui reviennent.
@@ -570,16 +924,16 @@ Identifier ensemble 2 quick wins réalistes.
 
 ---
 layout: récap
-section: Jour 1 matin — Stratégie et culture qualité
+section: Jour 1 matin - Stratégie et culture qualité
 ---
 
 # Ce qu'il faut retenir
 
-- La qualité se pilote dès la conception
-- La pyramide des tests guide l'investissement
+- La qualité se pilote dès la conception (critères d'entrée/sortie)
+- La pyramide des tests guide l'investissement (unitaire → système → UAT)
 - Le plan de recette formalise périmètre et preuves
-- Les environnements et données conditionnent la fiabilité
-- La recette est une responsabilité collective
+- La gestion des anomalies structure le triage et la décision
+- Les environnements isolés et les données conditionnent la fiabilité
 
 <!--
 2 questions flash pour vérifier : "C'est quoi le shift-left ?" et "À quoi sert un PV de recette ?"
@@ -616,14 +970,14 @@ Cette après-midi on passe de la stratégie à l'implémentation. On va coder de
 <!--
 Le principe : on automatise ce qui est répétitif et stable. À chaque release, relancer 200 tests à la main c'est pas tenable.
 
-Attention, automatiser ne veut pas dire supprimer le test manuel — le test exploratoire reste essentiel pour trouver ce que l'automate ne cherche pas.
+Attention, automatiser ne veut pas dire supprimer le test manuel - le test exploratoire reste essentiel pour trouver ce que l'automate ne cherche pas.
 
 On va commencer par les tests unitaires et d'intégration.
 -->
 
 ---
 
-# Tests unitaires — bonnes pratiques
+# Tests unitaires - bonnes pratiques
 
 - Un test = un comportement attendu
 - Isolation : mocks/fakes seulement quand nécessaire
@@ -634,14 +988,14 @@ On va commencer par les tests unitaires et d'intégration.
 <!--
 Un bon test unitaire, c'est un test qui vérifie un seul comportement. Un mauvais test, c'est celui qui vérifie 10 trucs d'un coup et quand il casse, on sait pas pourquoi.
 
-Pas besoin de mocker tout — si c'est une pure fonction de calcul, testez-la directement. Le mock c'est pour isoler les dépendances externes.
+Pas besoin de mocker tout - si c'est une pure fonction de calcul, testez-la directement. Le mock c'est pour isoler les dépendances externes.
 
 Lisibilité avant tout : un collègue doit comprendre le test sans lire le code source.
 -->
 
 ---
 
-# Tests d'intégration — zone de vérité
+# Tests d'intégration - zone de vérité
 
 | Cible | Exemple |
 |---|---|
@@ -711,7 +1065,7 @@ BDD c'est le pont entre technique et métier : le format Given/When/Then est lis
 
 ---
 
-# Tests E2E — valeur et limites
+# Tests E2E - valeur et limites
 
 <v-clicks>
 
@@ -725,14 +1079,14 @@ BDD c'est le pont entre technique et métier : le format Given/When/Then est lis
 <!--
 Les tests E2E c'est puissant mais coûteux : lents à exécuter, fragiles à maintenir, et quand ça casse on met du temps à comprendre pourquoi.
 
-La règle : peu de tests E2E, mais sur les chemins critiques. Le parcours d'inscription, le paiement, l'authentification — les trucs qui font perdre de l'argent si ça marche pas.
+La règle : peu de tests E2E, mais sur les chemins critiques. Le parcours d'inscription, le paiement, l'authentification - les trucs qui font perdre de l'argent si ça marche pas.
 
 On va voir quels outils existent pour ça.
 -->
 
 ---
 
-# Outils E2E — choix rapide
+# Outils E2E - choix rapide
 
 | Outil | Points forts | Vigilance |
 |---|---|---|
@@ -747,7 +1101,81 @@ Cypress est très populaire aussi, excellente DX mais quelques limites d'archi (
 
 Selenium c'est l'historique, encore très présent dans les grandes entreprises mais maintenance plus lourde.
 
-L'important c'est que toute l'équipe utilise le même outil — pas 3 frameworks de test différents.
+L'important c'est que toute l'équipe utilise le même outil - pas 3 frameworks de test différents.
+-->
+
+---
+
+# Tests de performance
+
+| Type | Objectif | Exemple |
+|---|---|---|
+| Charge (load) | Vérifier le comportement sous charge normale | 500 utilisateurs simultanés pendant 1h |
+| Stress | Trouver le point de rupture | Augmenter jusqu'au crash |
+| Endurance (soak) | Détecter les fuites mémoire | Charge modérée pendant 24h |
+
+<!--
+Les tests de performance sont souvent oubliés jusqu'au jour où l'app tombe en prod sous la charge. C'est trop tard pour les découvrir à ce moment-là.
+
+Test de charge : on simule le trafic attendu en conditions normales. Est-ce que l'app tient ? Quel est le temps de réponse ?
+
+Test de stress : on pousse au-delà des limites pour savoir où ça casse. C'est pas pour prouver que ça tient, c'est pour savoir comment ça échoue.
+
+Test d'endurance : on laisse tourner longtemps avec une charge modérée. Ça détecte les fuites mémoire, les connexions non fermées, les caches qui grossissent indéfiniment.
+
+Exemple concret : une app qui répond en 200ms avec 10 utilisateurs mais en 15 secondes avec 200. Le test unitaire ne détectera jamais ça.
+-->
+
+---
+
+# Tests de sécurité en recette
+
+<v-clicks>
+
+- **OWASP Top 10** : les 10 vulnérabilités web les plus critiques (injection, XSS, CSRF...)
+- **Scan de vulnérabilités** : analyse automatique du code et des dépendances
+- **Tests d'intrusion** : simulation d'attaque sur l'application déployée
+- **Vérification des droits** : chaque rôle n'accède qu'à ce qui lui est autorisé
+- **Données sensibles** : vérifier chiffrement, masquage, conformité
+
+</v-clicks>
+
+<!--
+La sécurité c'est pas juste un sujet d'infra ou de DevOps - c'est aussi un sujet de recette. Avant de mettre en prod, on vérifie que l'app ne présente pas de failles évidentes.
+
+L'OWASP Top 10 c'est la liste des 10 vulnérabilités les plus fréquentes : injections SQL, XSS, mauvaise gestion des sessions, etc. C'est le minimum à vérifier.
+
+En pratique : lancez un scan automatique (Snyk, SonarQube, Trivy) sur le code et les dépendances. Vérifiez que les rôles sont correctement implémentés - un utilisateur standard ne doit pas pouvoir accéder aux endpoints admin.
+
+On retrouvera ces contrôles intégrés dans le pipeline CI/CD au jour 2 (SAST, DAST, dependency scanning).
+-->
+
+---
+
+# Tests d'accessibilité
+
+<v-clicks>
+
+- **RGAA / WCAG** : référentiels d'accessibilité (obligation légale services publics en France)
+- **Navigation clavier** : tout doit être accessible sans souris
+- **Lecteur d'écran** : contenu compréhensible en audio
+- **Contrastes et tailles** : lisibilité pour les déficiences visuelles
+- **Outils** : Axe, Wave, Lighthouse (audit automatisé)
+
+</v-clicks>
+
+<Tip type="warning">
+  En France, le RGAA est obligatoire pour les services publics et recommandé pour le privé.
+</Tip>
+
+<!--
+L'accessibilité c'est pas un bonus ou un "nice-to-have" - c'est une obligation légale pour les services publics en France et de plus en plus attendu dans le privé.
+
+En pratique, on peut automatiser une bonne partie des vérifications : Lighthouse dans Chrome donne un score d'accessibilité, Axe s'intègre dans les tests E2E, Wave analyse une page en un clic.
+
+Mais attention : l'automatisation ne couvre qu'environ 30% des critères d'accessibilité. Le reste nécessite un test manuel (navigation clavier, cohérence du parcours, compréhension du contenu).
+
+Conseil : intégrez au moins un audit Lighthouse dans votre CI - c'est gratuit et ça attrape les régressions les plus évidentes.
 -->
 
 ---
@@ -774,18 +1202,11 @@ Cause principale : dépendances sur le temps, l'ordre d'exécution, ou des servi
 
 ---
 layout: exercise
-duration: 10 min
+duration: 5 min
 type: demo
 ---
 
-# Démo live — exécution d'un test E2E
-
-## Plan de démo
-
-1. Lancer le test sur un parcours "inscription"
-2. Montrer un échec volontaire (sélecteur cassé)
-3. Corriger puis relancer
-4. Lire le rapport de test
+# Démo live - exécution d'un test E2E
 
 <!--
 Démo sur le repo pré-préparé. Commenter chaque étape à voix haute : ce qu'on fait, pourquoi, ce qu'on observe.
@@ -841,7 +1262,7 @@ duration: 20 min
 ---
 
 <!--
-Pause 20 min. Reprise directement sur le TP — préparer les postes si besoin.
+Pause 20 min. Reprise directement sur le TP - préparer les postes si besoin.
 -->
 
 ---
@@ -850,17 +1271,13 @@ duration: 45 min
 type: group
 ---
 
-# TP — Unitaire + E2E sur repo préparé
+# TP - Unitaire + E2E sur repo préparé
 
 ## Objectifs
 
 1. Compléter un test unitaire manquant
 2. Écrire un test E2E simple de bout en bout
-3. Faire passer la pipeline locale
-
-## Livrable
-
-- Pull request avec tests verts + courte explication des choix
+3. Faire passer tous les tests en local
 
 <!--
 Former des binômes pour l'entraide. Distribuer l'URL du repo et les instructions.
@@ -874,18 +1291,10 @@ Passer dans les groupes pour débloquer, surtout sur la config de l'environnemen
 
 # Revue collective du TP
 
-- Quelle stratégie de mocking avez-vous choisie ?
-- Qu'est-ce qui a cassé en premier dans le test E2E ?
-- Quel compromis rapidité/confiance avez-vous fait ?
-
-<Tip type="info">
-  L'objectif est de comparer les choix, pas de désigner un "unique bon code".
-</Tip>
-
 <!--
 Faire présenter 2 binômes qui ont fait des choix différents. Ce qui compte c'est pas la "bonne réponse" mais la justification : pourquoi vous avez mocké ici ? Pourquoi ce sélecteur ?
 
-Qu'est-ce qui a cassé en premier dans le E2E ? C'est souvent les sélecteurs ou les attentes de timing — c'est normal.
+Qu'est-ce qui a cassé en premier dans le E2E ? C'est souvent les sélecteurs ou les attentes de timing - c'est normal.
 
 Maintenant qu'on a des tests, comment on les intègre dans la CI pour que ça tourne automatiquement ?
 -->
@@ -906,7 +1315,7 @@ graph LR
 <!--
 L'idée c'est le fail fast : les tests les plus rapides tournent en premier. Si les unitaires cassent, on bloque tout de suite sans perdre de temps sur les E2E.
 
-Pas besoin de tout exécuter à chaque commit — les unitaires oui, les E2E plutôt sur les PRs ou avant le deploy.
+Pas besoin de tout exécuter à chaque commit - les unitaires oui, les E2E plutôt sur les PRs ou avant le deploy.
 
 L'ordre compte : build → unitaires → intégration → E2E. Chaque étape filtre un peu plus de risque.
 -->
@@ -927,7 +1336,7 @@ L'ordre compte : build → unitaires → intégration → E2E. Chaque étape fil
 <!--
 Un quality gate c'est simple : si les tests sont rouges, le merge est bloqué. Point. Pas de "je merge quand même parce que c'est urgent".
 
-Côté management, ces métriques sont utiles pour piloter : taux de succès pipeline sur 7 jours, temps moyen d'exécution — ça donne une vue de la santé du projet sans regarder le code.
+Côté management, ces métriques sont utiles pour piloter : taux de succès pipeline sur 7 jours, temps moyen d'exécution - ça donne une vue de la santé du projet sans regarder le code.
 
 Ça veut aussi dire que les règles doivent être explicites et connues de toute l'équipe.
 -->
@@ -944,7 +1353,7 @@ Côté management, ces métriques sont utiles pour piloter : taux de succès pip
 | Temps pipeline | Expérience développeur |
 
 <!--
-Le defect leakage c'est le nombre de bugs qui arrivent en prod — c'est LA métrique qui dit si votre recette fonctionne.
+Le defect leakage c'est le nombre de bugs qui arrivent en prod - c'est LA métrique qui dit si votre recette fonctionne.
 
 Le flakiness rate mesure la fiabilité de votre suite de tests elle-même. Si c'est au-dessus de 5%, vous avez un problème.
 
@@ -955,7 +1364,7 @@ Message clé : couvrir mieux, pas juste couvrir plus.
 
 ---
 
-# Transition vers le Jour 2
+# Transition vers les MEPs
 
 - Observez vos déploiements sur le projet d'ici la prochaine session
 - Notez 3 points : ce qui marche, ce qui casse, ce qui manque
@@ -966,18 +1375,18 @@ D'ici la prochaine session dans un mois, observez comment se passent les déploi
 
 Notez ce qui marche bien, ce qui casse régulièrement, et ce qui manque. Collectez des captures ou des logs (anonymisés) si possible.
 
-On en reparlera en ouverture du jour 2 — venez avec des exemples concrets de frictions.
+On en reparlera en ouverture du jour 2 - venez avec des exemples concrets de frictions.
 -->
 
 ---
 layout: récap
-section: Jour 1 après-midi — Tests automatisés
+section: Jour 1 après-midi - Tests automatisés
 ---
 
 # Ce qu'il faut retenir
 
 - Automatiser prioritairement les chemins critiques
-- Unitaire + intégration + E2E = couverture complémentaire
+- Unitaire + intégration + E2E + perf + sécu + accessibilité
 - Flakiness et couverture se pilotent activement
 - La CI transforme les tests en garde-fou quotidien
 
@@ -997,7 +1406,7 @@ section: 3
 Stratégies de déploiement
 
 <!--
-Bienvenue pour cette deuxième journée. La dernière fois on a vu la recette et les tests — aujourd'hui on passe à la mise en production.
+Bienvenue pour cette deuxième journée. La dernière fois on a vu la recette et les tests - aujourd'hui on passe à la mise en production.
 
 Le fil rouge : comment déployer souvent sans dégrader la fiabilité.
 -->
@@ -1039,7 +1448,7 @@ Chaque étape du pipeline est un filtre de risque. Le commit déclenche le build
 
 Point crucial : l'artefact doit être immutable. On build une seule fois et on déploie le même binaire partout. Si on rebuild entre staging et prod, on ne déploie plus la même chose.
 
-Le monitoring à la fin c'est pas optionnel — c'est ce qui confirme que le déploiement s'est bien passé.
+Le monitoring à la fin c'est pas optionnel - c'est ce qui confirme que le déploiement s'est bien passé.
 -->
 
 ---
@@ -1069,7 +1478,7 @@ duration: 20 min
 type: group
 ---
 
-# Exercice 3 — Dessiner le pipeline idéal
+# Exercice 3 - Dessiner le pipeline idéal
 
 ## Mission
 
@@ -1084,7 +1493,7 @@ type: group
 <!--
 Par groupes. Les faire expliciter leurs hypothèses : c'est quoi l'équipe, c'est quoi l'app, quel niveau de criticité ?
 
-Recadrer si le pipeline devient usine à gaz — un pipeline trop complexe, personne ne le maintient.
+Recadrer si le pipeline devient usine à gaz - un pipeline trop complexe, personne ne le maintient.
 
 Faire justifier chaque quality gate : pourquoi celui-là, à cet endroit, et pas ailleurs ?
 -->
@@ -1140,7 +1549,7 @@ Pause 20 min. Reprise sur les stratégies de déploiement : comment mettre en pr
 
 ---
 
-# Stratégies de déploiement — panorama
+# Stratégies de déploiement - panorama
 
 | Stratégie | Risque release | Coût infra | Complexité |
 |---|---|---|---|
@@ -1150,7 +1559,7 @@ Pause 20 min. Reprise sur les stratégies de déploiement : comment mettre en pr
 | Feature flags | Contrôle fin | Faible/Moyen | Moyen |
 
 <!--
-Y'a pas de stratégie universelle — le choix dépend du contexte : taille de l'équipe, criticité de l'app, volume de trafic, budget infra.
+Y'a pas de stratégie universelle - le choix dépend du contexte : taille de l'équipe, criticité de l'app, volume de trafic, budget infra.
 
 Un rolling update c'est le plus simple à mettre en place. Blue/green et canary demandent plus d'infra mais offrent plus de sécurité.
 
@@ -1202,7 +1611,7 @@ Exemple : une app bancaire va plutôt choisir blue/green pour le rollback instan
 </v-clicks>
 
 <!--
-Le rolling update remplace les instances progressivement — c'est ce que font la plupart des orchestrateurs par défaut.
+Le rolling update remplace les instances progressivement - c'est ce que font la plupart des orchestrateurs par défaut.
 
 Les feature flags c'est un concept puissant : le code est déployé mais la feature est désactivée. On l'active quand on veut, pour qui on veut. Ça découple le déploiement technique de l'activation métier.
 
@@ -1223,7 +1632,7 @@ Docker en résumé : une image c'est le package immuable de votre app avec toute
 
 Le gros bénéfice : ce qui tourne sur votre machine tourne aussi en prod, parce que c'est la même image. Fini le "ça marche chez moi".
 
-Le registry c'est là où on stocke et versionne les images — comme un npm ou un Maven mais pour les conteneurs. On va pas faire de TP Docker, c'est de la culture ici.
+Le registry c'est là où on stocke et versionne les images - comme un npm ou un Maven mais pour les conteneurs. On va pas faire de TP Docker, c'est de la culture ici.
 -->
 
 ---
@@ -1247,7 +1656,141 @@ IaC = Infrastructure as Code. L'idée : votre infrastructure est décrite dans d
 
 Terraform pour provisionner l'infra, Ansible pour configurer les serveurs, ArgoCD pour synchroniser automatiquement ce qui est dans Git avec ce qui tourne en production.
 
-Le bénéfice c'est l'auditabilité : on sait exactement qui a changé quoi, quand, et on peut revenir en arrière. On va voir une démo de d��ploiement maintenant.
+Le bénéfice c'est l'auditabilité : on sait exactement qui a changé quoi, quand, et on peut revenir en arrière.
+-->
+
+---
+
+# Planifier la mise en production
+
+<v-clicks>
+
+- **Fenêtre de maintenance** : choisir un créneau à faible impact (hors heures de pointe, hors vendredi soir)
+- **Communication** : prévenir les parties prenantes avant, pendant et après
+- **Séquencement** : ordre des opérations (migrations BDD → backend → frontend)
+- **Critères d'annulation** : quand abandonner la MEP en cours
+- **Responsabilités** : qui déploie, qui valide, qui communique
+
+</v-clicks>
+
+<!--
+Une mise en prod c'est pas juste "git push origin main". C'est un événement planifié avec une checklist, des responsables et un plan B.
+
+La fenêtre de maintenance c'est le créneau où l'impact d'un problème serait le plus faible. Pour un site B2B c'est la nuit ou le weekend. Pour un site B2C c'est variable. Règle d'or : jamais le vendredi après-midi, sauf si vous aimez travailler le weekend.
+
+La communication c'est souvent ce qui est oublié : le support, les équipes métier, parfois les clients doivent être prévenus. Rien de pire que de découvrir une maintenance en cours par un message d'erreur.
+
+Le séquencement : si votre app a une migration de base de données, elle doit être exécutée AVANT le déploiement du nouveau code. L'ordre n'est jamais anodin.
+-->
+
+---
+
+# Checklist de MEP
+
+| Phase | Actions clés |
+|---|---|
+| Pré-déploiement | Backup BDD, vérifier rollback plan, notifier équipes, geler les merges |
+| Déploiement | Exécuter migrations, déployer artefact, vérifier health checks |
+| Post-déploiement | Surveiller métriques 30 min, valider parcours critiques, confirmer aux parties prenantes |
+
+<KeyConcept title="Règle d'or">
+  Chaque étape de la checklist a un responsable identifié et un critère de succès mesurable.
+</KeyConcept>
+
+<!--
+La checklist c'est votre filet de sécurité. Même les pilotes expérimentés utilisent des checklists - c'est pas un manque de compétence, c'est de la rigueur.
+
+Pré-déploiement : on s'assure qu'on peut revenir en arrière (backup), qu'on a prévenu tout le monde, et qu'on ne va pas être perturbé par des merges en cours.
+
+Déploiement : on exécute dans l'ordre prévu, et on vérifie à chaque étape que ça se passe bien. Un health check qui répond 200 ne suffit pas - il faut vérifier que l'app fonctionne réellement.
+
+Post-déploiement : les 30 premières minutes sont critiques. On surveille les métriques, on teste les parcours utilisateur, et seulement après on confirme que la MEP est réussie.
+-->
+
+---
+
+# Gestion des dépendances de déploiement
+
+```mermaid
+graph TD
+  A[Migration BDD] --> B[Déploiement API]
+  B --> C[Déploiement Frontend]
+  C --> D[Vérification intégration]
+  A --> E[Mise à jour cache/config]
+  E --> B
+```
+
+<Tip type="warning">
+  Déployer le frontend avant l'API = appels vers des endpoints qui n'existent pas encore.
+</Tip>
+
+<!--
+Dans un système multi-composants, l'ordre de déploiement compte. Si vous déployez le frontend qui appelle un nouvel endpoint API avant de déployer l'API, les utilisateurs verront des erreurs.
+
+Règle de base : toujours déployer de bas en haut - d'abord les dépendances (BDD, cache), puis les services backend, puis le frontend.
+
+Pour les migrations de base de données : idéalement elles doivent être rétro-compatibles. C'est-à-dire que l'ancien code doit continuer à fonctionner avec la nouvelle base. Ça permet de découpler le déploiement de la migration.
+
+Question : sur vos projets, est-ce que vous déployez tous les composants en même temps ou de manière séquencée ?
+-->
+
+---
+
+# Comité de MEP et go/no-go
+
+| Rôle | Responsabilité |
+|---|---|
+| PO / Responsable produit | Valide la couverture fonctionnelle |
+| Lead technique | Confirme la stabilité technique |
+| QA / Responsable recette | Présente le bilan de recette |
+| Ops / SRE | Valide la capacité opérationnelle |
+| Management | Arbitre le risque résiduel |
+
+<Tip type="info">
+  La décision go/no-go est collégiale, mais la responsabilité finale est du PO ou du sponsor.
+</Tip>
+
+<!--
+Le comité de mise en production c'est pas une réunion de plus - c'est la réunion de décision. On y présente le bilan de recette, les risques résiduels, et on décide : on y va ou pas.
+
+Chaque rôle apporte sa perspective : le PO vérifie que le périmètre fonctionnel est couvert, le lead tech confirme que c'est stable, la QA présente les chiffres de la recette, les ops confirment que l'infra est prête.
+
+Le risque résiduel c'est les anomalies mineures qui restent ouvertes. La question c'est : est-ce qu'on les accepte en réserve (on déploie quand même) ou est-ce qu'on bloque ?
+
+En pratique, pour les projets moins critiques, ce comité peut être un simple échange Slack avec validation écrite. L'important c'est la traçabilité de la décision.
+-->
+
+---
+
+# Processus no-go
+
+<Comparison left="Go avec réserves" right="No-go" leftColor="orange" rightColor="red">
+  <template #left>
+
+  - Anomalies mineures acceptées
+  - Plan de correction post-MEP
+  - Réserves documentées dans le PV
+  - Délai de correction engagé
+
+  </template>
+  <template #right>
+
+  - Anomalie bloquante ou majeure ouverte
+  - Risque résiduel trop élevé
+  - Communication immédiate du report
+  - Nouveau planning de recette établi
+
+  </template>
+</Comparison>
+
+<!--
+Un no-go c'est pas un échec - c'est une décision responsable. Mieux vaut reporter que déployer un produit instable.
+
+En cas de no-go : on communique immédiatement aux parties prenantes (le pourquoi, le nouveau planning), on établit un plan de correction avec des responsables et des échéances, et on re-planifie la MEP.
+
+En cas de go avec réserves : on documente les anomalies acceptées dans le PV, avec l'engagement de les corriger dans un délai défini (ex: "sprint suivant"). Ces réserves doivent être suivies - pas oubliées une fois en prod.
+
+La pire situation c'est le "go" forcé sous pression du management alors que l'équipe dit "no-go". C'est là que la traçabilité du PV protège tout le monde.
 -->
 
 ---
@@ -1256,7 +1799,7 @@ duration: 10 min
 type: demo
 ---
 
-# Démo live — déploiement blue/green simulé
+# Démo live - déploiement blue/green simulé
 
 ## Étapes
 
@@ -1275,7 +1818,7 @@ L'important c'est la séquence : deploy → vérification → bascule → monito
 
 ---
 
-# SLI, SLO, SLA — définitions
+# SLI, SLO, SLA - définitions
 
 | Terme | Définition courte | Exemple |
 |---|---|---|
@@ -1310,7 +1853,7 @@ Distinction importante : le SLO est toujours plus exigeant que le SLA, sinon on 
 </v-clicks>
 
 <!--
-L'error budget c'est le concept qui relie vitesse de livraison et stabilité. Si votre SLO est 99.9%, vous avez 0.1% de marge d'erreur sur 30 jours — soit environ 43 minutes de downtime autorisé.
+L'error budget c'est le concept qui relie vitesse de livraison et stabilité. Si votre SLO est 99.9%, vous avez 0.1% de marge d'erreur sur 30 jours - soit environ 43 minutes de downtime autorisé.
 
 Si vous consommez votre budget trop vite, on freine les releases pendant 48h le temps de stabiliser. Si le budget est sain, on peut se permettre d'expérimenter.
 
@@ -1323,7 +1866,7 @@ duration: 15 min
 type: group
 ---
 
-# Exercice 4 — Définir des SLO réalistes
+# Exercice 4 - Définir des SLO réalistes
 
 ## Mission
 
@@ -1335,20 +1878,21 @@ type: group
 <!--
 Par groupes. Contexte : une app d'événements sportifs (comme la leur).
 
-Vérifier que les SLI proposés sont mesurables techniquement — "la satisfaction utilisateur" c'est pas un SLI, "le taux de requêtes HTTP 200" oui.
+Vérifier que les SLI proposés sont mesurables techniquement - "la satisfaction utilisateur" c'est pas un SLI, "le taux de requêtes HTTP 200" oui.
 
 Challenger les chiffres : 99.99% sur une app d'événements sportifs c'est probablement overkill. 99% c'est peut-être trop laxiste. Les faire justifier.
 -->
 
 ---
 layout: récap
-section: Jour 2 matin — Déploiement et fiabilité
+section: Jour 2 matin - Déploiement et fiabilité
 ---
 
 # Ce qu'il faut retenir
 
 - Un pipeline est une chaîne de réduction de risque
-- La sécurité doit être intégrée dès le build
+- La MEP se planifie : checklist, dépendances, communication
+- Le go/no-go est une décision collégiale et tracée
 - Le choix de stratégie de déploiement est contextuel
 - SLO et error budgets alignent technique et business
 
@@ -1368,12 +1912,12 @@ section: 4
 Monitoring, incidents et gouvernance
 
 <!--
-Dernière partie du cours. On a vu comment tester, comment déployer — maintenant : comment exploiter et apprendre de ce qui se passe en production.
+Dernière partie du cours. On a vu comment tester, comment déployer - maintenant : comment exploiter et apprendre de ce qui se passe en production.
 -->
 
 ---
 
-# Observabilité — les 3 piliers
+# Observabilité - les 3 piliers
 
 <v-clicks>
 
@@ -1392,7 +1936,7 @@ Les logs disent ce qui s'est passé, les métriques disent à quelle intensité,
 
 Exemple : un utilisateur signale que c'est lent. Les métriques montrent un pic de latence, les traces pointent vers le service de paiement, et les logs révèlent un timeout sur l'API bancaire. Sans les trois ensemble, on cherche dans le noir.
 
-L'observabilité c'est pas juste des dashboards jolis — c'est la capacité à expliquer un comportement inattendu.
+L'observabilité c'est pas juste des dashboards jolis - c'est la capacité à expliquer un comportement inattendu.
 -->
 
 ---
@@ -1459,7 +2003,7 @@ Le piège classique c'est d'alerter sur tout. Résultat : 200 alertes par jour, 
 
 Règle d'or : chaque alerte doit déclencher une action claire. Si en recevant l'alerte vous savez pas quoi faire, c'est que l'alerte est mal conçue.
 
-La fatigue d'alerte c'est un vrai problème en entreprise — ça peut mener à des incidents graves parce que les gens ignorent les notifications.
+La fatigue d'alerte c'est un vrai problème en entreprise - ça peut mener à des incidents graves parce que les gens ignorent les notifications.
 -->
 
 ---
@@ -1468,7 +2012,7 @@ duration: 15 min
 type: group
 ---
 
-# Exercice 5 — Analyser un dashboard
+# Exercice 5 - Analyser un dashboard
 
 ## Consignes
 
@@ -1508,11 +2052,41 @@ graph LR
 ```
 
 <!--
-Un incident c'est pas juste un problème technique — c'est un processus complet. Détection : comment on sait que ça casse. Triage : c'est grave ou pas. Communication : prévenir les bonnes personnes, tant en interne que les clients.
+Un incident c'est pas juste un problème technique - c'est un processus complet. Détection : comment on sait que ça casse. Triage : c'est grave ou pas. Communication : prévenir les bonnes personnes, tant en interne que les clients.
 
 La communication pendant un incident c'est souvent ce qui fait la différence entre "bien géré" et "catastrophe". Mieux vaut dire "on a un problème, on investigue" que de laisser les clients découvrir par eux-mêmes.
 
-Après la résolution, le post-mortem — c'est là qu'on apprend vraiment.
+Après la résolution, le post-mortem - c'est là qu'on apprend vraiment.
+-->
+
+---
+
+# Rollback - quand et comment
+
+<v-clicks>
+
+- **Critères de déclenchement** : taux d'erreur > seuil, latence x3, perte de fonctionnalité critique
+- **Qui décide** : l'astreinte ou le lead ops, sans attendre un comité
+- **Procédure** : redéployer l'artefact précédent (pas un nouveau build)
+- **Vérification** : confirmer le retour à la normale via métriques et tests smoke
+- **Communication** : informer les parties prenantes du rollback et de la cause
+
+</v-clicks>
+
+<Tip type="danger">
+  Un rollback doit être exécutable en moins de 15 minutes. Si ce n'est pas le cas, votre procédure n'est pas prête.
+</Tip>
+
+<!--
+Le rollback c'est votre plan B. Il doit être prêt AVANT la MEP, pas improvisé au moment de l'incident.
+
+Critères de déclenchement : définissez-les à l'avance. Par exemple : si le taux d'erreur 5xx dépasse 5% dans les 10 premières minutes, on rollback sans discussion.
+
+Qui décide : en situation de crise, il faut un décisionnaire unique et rapide. C'est pas le moment de convoquer un comité. L'astreinte doit avoir l'autorité pour déclencher le rollback.
+
+Point crucial : on redéploie l'artefact précédent, on ne fait pas un "git revert + rebuild". Si vous devez rebuild, vous n'avez pas de vrai rollback.
+
+Attention aux migrations de BDD non réversibles : si vous avez droppé une colonne, le rollback applicatif ne suffira pas. D'où l'importance des migrations rétro-compatibles.
 -->
 
 ---
@@ -1537,12 +2111,44 @@ Chaque action doit avoir un owner et une échéance, sinon ça reste des bonnes 
 -->
 
 ---
+
+# Hotfix - correctif d'urgence
+
+```mermaid
+graph LR
+  A[Incident détecté] --> B[Branche hotfix depuis prod]
+  B --> C[Fix + test minimal]
+  C --> D[Review accélérée]
+  D --> E[Déploiement direct en prod]
+  E --> F[Merge retour vers main]
+```
+
+<v-clicks>
+
+- Circuit court : pas le pipeline complet, mais les vérifications critiques
+- Validation : au minimum un test unitaire + une review par un pair
+- Traçabilité : ticket d'incident lié, commit message explicite
+- Retour : toujours merger le hotfix dans la branche principale après coup
+
+</v-clicks>
+
+<!--
+Le hotfix c'est le correctif d'urgence quand le rollback ne suffit pas ou n'est pas possible. Par exemple : un bug qui corrompt des données - rollbacker l'app ne répare pas les données déjà corrompues.
+
+Le principe : on crée une branche directement depuis la version en production, on fait le fix minimal, on valide rapidement, et on déploie directement en prod sans passer par tous les environnements.
+
+Attention : "circuit court" ne veut pas dire "sans contrôle". Au minimum : un test qui reproduit le bug, une review par un pair, et un déploiement tracé.
+
+Erreur classique : faire le hotfix en prod, ne pas le reporter dans main, et se retrouver avec un code en prod qui diverge du repo. Le merge retour c'est obligatoire, et c'est le premier truc à oublier quand on est en mode pompier.
+-->
+
+---
 layout: exercise
 duration: 20 min
 type: group
 ---
 
-# Exercice 6 — Analyse de post-mortem
+# Exercice 6 - Analyse de post-mortem
 
 ## Mission
 
@@ -1557,7 +2163,7 @@ type: group
 <!--
 Distribuer le post-mortem public. Par groupes, 12 min d'analyse puis 8 min de restitution (3 min par groupe max).
 
-Les pousser à distinguer cause racine et facteurs aggravants. "Le développeur a fait une erreur" c'est pas une cause racine — pourquoi le système a permis cette erreur, pourquoi y'avait pas de garde-fou ?
+Les pousser à distinguer cause racine et facteurs aggravants. "Le développeur a fait une erreur" c'est pas une cause racine - pourquoi le système a permis cette erreur, pourquoi y'avait pas de garde-fou ?
 
 Les actions correctives doivent être mesurables : pas "améliorer les tests" mais "ajouter un test E2E sur le parcours de paiement avant le 15 du mois".
 -->
@@ -1574,11 +2180,100 @@ Les actions correctives doivent être mesurables : pas "améliorer les tests" ma
 | Traçabilité des changements | Faciliter audit et conformité |
 
 <!--
-La gouvernance c'est pas de la bureaucratie pour le plaisir — c'est proportionné à la criticité. Une startup de 5 personnes n'a pas besoin d'un CAB formel, une banque si.
+La gouvernance c'est pas de la bureaucratie pour le plaisir - c'est proportionné à la criticité. Une startup de 5 personnes n'a pas besoin d'un CAB formel, une banque si.
 
 Le Change Advisory Board c'est un comité qui valide les changements critiques. En pratique dans les boîtes modernes, c'est souvent remplacé par des peer reviews et des quality gates automatisés.
 
 L'important c'est la traçabilité : qui a décidé quoi, quand, et sur quelle base. ITIL donne un cadre pour ça, même si en pratique on n'applique qu'une partie.
+-->
+
+---
+
+# Runbook de déploiement
+
+<v-clicks>
+
+- **Quoi** : instructions pas à pas pour déployer, vérifier et rollbacker
+- **Pour qui** : l'ops ou l'astreinte, même sans connaissance du code
+- **Contenu type** : prérequis, étapes numérotées, commandes exactes, vérifications
+- **Mise à jour** : à chaque changement de pipeline ou d'architecture
+- **Test** : un runbook non testé est un faux sentiment de sécurité
+
+</v-clicks>
+
+<Tip type="info">
+  Un bon runbook permet à quelqu'un qui n'a jamais déployé l'app de le faire en suivant les instructions.
+</Tip>
+
+<!--
+Le runbook c'est le mode d'emploi opérationnel. L'objectif : n'importe qui dans l'équipe ops peut déployer ou rollbacker en suivant les instructions, même à 3h du matin en astreinte.
+
+Contenu minimal : les prérequis (accès, credentials, outils), les étapes numérotées avec les commandes exactes à exécuter, les vérifications à faire après chaque étape, et la procédure de rollback.
+
+Erreur classique : le runbook est écrit une fois puis jamais mis à jour. L'architecture évolue, le pipeline change, et le runbook raconte une histoire qui n'existe plus. Solution : mettre le runbook dans le repo, à côté du code, et le mettre à jour dans la même PR que le changement d'archi.
+
+Un runbook non testé c'est un runbook qui ne marche probablement pas. Testez-le régulièrement, idéalement en condition réelle (déploiement en preprod par quelqu'un qui ne connaît pas le projet).
+-->
+
+---
+
+# Release notes et dossier d'exploitation
+
+<Comparison left="Release notes" right="Dossier d'exploitation" leftColor="blue" rightColor="purple">
+  <template #left>
+
+  - Audience : utilisateurs, PO, support
+  - Contenu : nouvelles fonctionnalités, corrections, impacts
+  - Fréquence : à chaque release
+  - Format : lisible par un non-technique
+
+  </template>
+  <template #right>
+
+  - Audience : ops, SRE, astreinte
+  - Contenu : architecture, dépendances, contacts, procédures
+  - Mise à jour : continue
+  - Format : technique, structuré, actionnable
+
+  </template>
+</Comparison>
+
+<!--
+Les release notes c'est la communication vers les utilisateurs et le support. Quand un utilisateur ou le support demande "qu'est-ce qui a changé", les release notes doivent répondre clairement.
+
+Le dossier d'exploitation c'est la documentation technique pour les ops : architecture du système, dépendances entre services, contacts des responsables, procédures de maintenance. C'est ce qu'on consulte quand il y a un incident à 2h du matin.
+
+Les deux sont complémentaires : les release notes regardent vers l'avant (qu'est-ce qui est nouveau), le dossier d'exploitation regarde vers le présent (comment ça fonctionne maintenant).
+
+En pratique : les release notes peuvent être générées automatiquement à partir des tickets ou des commits conventionnels. Le dossier d'exploitation doit être maintenu manuellement mais proche du code (dans le repo).
+-->
+
+---
+
+# Retour d'expérience (REX) de MEP
+
+<v-clicks>
+
+- **Quand** : après chaque MEP significative, pas seulement les incidents
+- **Participants** : dev, QA, ops, PO - toute l'équipe de livraison
+- **Points positifs** : ce qui a bien marché (à reproduire)
+- **Axes d'amélioration** : ce qui a été difficile (à corriger)
+- **Actions** : chaque axe donne une action concrète avec owner et délai
+
+</v-clicks>
+
+<Tip type="info">
+  Le REX n'est pas un post-mortem : il couvre aussi les MEP réussies pour capitaliser sur les bonnes pratiques.
+</Tip>
+
+<!--
+Le REX c'est plus large que le post-mortem. Le post-mortem c'est après un incident. Le REX c'est après chaque MEP significative, y compris celles qui se sont bien passées.
+
+Pourquoi faire un REX quand ça s'est bien passé ? Parce que si on ne documente que les échecs, on ne sait jamais pourquoi ça marche. Le REX positif permet de capitaliser : qu'est-ce qu'on a bien fait, pourquoi, et comment le reproduire.
+
+Format simple : 30 min max, tour de table "ce qui a marché / ce qui n'a pas marché / ce qu'on change la prochaine fois". Chaque action a un responsable et une échéance.
+
+Le piège c'est de faire des REX sans suite : on discute, on prend des notes, et rien ne change. Les actions doivent être suivies comme n'importe quel ticket.
 -->
 
 ---
@@ -1587,7 +2282,7 @@ duration: 30 min
 type: group
 ---
 
-# TP final — Pipeline GitHub Actions
+# TP final - Pipeline GitHub Actions
 
 ## Objectif
 
@@ -1605,7 +2300,7 @@ Compléter un pipeline avec :
 <!--
 TP final. Le fichier GitHub Actions est pré-rempli avec des trous à compléter. Les groupes doivent faire : build, tests, deploy simulé, vérification.
 
-Avoir une trame minimale prête pour les groupes en difficulté — ils doivent pouvoir avancer même s'ils galèrent.
+Avoir une trame minimale prête pour les groupes en difficulté - ils doivent pouvoir avancer même s'ils galèrent.
 
 Vérifier que les étapes s'enchaînent dans le bon ordre et que les quality gates sont au bon endroit. Le workflow doit être vert à la fin.
 -->
@@ -1631,10 +2326,10 @@ Quel est le quick win le plus réaliste à mettre en place cette semaine ?
 # Synthèse des 2 jours
 
 <Timeline :steps="[
-  { time: 'J1-M', title: 'Culture qualité', desc: 'Pyramide, plan de recette, environnements', active: true },
-  { time: 'J1-AM', title: 'Automatisation', desc: 'Unitaire, intégration, E2E, CI', active: true },
-  { time: 'J2-M', title: 'Déploiement', desc: 'Pipeline, sécurité, stratégies, SLO', active: true },
-  { time: 'J2-AM', title: 'Run', desc: 'Observabilité, incidents, gouvernance', active: true }
+  { time: 'J1-M', title: 'Culture qualité', desc: 'Pyramide, plan de recette, anomalies, environnements', active: true },
+  { time: 'J1-AM', title: 'Automatisation', desc: 'Unitaire, intégration, E2E, perf, sécu, accessibilité', active: true },
+  { time: 'J2-M', title: 'Déploiement', desc: 'Pipeline, planif MEP, go/no-go, stratégies, SLO', active: true },
+  { time: 'J2-AM', title: 'Run', desc: 'Observabilité, rollback, hotfix, documentation, REX', active: true }
 ]" />
 
 <!--
@@ -1642,16 +2337,16 @@ On a fait le chemin complet : de la stratégie de test à la gestion d'incidents
 
 Le fil rouge c'est la maturité progressive : on commence par tester, puis on automatise, puis on déploie intelligemment, puis on surveille et on apprend.
 
-C'est pas un truc qu'on met en place en un jour — c'est une culture d'équipe qui se construit avec le temps.
+C'est pas un truc qu'on met en place en un jour - c'est une culture d'équipe qui se construit avec le temps.
 -->
 
 ---
 
 # Ressources recommandées
 
-- *Continuous Delivery* — Jez Humble, David Farley
-- *Accelerate* — Forsgren, Humble, Kim
-- *Site Reliability Engineering* — Google (gratuit en ligne)
+- *Continuous Delivery* - Jez Humble, David Farley
+- *Accelerate* - Forsgren, Humble, Kim
+- *Site Reliability Engineering* - Google (gratuit en ligne)
 - ISTQB Syllabus (fondamentaux du test logiciel)
 - Blogs d'incidents publics (GitHub, Cloudflare, GitLab)
 
@@ -1662,7 +2357,7 @@ Pour les profils dev : commencez par "Continuous Delivery", c'est la bible du su
 
 Le livre SRE de Google est gratuit en ligne et c'est une mine d'or sur le monitoring et la gestion d'incidents.
 
-Et les post-mortems publics des grandes boîtes (GitHub, Cloudflare, GitLab) — c'est de l'apprentissage gratuit sur des incidents réels.
+Et les post-mortems publics des grandes boîtes (GitHub, Cloudflare, GitLab) - c'est de l'apprentissage gratuit sur des incidents réels.
 -->
 
 ---
@@ -1674,9 +2369,10 @@ section: Bilan global du cours
 
 - Tester tôt pour corriger moins cher
 - Automatiser intelligemment pour sécuriser la vitesse
-- Déployer progressivement avec rollback prêt
+- Déployer progressivement avec rollback et hotfix prêts
 - Mesurer la fiabilité via SLI/SLO
-- Apprendre systématiquement des incidents
+- Apprendre systématiquement des incidents et des MEP
+- Documenter et capitaliser pour ne pas refaire les mêmes erreurs
 
 <!--
 Dernier tour de table : chacun donne 1 truc qu'il a appris et 1 action concrète qu'il va mettre en place.
@@ -1693,7 +2389,7 @@ layout: end
 Questions ?
 
 <!--
-Questions ouvertes. Si personne ne se lance, proposer une mini étude de cas : "Vous êtes de garde un vendredi soir, vous recevez une alerte critique — que faites-vous ?"
+Questions ouvertes. Si personne ne se lance, proposer une mini étude de cas : "Vous êtes de garde un vendredi soir, vous recevez une alerte critique - que faites-vous ?"
 
 Merci à tous pour ces 2 journées.
 - Rappeler l'évaluation QCM à venir.
@@ -1703,7 +2399,7 @@ theme: seriph
 title: "Nom du cours"
 info: |
   ## Nom du cours
-  Master Ingénierie Informatique et Management — G4
+  Master Ingénierie Informatique et Management - G4
 transition: slide-left
 mdc: true
 fonts:
@@ -1714,7 +2410,7 @@ drawings:
 layout: course-cover
 subtitle: Sous-titre ou accroche du cours
 session: Séance 1 / 7
-instructor: Prénom Nom — Formateur
+instructor: Prénom Nom - Formateur
 ---
 
 # Nom du cours
@@ -1762,9 +2458,9 @@ Notes pour le présentateur :
 
 Texte explicatif pour introduire le concept principal de cette slide.
 
-- **Point clé 1** — explication courte et précise
-- **Point clé 2** — avec un exemple concret
-- **Point clé 3** — lien avec le monde professionnel
+- **Point clé 1** - explication courte et précise
+- **Point clé 2** - avec un exemple concret
+- **Point clé 3** - lien avec le monde professionnel
 
 <v-click>
 
@@ -1775,7 +2471,7 @@ Texte explicatif pour introduire le concept principal de cette slide.
 <!--
 Notes pour le présentateur :
 - Durée : 3 min
-- Le v-click révèle la citation au clic — l'utiliser pour ponctuer l'explication
+- Le v-click révèle la citation au clic - l'utiliser pour ponctuer l'explication
 - Exemple concret : [raconter une anecdote professionnelle]
 - Transition : "Voyons maintenant comment cela se traduit concrètement..."
 -->
@@ -1800,7 +2496,7 @@ Notes pour le présentateur :
 <v-click>
 
 <Tip type="warning">
-  Attention à ne pas confondre avec [autre concept] — piège fréquent en entreprise.
+  Attention à ne pas confondre avec [autre concept] - piège fréquent en entreprise.
 </Tip>
 
 </v-click>
@@ -1961,13 +2657,13 @@ duration: 20 min
 type: solo
 ---
 
-# Exercice — Titre de l'exercice
+# Exercice - Titre de l'exercice
 
 ## Consignes
 
-1. **Étape 1** — Description de la première étape
-2. **Étape 2** — Description de la deuxième étape
-3. **Étape 3** — Livrable attendu
+1. **Étape 1** - Description de la première étape
+2. **Étape 2** - Description de la deuxième étape
+3. **Étape 3** - Livrable attendu
 
 <Tip type="success">
   Indice : pensez à utiliser [concept vu précédemment] pour résoudre le point 2.
@@ -1987,7 +2683,7 @@ duration: 30 min
 type: group
 ---
 
-# Atelier — Étude de cas
+# Atelier - Étude de cas
 
 ## Contexte
 
@@ -2048,26 +2744,26 @@ Notes pour le présentateur :
 | Complexité | Moyenne | Faible | Élevée |
 | Maintenabilité | Bonne | Excellente | Moyenne |
 
-<Credit source="Analyse comparative — Gartner 2025" />
+<Credit source="Analyse comparative - Gartner 2025" />
 
 <!--
 Notes pour le présentateur :
 - Durée : 4 min
 - Faire voter les étudiants sur leur option préférée avant de discuter
-- Il n'y a pas de "bonne" réponse — ça dépend du contexte
+- Il n'y a pas de "bonne" réponse - ça dépend du contexte
 - Lien management : arbitrage coût/qualité/délai
 -->
 
 ---
 layout: récap
-section: Section 1 — Introduction au sujet
+section: Section 1 - Introduction au sujet
 ---
 
 # Ce qu'il faut retenir
 
-- **Concept 1** — définition en une phrase
-- **Concept 2** — pourquoi c'est important en entreprise
-- **Concept 3** — lien avec la séance suivante
+- **Concept 1** - définition en une phrase
+- **Concept 2** - pourquoi c'est important en entreprise
+- **Concept 3** - lien avec la séance suivante
 
 <Tip type="info">
   Pour aller plus loin : [ressource recommandée]
