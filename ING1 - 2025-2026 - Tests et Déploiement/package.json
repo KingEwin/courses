@@ -1,0 +1,9 @@
+{
+  "name": "@g4/ing1-tests-deploiement",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  }
+}
