@@ -1,0 +1,9 @@
+{
+  "name": "@g4/ing1-devops",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  }
+}

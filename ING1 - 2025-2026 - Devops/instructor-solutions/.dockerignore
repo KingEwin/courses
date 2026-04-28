@@ -1,0 +1,15 @@
+node_modules
+dist
+*.log
+.env
+.env.local
+.git
+.gitignore
+.dockerignore
+.DS_Store
+.idea
+.vscode
+coverage
+README.md
+solutions
+Dockerfile*

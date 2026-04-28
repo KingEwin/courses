@@ -1,0 +1,22 @@
+# Niveau 2 — Bonnes pratiques (sans multi-stage)
+# - Base alpine
+# - npm ci (reproductible)
+# - Ordre des COPY → cache npm préservé
+# Taille attendue : ~400 - 500 Mo
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# 1) Manifeste seul → cache npm ci préservé
+COPY package*.json ./
+RUN npm ci
+
+# 2) Code source → seul ce layer change quand le code change
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["node", "dist/server.js"]
