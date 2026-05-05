@@ -3,7 +3,7 @@ theme: seriph
 title: "Nom du cours"
 info: |
   ## Nom du cours
-  Master Ingénierie Informatique et Management — G4
+  Master Ingénierie Informatique et Management - G4
 transition: slide-left
 mdc: true
 fonts:
@@ -14,7 +14,7 @@ drawings:
 layout: course-cover
 subtitle: Sous-titre ou accroche du cours
 session: Séance 1 / 7
-instructor: Prénom Nom — Formateur
+instructor: Prénom Nom - Formateur
 ---
 
 # Nom du cours
@@ -62,9 +62,9 @@ Notes pour le présentateur :
 
 Texte explicatif pour introduire le concept principal de cette slide.
 
-- **Point clé 1** — explication courte et précise
-- **Point clé 2** — avec un exemple concret
-- **Point clé 3** — lien avec le monde professionnel
+- **Point clé 1** - explication courte et précise
+- **Point clé 2** - avec un exemple concret
+- **Point clé 3** - lien avec le monde professionnel
 
 <v-click>
 
@@ -75,7 +75,7 @@ Texte explicatif pour introduire le concept principal de cette slide.
 <!--
 Notes pour le présentateur :
 - Durée : 3 min
-- Le v-click révèle la citation au clic — l'utiliser pour ponctuer l'explication
+- Le v-click révèle la citation au clic - l'utiliser pour ponctuer l'explication
 - Exemple concret : [raconter une anecdote professionnelle]
 - Transition : "Voyons maintenant comment cela se traduit concrètement..."
 -->
@@ -100,7 +100,7 @@ Notes pour le présentateur :
 <v-click>
 
 <Tip type="warning">
-  Attention à ne pas confondre avec [autre concept] — piège fréquent en entreprise.
+  Attention à ne pas confondre avec [autre concept] - piège fréquent en entreprise.
 </Tip>
 
 </v-click>
@@ -261,13 +261,13 @@ duration: 20 min
 type: solo
 ---
 
-# Exercice — Titre de l'exercice
+# Exercice - Titre de l'exercice
 
 ## Consignes
 
-1. **Étape 1** — Description de la première étape
-2. **Étape 2** — Description de la deuxième étape
-3. **Étape 3** — Livrable attendu
+1. **Étape 1** - Description de la première étape
+2. **Étape 2** - Description de la deuxième étape
+3. **Étape 3** - Livrable attendu
 
 <Tip type="success">
   Indice : pensez à utiliser [concept vu précédemment] pour résoudre le point 2.
@@ -287,7 +287,7 @@ duration: 30 min
 type: group
 ---
 
-# Atelier — Étude de cas
+# Atelier - Étude de cas
 
 ## Contexte
 
@@ -348,26 +348,26 @@ Notes pour le présentateur :
 | Complexité | Moyenne | Faible | Élevée |
 | Maintenabilité | Bonne | Excellente | Moyenne |
 
-<Credit source="Analyse comparative — Gartner 2025" />
+<Credit source="Analyse comparative - Gartner 2025" />
 
 <!--
 Notes pour le présentateur :
 - Durée : 4 min
 - Faire voter les étudiants sur leur option préférée avant de discuter
-- Il n'y a pas de "bonne" réponse — ça dépend du contexte
+- Il n'y a pas de "bonne" réponse - ça dépend du contexte
 - Lien management : arbitrage coût/qualité/délai
 -->
 
 ---
 layout: recap
-section: Section 1 — Introduction au sujet
+section: Section 1 - Introduction au sujet
 ---
 
 # Ce qu'il faut retenir
 
-- **Concept 1** — définition en une phrase
-- **Concept 2** — pourquoi c'est important en entreprise
-- **Concept 3** — lien avec la séance suivante
+- **Concept 1** - définition en une phrase
+- **Concept 2** - pourquoi c'est important en entreprise
+- **Concept 3** - lien avec la séance suivante
 
 <Tip type="info">
   Pour aller plus loin : [ressource recommandée]

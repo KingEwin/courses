@@ -4,7 +4,7 @@
 
 - **Intitulé** : Tests et Déploiement
 - **Volume horaire** : 10h30 (3 demi-journées de 3h30, pause de 20 min incluse)
-- **Format** : 1,5 jour en présentiel
+- **Format** : 1,5 jour en distanciel
 - **Découpage** : 3 demi-journées de 3h30
 - **Public** : Ingénieur 1 — Bac+3 (1re année du cycle ingénieur G4)
 - **Prérequis** : Dev B1/B2 (TypeScript opérationnel), DevOps ING1, Git maîtrisé
