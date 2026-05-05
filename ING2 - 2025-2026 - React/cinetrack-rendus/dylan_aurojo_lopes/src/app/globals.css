@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+@import "tailwindcss";
+:root {
+  --bg-deep: #0c0b0f;
+  --bg-card: #141219;
+  --bg-card-hover: #1a1821;
+  --bg-modal: #18151f;
+  --accent-gold: #c9a84c;
+  --accent-gold-dim: #8a6f2e;
+  --accent-amber: #e8963a;
+  --text-primary: #f0eade;
+  --text-secondary: #8a8278;
+  --text-muted: #4a4542;
+  --border: #2a2530;
+  --border-accent: #3d3540;
+  --status-watch: #4a7c6b;
+  --status-watching: #7a5c2e;
+  --status-done: #2e4a7a;
+  --red: #b84040;
+  --red-hover: #cc4a4a;
+  --blue: #3a5a8a;
+  --blue-hover: #4a6a9a;
+  --green: #3a6a4a;
+  --green-hover: #4a7a5a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+
+  /* Grain cinématographique */
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Ligne de pellicule en haut */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold), var(--accent-amber), var(--accent-gold), transparent);
+  z-index: 100;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--accent-gold-dim); }
+  50% { border-color: var(--accent-gold); }
+}

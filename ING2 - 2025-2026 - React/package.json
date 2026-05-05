@@ -1,0 +1,9 @@
+{
+  "name": "@g4/ing2-2025-2026-react",
+  "private": true,
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export"
+  }
+}
