@@ -1,20 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { CineItem } from "../models/cine-item";
 import { MediaType } from "../types/media-type";
 import { Status } from "../types/status";
 import { X, Film, Tv, Plus, Pencil, Search, ImageOff } from "lucide-react";
-
-interface TmdbResult {
-  tmdbId: number;
-  title: string;
-  type: "movie" | "series";
-  year: string;
-  poster: string | null;
-  thumbnail: string | null;
-  overview: string;
-}
+import { useTmdbSearch } from "../../hooks/useTmdbSearch";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import type { TmdbResult } from "../../lib/api";
 
 interface AddItemModalProps {
   onAdd: (item: CineItem) => void;
@@ -34,31 +27,13 @@ export default function AddItemModal({
   const [statut, setStatut] = useState<Status>(initialItem?.status ?? "to-watch");
   const [note, setNote] = useState<number>(initialItem?.rating ?? 0);
 
-  // TMDB search state
+  // TMDB search — UI state only; data lives in React Query
   const [tmdbQuery, setTmdbQuery] = useState("");
-  const [tmdbResults, setTmdbResults] = useState<TmdbResult[]>([]);
-  const [tmdbLoading, setTmdbLoading] = useState(false);
+  const debouncedQuery = useDebouncedValue(tmdbQuery, 400);
+  const { data: tmdbResults = [], isFetching: tmdbLoading } =
+    useTmdbSearch(debouncedQuery);
   const [selectedPoster, setSelectedPoster] = useState<string | null>(null);
   const [selectedOverview, setSelectedOverview] = useState<string | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (tmdbQuery.trim().length < 2) {
-      setTmdbResults([]);
-      return;
-    }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
-      setTmdbLoading(true);
-      try {
-        const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(tmdbQuery)}`);
-        const data = await res.json();
-        setTmdbResults(data.results ?? []);
-      } finally {
-        setTmdbLoading(false);
-      }
-    }, 400);
-  }, [tmdbQuery]);
 
   const pickTmdb = (result: TmdbResult) => {
     setTitre(result.title);
@@ -66,7 +41,6 @@ export default function AddItemModal({
     setSelectedPoster(result.poster);
     setSelectedOverview(result.overview || null);
     setTmdbQuery("");
-    setTmdbResults([]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

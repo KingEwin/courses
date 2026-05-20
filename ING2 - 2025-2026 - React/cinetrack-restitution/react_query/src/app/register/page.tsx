@@ -5,39 +5,25 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Film, UserPlus } from "lucide-react";
+import { useRegister } from "../../hooks/useRegister";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const register = useRegister();
+  const errorMessage = register.error?.message ?? null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, name }),
-    });
-
-    if (!res.ok) {
-      let message = "Erreur lors de l'inscription";
-      try {
-        const data = await res.json();
-        message = data.error ?? message;
-      } catch {
-        // non-JSON response (e.g. 500 HTML)
-      }
-      setError(message);
-      setLoading(false);
+    try {
+      await register.mutateAsync({ email, password, name });
+    } catch {
+      // error already exposed via register.error — let React Query handle it
       return;
     }
-
     // Auto sign-in after registration
     await signIn("credentials", { email, password, redirect: false });
     router.push("/");
@@ -118,19 +104,19 @@ export default function RegisterPage() {
               />
             </div>
 
-            {error && (
+            {errorMessage && (
               <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">
-                {error}
+                {errorMessage}
               </p>
             )}
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={register.isPending}
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full text-white text-sm font-semibold shadow-md hover:shadow-lg active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
               style={{ background: "var(--md-primary)" }}
             >
-              {loading ? (
+              {register.isPending ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               ) : (
                 <>

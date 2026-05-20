@@ -4,6 +4,7 @@ import "./globals.css";
 import ThemeProvider from "./components/ThemeProvider";
 import ThemeToggle from "./components/ThemeToggle";
 import LogoutButton from "./components/LogoutButton";
+import QueryProvider from "./components/QueryProvider";
 import { auth } from "@/auth";
 import { Film } from "lucide-react";
 
@@ -37,6 +38,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <QueryProvider>
         <ThemeProvider>
           {/* Material App Bar */}
           <header
@@ -66,6 +68,7 @@ export default async function RootLayout({
             {children}
           </main>
         </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

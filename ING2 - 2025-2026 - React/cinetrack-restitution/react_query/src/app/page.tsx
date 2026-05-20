@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Status } from "./types/status";
 import { CineItem } from "./models/cine-item";
-import { useItemsStore } from "../store/items-store";
+import {
+  useAddItem,
+  useDeleteItem,
+  useItems,
+  useToggleFavorite,
+  useUpdateItem,
+  useUpdateStatus,
+} from "../hooks/useItems";
 import CineCard from "./components/CineCard";
 import AddItemModal from "./components/AddItemModal";
 import FilterBar, { Filters, DEFAULT_FILTERS } from "./components/FilterBar";
@@ -11,18 +18,20 @@ import DetailsModal from "./components/DetailsModal";
 import { Plus, Film } from "lucide-react";
 
 export default function Home() {
-  const { items, isLoading, fetchItems, addItem, updateItem, deleteItem, toggleFavorite, updateStatus } =
-    useItemsStore();
+  const { data: items = [], isPending } = useItems();
+  const addItem = useAddItem();
+  const updateItem = useUpdateItem();
+  const deleteItem = useDeleteItem();
+  const toggleFavorite = useToggleFavorite();
+  const updateStatus = useUpdateStatus();
+
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [showModal, setShowModal] = useState(false);
   const [viewingItemId, setViewingItemId] = useState<number | null>(null);
 
-  // Always reflect latest store state — fixes stale favorite/rating in modal
-  const viewingItem = viewingItemId !== null ? items.find((i) => i.id === viewingItemId) : undefined;
-
-  useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+  // Always reflect latest cache state — fixes stale favorite/rating in modal
+  const viewingItem =
+    viewingItemId !== null ? items.find((i) => i.id === viewingItemId) : undefined;
 
   // Apply all filters
   const filtered = useMemo(() => {
@@ -53,7 +62,7 @@ export default function Home() {
   };
 
   const handleSave = async (item: CineItem) => {
-    await addItem({
+    await addItem.mutateAsync({
       title: item.title,
       type: item.type,
       status: item.status,
@@ -64,11 +73,15 @@ export default function Home() {
   };
 
   const handleSaveRating = (id: number, rating: number) => {
-    updateItem(id, { rating });
+    updateItem.mutate({ id, data: { rating } });
   };
 
   const handleUpdateStatus = (id: number, status: Status) => {
     updateStatus(id, status);
+  };
+
+  const handleDelete = (id: number) => {
+    deleteItem.mutate(id);
   };
 
   return (
@@ -99,9 +112,12 @@ export default function Home() {
       <FilterBar filters={filters} onChange={setFilters} />
 
       {/* Loading state */}
-      {isLoading ? (
+      {isPending ? (
         <div className="flex justify-center mt-24 opacity-40">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-current border-t-transparent" style={{ color: "var(--md-primary)" }} />
+          <div
+            className="animate-spin rounded-full h-10 w-10 border-4 border-current border-t-transparent"
+            style={{ color: "var(--md-primary)" }}
+          />
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 mt-24 opacity-40">
@@ -123,7 +139,7 @@ export default function Home() {
             <CineCard
               key={item.id}
               item={item}
-              deleteItem={deleteItem}
+              deleteItem={handleDelete}
               updateStatus={handleUpdateStatus}
               onDetails={openDetails}
               toggleFavorite={toggleFavorite}

@@ -1,0 +1,59 @@
+---
+description: Conventions pour les projets React (TPs étudiants ING2)
+globs: ING2 - 2025-2026 - React/**/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# React — Conventions projet
+
+Contexte : TPs pour étudiants ING2. **Privilégier la simplicité et la lisibilité** plutôt que l'over-engineering.
+
+## Composants
+
+- Composants fonctionnels uniquement (pas de classes)
+- Un composant par fichier, nommé en `PascalCase`
+- Props typées explicitement avec un `type` ou `interface` local
+- Extraire les hooks custom dans `src/hooks/` quand la logique est réutilisée
+
+```tsx
+// ✅ GOOD
+type MovieCardProps = { title: string; year: number };
+
+export function MovieCard({ title, year }: MovieCardProps) {
+  return <article>{title} ({year})</article>;
+}
+```
+
+## Hooks
+
+- Respecter les règles des hooks (top-level, pas de conditions)
+- Nommer les hooks custom `useXxx` et les placer dans `src/hooks/`
+- Préférer `useState` + `useEffect` simples ; n'introduire `useMemo`/`useCallback` que si une mesure montre un besoin
+
+## Next.js (App Router)
+
+- Server Components par défaut ; ajouter `"use client"` uniquement si nécessaire (state, events, hooks browser)
+- Routes API dans `src/app/api/<nom>/route.ts`
+- Fetch côté serveur quand possible ; React Query côté client pour l'état serveur réactif
+
+## Structure
+
+```
+src/
+  app/          # routes Next.js
+  components/   # composants réutilisables
+  hooks/        # hooks custom
+  lib/          # utilitaires, clients API, store
+```
+
+## Style
+
+- Pas d'`any` ; préférer `unknown` + narrowing si le type est inconnu
+- Pas de commentaires qui paraphrasent le code (`// increment counter`)
+- Imports : externes d'abord, puis internes (`@/...`), puis relatifs
+
+## À éviter
+
+- Composants > 200 lignes → extraire en sous-composants
+- État global pour des données locales → `useState` suffit souvent
+- Abstractions prématurées (HOC, render props) sans cas concret
