@@ -1478,24 +1478,215 @@ duration: 20 min
 type: group
 ---
 
-# Exercice 3 - Dessiner le pipeline idéal
+# Exercice 3 - Pipeline CI/CD
 
-## Mission
+## Contexte
 
-1. Compléter un pipeline volontairement incomplet
-2. Ajouter 2 quality gates indispensables
-3. Définir une stratégie de rollback simple
+Vous êtes une équipe de **3 développeurs** sur une application web (API + frontend).
+**Releases hebdomadaires** chaque mercredi. Deux environnements : **staging** et **production**.
 
-<Tip type="success">
-  Restitution attendue : schéma + justification technique et business.
+## Livrables attendus
+
+1. **Partie A** - Schéma du pipeline idéal (commit → prod)
+2. **Partie B** - Pipeline cassé corrigé + 2 quality gates + stratégie de rollback
+
+<Tip type="info">
+  Format : groupes de 3-4. Support libre : papier ou outil en ligne.
 </Tip>
 
 <!--
-Par groupes. Les faire expliciter leurs hypothèses : c'est quoi l'équipe, c'est quoi l'app, quel niveau de criticité ?
+On lance l'exercice. 20 minutes en groupes. Bien insister : c'est pas un piège, c'est un cas réaliste qu'on voit tous les jours en entreprise.
 
-Recadrer si le pipeline devient usine à gaz - un pipeline trop complexe, personne ne le maintient.
+Les faire expliciter leurs hypothèses : c'est quoi l'app exactement, quel niveau de criticité, combien d'utilisateurs ?
 
-Faire justifier chaque quality gate : pourquoi celui-là, à cet endroit, et pas ailleurs ?
+Je passe dans les groupes pour débloquer. Recadrer si le pipeline devient usine à gaz - un pipeline trop complexe, personne ne le maintient.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Partie A - Dessinez le pipeline idéal
+
+## Consigne
+
+Dessinez le pipeline CI/CD complet, **du commit à la production**.
+
+Pour **chaque étape**, précisez :
+
+<v-clicks>
+
+- 🎯 **Ce que l'étape fait** (action concrète)
+- 🚦 **Ce qui bloque (ou pas) le passage à l'étape suivante** (quality gate)
+- 👤 **Qui est responsable** (automatique ou humain)
+
+</v-clicks>
+
+<!--
+Partie A : ils partent d'une page blanche. C'est le pipeline idéal selon eux, dans leur contexte.
+
+Insister sur les 3 colonnes : action / gate / responsable. C'est souvent la colonne "responsable" qui manque dans les pipelines réels - on sait pas qui valide quoi.
+
+Ils peuvent s'appuyer sur l'aide-mémoire en dernière slide.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Partie B - Corrigez ce pipeline
+
+Pipeline **actuellement en place** dans l'équipe - il a plusieurs problèmes.
+
+```
+1. Le développeur pousse son code sur main
+2. GitHub Actions se déclenche
+3. Installation des dépendances (npm ci)
+4. Build de l'application
+5. Déploiement en production
+6. L'équipe vérifie manuellement le lendemain
+```
+
+<Tip type="danger">
+  Identifiez au moins <strong>4 problèmes</strong> dans ce pipeline.
+</Tip>
+
+<!--
+Pipeline volontairement cassé. Y'a au moins 6-7 problèmes évidents : pas de tests, pas de staging, push direct sur main, pas de revue, vérification manuelle le lendemain (donc bugs en prod toute la nuit), pas de rollback, etc.
+
+Les laisser trouver eux-mêmes. Ne pas spoiler.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Aide-mémoire
+
+Étapes possibles dans un pipeline (non exhaustif) :
+
+<div class="grid grid-cols-2 gap-6 mt-6">
+
+<div>
+
+**Build & qualité**
+- Checkout, Install
+- Lint, Build
+- Tests unitaires
+- Tests intégration
+- Tests E2E
+
+</div>
+
+<div>
+
+**Sécurité & déploiement**
+- Analyse SAST, dependency scan
+- Déploiement staging, smoke tests
+- Validation manuelle / approbation
+- Déploiement production
+- Health check, monitoring
+- Notification, rollback
+
+</div>
+
+</div>
+
+<!--
+Aide-mémoire à projeter pendant tout l'exercice. C'est pas exhaustif, c'est juste pour débloquer ceux qui sèchent.
+
+Pas besoin de mettre toutes les étapes - mieux vaut un pipeline simple et bien justifié qu'une usine à gaz.
+
+Après les 20 minutes : restitution rapide groupe par groupe sur les problèmes identifiés et les quality gates choisies.
+-->
+
+---
+
+# Correction - Pipeline idéal (Partie A)
+
+```mermaid {scale: 0.6}
+flowchart LR
+  A[Commit PR] --> B[Lint + Build]
+  B --> C[Tests unitaires]
+  C --> D[Tests intégration]
+  D --> E[SAST + dep scan]
+  E --> F[Deploy staging]
+  F --> G[E2E + smoke]
+  G --> H{Approbation}
+  H --> I[Deploy prod]
+  I --> J[Health check]
+  J --> K[Monitoring]
+```
+
+| Étape | Gate bloquante | Responsable |
+|---|---|---|
+| Lint + build | Erreurs compilation | Auto |
+| Tests unit + intég | Échec ou couverture < seuil | Auto |
+| Sécurité | CVE critique | Auto |
+| Staging + E2E | Smoke tests KO | Auto |
+| Approbation prod | Validation humaine | Tech lead / PO |
+| Health check prod | KO → rollback auto | Auto |
+
+<!--
+Pas LA bonne réponse, mais UNE réponse cohérente. Comparer avec leurs schémas.
+
+Le point clé : un même artefact build une fois, promu d'environnement en environnement. Pas de rebuild en prod.
+
+L'approbation humaine est optionnelle selon la maturité - en SRE mature on tend vers du full auto avec canary + auto-rollback.
+-->
+
+---
+
+# Correction - Problèmes du pipeline cassé
+
+<div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+
+<div>
+
+**1. Pas de tests** ❌
+Aucune validation auto avant prod
+
+**2. Push direct sur main** ❌
+Pas de PR, pas de revue de code
+
+**3. Pas d'environnement staging** ❌
+On découvre les bugs en prod
+
+**4. Pas d'analyse sécurité** ❌
+SAST, deps scan, secrets : absents
+
+</div>
+
+<div>
+
+**5. Pas de health check** ❌
+On déploie, on ferme les yeux
+
+**6. Vérification J+1 manuelle** ❌
+Bugs en prod toute la nuit
+
+**7. Pas de stratégie de rollback** ❌
+Si ça casse : panique
+
+**8. Pas de notifications** ❌
+L'équipe découvre les échecs au hasard
+
+</div>
+
+</div>
+
+<!--
+8 problèmes faciles à identifier - les groupes en trouvent généralement 4 à 6.
+
+Le pire des trois pour moi : push direct sur main (pas de revue), pas de tests, vérification J+1 manuelle. Ces trois-là cumulés = recette pour incident majeur.
+
+Anecdote terrain : Knight Capital qu'on a vu le J1 - c'est exactement ce genre de pipeline qui a tué la boîte en 45 minutes.
 -->
 
 ---
@@ -1519,7 +1710,7 @@ Les attaques supply chain c'est le sujet du moment : une dépendance compromise 
 
 ---
 
-# Pragmatique sécurité 2026
+# La sécurité en pratique
 
 <v-clicks>
 
@@ -1605,7 +1796,6 @@ Exemple : une app bancaire va plutôt choisir blue/green pour le rollback instan
 
 - Rolling : remplace progressivement les instances
 - Feature flag : déploiement technique découplé de l'activation métier
-- Combinez-les pour réduire le blast radius
 - Toujours préparer un rollback opérationnel
 
 </v-clicks>
@@ -1620,7 +1810,7 @@ Attention : les flags non nettoyés deviennent de la dette technique. Si vous av
 
 ---
 
-# Conteneurisation express
+# Conteneurisation
 
 - Image = package immuable de l'application
 - Conteneur = exécution isolée de l'image
@@ -1646,10 +1836,6 @@ graph LR
   C --> D[Sync infra/app]
   D --> E[Etat reel conforme au Git]
 ```
-
-<Tip type="info">
-  "Cliquer dans la console" ne scale pas : il faut versionner l'infrastructure.
-</Tip>
 
 <!--
 IaC = Infrastructure as Code. L'idée : votre infrastructure est décrite dans des fichiers versionnés dans Git. Plus de "j'ai cliqué dans la console AWS et j'ai oublié ce que j'ai changé".
@@ -1794,29 +1980,6 @@ La pire situation c'est le "go" forcé sous pression du management alors que l'�
 -->
 
 ---
-layout: exercise
-duration: 10 min
-type: demo
----
-
-# Démo live - déploiement blue/green simulé
-
-## Étapes
-
-1. Déployer version green
-2. Vérifier les health checks
-3. Basculer le trafic
-4. Simuler rollback
-
-<!--
-Démo : déployer la version green, vérifier les health checks, basculer le trafic, puis simuler un rollback.
-
-Le focus c'est le raisonnement, pas l'outil : qu'est-ce qu'on vérifie avant de basculer ? Qu'est-ce qui déclenche un rollback ?
-
-L'important c'est la séquence : deploy → vérification → bascule → monitoring. Jamais on bascule sans avoir vérifié que la nouvelle version répond correctement.
--->
-
----
 
 # SLI, SLO, SLA - définitions
 
@@ -1868,19 +2031,189 @@ type: group
 
 # Exercice 4 - Définir des SLO réalistes
 
-## Mission
+## Contexte : SportScore
 
-1. Choisir 2 SLI pour une application d'événements
-2. Proposer 2 SLO cibles sur 30 jours
-3. Calculer l'error budget associé
-4. Indiquer la réaction si budget dépassé
+Application de scoring en direct pour tournois inter-établissements.
+
+<div class="grid grid-cols-2 gap-6 text-sm mt-4">
+
+<div>
+
+**Charge**
+- 500 users simultanés le weekend (tournois)
+- 20 users en semaine (consultation)
+
+**Fonctionnalités**
+- Scores temps réel (WebSocket)
+- Calendrier, inscription équipes
+
+**Infra**
+- 2 serveurs + load balancer, PostgreSQL + Redis
+
+</div>
+
+<div>
+
+**Historique du mois dernier**
+- 3 incidents :
+  - Panne DB : **15 min**
+  - Pic de charge : **45 min** dégradés
+  - Déploiement raté : **2h** partiel
+- Latence : 200 ms (P50), 800 ms (P95)
+- Taux d'erreur : 2%
+- Dispo effective : **99.6%**
+
+</div>
+</div>
 
 <!--
-Par groupes. Contexte : une app d'événements sportifs (comme la leur).
+On lance l'exercice. 15 minutes, par groupes.
+
+Contexte concret : SportScore, app proche de leur projet annuel d'événements sportifs.
+
+Les chiffres ont leur importance - ils servent de base pour fixer des SLO réalistes (pas tirer 99.99% du chapeau).
+-->
+
+---
+layout: exercise
+duration: 15 min
+type: group
+---
+
+# Exercice 4 - À produire
+
+1. **2 SLI pertinents** parmi : disponibilité, latence (P50/P95/P99), taux d'erreur, throughput
+   → pour chacun : ce qu'il mesure + comment le mesurer techniquement
+
+2. **2 SLO cibles** sur 30 jours, avec justification
+
+3. **Error budget** associé (en % et en minutes - sur 43 200 min/mois)
+
+4. **Plan de réaction** si le budget est épuisé
+
+<!--
+Les 4 livrables. Insister sur la chaîne logique : SLI mesurable → SLO justifié par le contexte → budget calculé → réaction concrète.
 
 Vérifier que les SLI proposés sont mesurables techniquement - "la satisfaction utilisateur" c'est pas un SLI, "le taux de requêtes HTTP 200" oui.
 
-Challenger les chiffres : 99.99% sur une app d'événements sportifs c'est probablement overkill. 99% c'est peut-être trop laxiste. Les faire justifier.
+Challenger les chiffres : 99.99% sur SportScore c'est probablement overkill (coût infra explosé pour 4 min de marge). 99% trop laxiste (7h de downtime acceptables sur un weekend de tournoi, impossible). Les faire justifier.
+-->
+
+---
+
+# Correction - 2 SLI pertinents
+
+| SLI | Ce qu'il mesure | Mesure technique |
+|---|---|---|
+| **Disponibilité** | % de requêtes HTTP réussies (non 5xx) | Ratio `2xx+3xx+4xx / total` côté load balancer ou Prometheus |
+| **Latence P95** | Temps de réponse vécu par 95% des users | Histogramme Prometheus sur la durée des requêtes HTTP, percentile 95 |
+
+<Tip type="info">
+  Autres choix valides : taux d'erreur (inverse de la dispo), latence WebSocket (spécifique au temps réel), traitement de mise à jour des scores.
+</Tip>
+
+<!--
+Y'a pas DEUX bons SLI uniques - on choisit ceux qui reflètent le mieux l'expérience utilisateur.
+
+Disponibilité + latence P95 c'est le combo le plus classique - "ça marche" + "ça marche vite".
+
+Pour SportScore on pourrait aussi suivre la fraîcheur des scores (delta entre événement et affichage) - mais c'est plus complexe à instrumenter. Bon SLI = mesurable facilement + représentatif de l'expérience user.
+-->
+
+---
+
+# Correction - 2 SLO réalistes
+
+| SLI | SLO cible | Justification |
+|---|---|---|
+| **Disponibilité** | **99.5%** sur 30 jours | App pas critique (sport amateur), mais weekends à enjeu. 99.6% le mois dernier → 99.5% est atteignable |
+| **Latence P95** | **< 500 ms** sur 30 jours | UX scoring temps réel acceptable < 1s. Actuel 800ms → marge d'amélioration |
+
+<Tip type="warning">
+  Piège classique : viser 99.99% par réflexe. Coût élevé pour 4 min de downtime/mois - non justifié ici.
+</Tip>
+
+<!--
+Choix expliqués :
+- 99.5% c'est 3h36 de downtime/mois - cohérent avec un service sportif amateur. 99.9% serait sympa mais demanderait une vraie redondance multi-zone + équipe d'astreinte.
+- Latence 500ms P95 c'est exigeant mais réaliste avec un peu d'optim. Actuellement 800ms, ya de la marge.
+
+Le mois dernier : 99.6% de dispo. On vise 99.5% pour avoir une marge ET pousser l'équipe à s'améliorer. Si on met 99.6% on est dans le rétroviseur.
+
+Faire débattre les groupes qui ont mis 99.9% : combien ça coûte en infra ? Combien d'astreintes ? Est-ce justifié business ?
+-->
+
+---
+
+# Correction - Error budget
+
+### Disponibilité 99.5% sur 30 jours
+
+<div class="grid grid-cols-2 gap-6 mt-4">
+
+<div>
+
+**Budget en %**
+100% − 99.5% = **0.5%**
+
+**Budget en minutes**
+43 200 × 0.5% = **216 min** ≈ **3h36**
+
+</div>
+
+<div>
+
+**Lecture du mois dernier**
+- Panne DB : 15 min
+- Pic de charge : 45 min
+- Déploiement : 120 min
+- **Total : 180 min**
+
+→ Budget consommé à **83%**
+
+</div>
+
+</div>
+
+<Tip type="danger">
+  Budget restant : 36 min. Un seul incident moyen et on est dans le rouge.
+</Tip>
+
+<!--
+Calcul concret avec les vrais chiffres du mois précédent.
+
+180 min consommés sur 216 = 83% du budget brûlé. Concrètement : on est en zone rouge, on doit lever le pied sur les releases et investir en stabilité.
+
+Pour le SLO latence c'est plus complexe (faut compter les requêtes au-dessus du seuil) - on peut le mentionner mais pas calculer en détail ici.
+-->
+
+---
+
+# Correction - Réaction si budget épuisé
+
+<v-clicks>
+
+1. **Freeze des features non urgentes** pendant 1 à 2 semaines
+2. **Priorisation stabilité** : bugs fiabilité avant features
+3. **Post-mortem systématique** des incidents qui ont consommé le budget
+4. **Investissement infra/tests** sur les causes racines identifiées
+5. **Re-évaluation du SLO** : trop ambitieux ou attentes à ajuster ?
+6. **Communication** au PO/management : visibilité sur le compromis vitesse vs stabilité
+
+</v-clicks>
+
+<Tip type="success">
+  Le budget épuisé n'est pas une punition - c'est un signal de dialogue technique ⇄ produit.
+</Tip>
+
+<!--
+Le point clé : l'error budget c'est un OUTIL DE DIALOGUE, pas une matraque.
+
+Quand le budget est cramé, on freeze pas pour punir l'équipe - on freeze parce que ça coûterait plus de balancer une feature buggy que de prendre 1 semaine pour stabiliser.
+
+C'est ce qui rend les SLO puissants : ils donnent un langage commun entre la tech et le produit. "On a 36 min de marge, est-ce qu'on prend le risque de release vendredi soir ?"
+
+Si le budget est CONSTAMMENT épuisé, c'est que le SLO est mal calibré - soit trop ambitieux soit on n'investit pas assez. C'est une conversation, pas une fatalité.
 -->
 
 ---
@@ -1984,7 +2317,6 @@ Maintenant : comment on transforme ces données en alertes intelligentes ?
 
   - Alertes sur tout
   - Seuils statiques arbitraires
-  - Pas de runbook
   - Fatigue d'alerte
 
   </template>
@@ -2004,28 +2336,6 @@ Le piège classique c'est d'alerter sur tout. Résultat : 200 alertes par jour, 
 Règle d'or : chaque alerte doit déclencher une action claire. Si en recevant l'alerte vous savez pas quoi faire, c'est que l'alerte est mal conçue.
 
 La fatigue d'alerte c'est un vrai problème en entreprise - ça peut mener à des incidents graves parce que les gens ignorent les notifications.
--->
-
----
-layout: exercise
-duration: 15 min
-type: group
----
-
-# Exercice 5 - Analyser un dashboard
-
-## Consignes
-
-1. Identifier les anomalies majeures
-2. Déterminer quoi alerter en priorité
-3. Rédiger une règle d'alerte complète (condition + fenêtre + sévérité)
-
-<!--
-Distribuer le screenshot du dashboard. Par groupes, 10 min d'analyse puis 5 min de restitution.
-
-Challenger les faux positifs : "cette métrique est haute, mais est-ce que c'est vraiment un problème ?" Un pic de trafic c'est pas forcément une anomalie si c'est un jour de match.
-
-Les pousser à rédiger une vraie règle d'alerte : quelle condition, quelle fenêtre de temps, quelle sévérité.
 -->
 
 ---
@@ -2074,7 +2384,7 @@ Après la résolution, le post-mortem - c'est là qu'on apprend vraiment.
 </v-clicks>
 
 <Tip type="danger">
-  Un rollback doit être exécutable en moins de 15 minutes. Si ce n'est pas le cas, votre procédure n'est pas prête.
+  Un rollback doit être exécutable en moins de 15 minutes. Si ce n'est pas le cas, la procédure n'est pas prête.
 </Tip>
 
 <!--
@@ -2148,24 +2458,203 @@ duration: 20 min
 type: group
 ---
 
-# Exercice 6 - Analyse de post-mortem
+# Exercice 5 - Analyse de post-mortem
 
-## Mission
+## Incident : panne mondiale de CloudShield
 
-1. Reconstituer la timeline de l'incident
-2. Distinguer cause racine et facteurs aggravants
-3. Proposer 3 actions correctives priorisées
+*Adapté d'un incident réel chez un fournisseur web - juillet 2019.*
 
-<Tip type="success">
-  Restitution courte : 3 minutes par groupe, orientée décisions.
+Le service **CloudShield** (protection et accélération web pour des millions de sites) subit une panne mondiale de **27 minutes**. Pendant ce temps, les sites protégés renvoient des **erreurs 502** à tous les visiteurs.
+
+### Impact
+
+- ~**15 millions de sites web** affectés
+- Plusieurs dizaines de millions de dollars de perte client
+- Couverture médiatique internationale
+
+<!--
+On lance l'exercice. 20 minutes : 12 min d'analyse + 8 min de restitution (3 min max par groupe).
+
+C'est inspiré d'un cas réel - Cloudflare 2019. Si vous reconnaissez, gardez le pour vous, laissez les groupes raisonner.
+
+Insister sur l'ampleur : 15 millions de sites. C'est pas un petit incident, c'est un événement qui a fait la une.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Timeline de l'incident (UTC)
+
+<div class="text-xs">
+
+| Heure | Événement |
+|---|---|
+| **13:42** | Déploiement d'une mise à jour de règle WAF sur toute l'infra mondiale |
+| 13:42:30 | Chute brutale du trafic traité visible sur les dashboards |
+| 13:43 | Alertes auto : CPU à 100% sur tous les serveurs edge, partout |
+| 13:45 | On-call notifiée. Premiers signalements sur les réseaux sociaux |
+| 13:48 | Identification : la charge CPU vient du processus de filtrage WAF |
+| **13:52** | Décision de rollback de la règle déployée à 13:42 |
+| 13:55 | Initiation du rollback - **pas de rollback automatique sur les règles WAF** |
+| 14:00 | Rollback manuel, région par région |
+| 14:02 | Premières régions récupèrent |
+| **14:09** | Toutes les régions sont revenues à la normale |
+| 14:30 | Confirmation : services fonctionnent normalement |
+
+</div>
+
+<!--
+La timeline est riche - les groupes doivent l'éplucher.
+
+Points marquants à faire ressortir : 30 secondes entre déploiement et chute, 10 minutes pour décider du rollback, et surtout le rollback manuel région par région qui rallonge tout.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Détails techniques + ce qu'on sait
+
+<div class="grid grid-cols-2 gap-6 text-sm">
+
+<div>
+
+### Détails techniques
+
+- Regex dans la règle WAF gourmande en CPU
+- **Backtracking** excessif du moteur regex → 100% CPU
+- Déploiement **simultané mondial** (pas de progressif)
+- WAF partage le CPU avec le proxy → tout saturé
+- Mécanisme de déploiement WAF **différent du code applicatif** : pas de canary, pas de rollback auto
+
+</div>
+
+<div>
+
+### Ce qu'on sait
+
+- La règle a été **testée fonctionnellement** ✅ (elle bloquait bien l'attaque)
+- **Pas de test de performance** (impact CPU) ❌
+- Pas de canary sur les règles WAF (contrairement au code applicatif)
+- L'équipe sécurité **déploie sans validation infra** (autonomie)
+
+</div>
+
+</div>
+
+<!--
+Les détails techniques donnent les clés - en particulier l'asymétrie entre le pipeline code et le pipeline règles WAF.
+
+C'est la clé du post-mortem : pourquoi y'a deux pipelines avec deux niveaux de protection différents ? Question d'organisation, pas de technique.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: group
+---
+
+# Exercice 5 - À produire
+
+<v-clicks>
+
+1. **Reconstituer les moments clés**
+   - Point de déclenchement, moment de détection, décision de rollback, facteur qui a rallongé la résolution
+
+2. **Cause racine vs facteurs aggravants** (1 cause racine + 3 facteurs)
+
+3. **3 actions correctives minimum** (action / responsable / délai / impact attendu)
+
+</v-clicks>
+
+<!--
+Les 3 livrables. Insister sur la culture blameless : on cherche les défaillances systémiques, pas le coupable.
+
+Si un groupe dit "le développeur n'aurait pas dû déployer" : recadrer. La question est "pourquoi le système permettait à un humain seul de déployer mondialement sans canary ?".
+
+Pour les actions correctives : challenger sur la mesurabilité. "Mieux communiquer" → pas mesurable. "Mettre en place une astreinte sécurité jointe à l'astreinte infra" → mesurable.
+-->
+
+---
+
+# Correction - Moments clés
+
+| Moment | Heure | Durée |
+|---|---|---|
+| **Déclenchement** | 13:42 | T0 |
+| **Détection** (alertes auto) | 13:43 | **+1 min** ✅ rapide |
+| **Identification cause** | 13:48 | +6 min |
+| **Décision rollback** | 13:52 | +10 min |
+| **Résolution complète** | 14:09 | **+27 min** |
+
+<Tip type="warning">
+  Facteur qui a rallongé la résolution : <strong>rollback manuel région par région</strong> (14 min entre la décision et le retour à la normale).
 </Tip>
 
 <!--
-Distribuer le post-mortem public. Par groupes, 12 min d'analyse puis 8 min de restitution (3 min par groupe max).
+La détection a été excellente - 1 minute. Le monitoring a fait son job.
 
-Les pousser à distinguer cause racine et facteurs aggravants. "Le développeur a fait une erreur" c'est pas une cause racine - pourquoi le système a permis cette erreur, pourquoi y'avait pas de garde-fou ?
+Mais le rollback manuel a coûté 14 minutes - presque la moitié de l'incident. C'est là qu'on a perdu le plus de temps, et c'est évitable.
 
-Les actions correctives doivent être mesurables : pas "améliorer les tests" mais "ajouter un test E2E sur le parcours de paiement avant le 15 du mois".
+L'écart entre identification (13:48) et décision (13:52) - 4 minutes - c'est normal en gestion de crise. On cherche pas à compresser ça à zéro.
+-->
+
+---
+
+# Correction - Cause racine vs facteurs aggravants
+
+### 🎯 Cause racine
+
+Le **pipeline de déploiement des règles WAF n'avait pas les mêmes protections** que celui du code applicatif (pas de canary, pas de rollback auto, pas de test de perf).
+
+→ Sans cette asymétrie de pipeline, l'incident n'aurait pas eu lieu.
+
+### ⚠️ Facteurs aggravants
+
+<v-clicks>
+
+1. **Déploiement mondial simultané** - toutes les régions touchées d'un coup
+2. **Pas de test de performance** - impact CPU jamais mesuré avant prod
+3. **Couplage WAF/proxy sur même CPU** - la saturation a tué tout le service
+4. **Autonomie sans garde-fous** - l'équipe sécurité pouvait déployer sans validation croisée
+
+</v-clicks>
+
+<!--
+La cause racine, c'est PAS "la regex était mauvaise" - les regex mauvaises ça arrive, c'est humain. La vraie question c'est pourquoi le système a laissé passer.
+
+L'asymétrie de pipeline est le vrai problème : il y a des protections sur le code, pourquoi pas sur les règles ? Réponse : parce que historiquement les règles c'était "léger", déployé vite, par une autre équipe. Le périmètre a grossi, les protections n'ont pas suivi.
+
+Faire le parallèle avec leurs projets : avez-vous des "petits" déploiements qui contournent le pipeline principal ? Migrations DB, scripts de seed, config... c'est souvent là que ça casse.
+-->
+
+---
+
+# Correction - 3 actions correctives
+
+| # | Action | Responsable | Délai | Impact |
+|---|---|---|---|---|
+| 1 | **Canary** sur le déploiement des règles WAF (1% → 10% → 100% avec validation auto) | Lead infra WAF | 4 semaines | Limite l'impact à 1% du trafic en cas de problème |
+| 2 | **Test de performance CPU** automatique sur chaque règle (timeout regex + load test) | Équipe sécurité | 2 semaines | Détecte les regex pathologiques avant prod |
+| 3 | **Rollback automatique** si erreur 5xx > seuil dans les 60s post-déploiement | Lead infra WAF | 6 semaines | Réduit le MTTR de 27 min à <2 min |
+
+<Tip type="success">
+  Bonus : <strong>isolation CPU</strong> du processus WAF vs proxy (cgroups/conteneurs) pour découpler les défaillances.
+</Tip>
+
+<!--
+Les 3 actions visent les 3 niveaux : prévenir (test perf), limiter (canary), détecter et corriger vite (rollback auto).
+
+Chaque action a un délai et un impact mesurable. Pas de "améliorer la culture" - des actions concrètes avec un responsable nommé.
+
+L'isolation CPU c'est la cerise sur le gâteau - elle traite un facteur aggravant structurel. Plus cher à mettre en place mais durablement utile.
+
+Anecdote : c'est exactement ce que Cloudflare a annoncé dans son vrai post-mortem (publié sur leur blog). Ça vaut la peine d'aller lire le post-mortem original pour voir la qualité de la transparence - c'est un cas d'école.
 -->
 
 ---
@@ -2309,7 +2798,7 @@ Vérifier que les étapes s'enchaînent dans le bon ordre et que les quality gat
 
 # Retour sur votre projet
 
-- Quelles pratiques allez-vous appliquer dès cette semaine ?
+- Quelles pratiques appliqueriez vous au plus tôt ?
 - Quel quick win qualité/déploiement est le plus réaliste ?
 - Quel indicateur allez-vous suivre en priorité ?
 
@@ -2350,8 +2839,6 @@ C'est pas un truc qu'on met en place en un jour - c'est une culture d'équipe qu
 - ISTQB Syllabus (fondamentaux du test logiciel)
 - Blogs d'incidents publics (GitHub, Cloudflare, GitLab)
 
-<Credit source="Sélection orientée pratique terrain" />
-
 <!--
 Pour les profils dev : commencez par "Continuous Delivery", c'est la bible du sujet. Pour les profils management : "Accelerate" fait le lien entre pratiques techniques et performance business.
 
@@ -2365,7 +2852,7 @@ layout: récap
 section: Bilan global du cours
 ---
 
-# Points clefs à emporter
+# Points clefs à retenir
 
 - Tester tôt pour corriger moins cher
 - Automatiser intelligemment pour sécuriser la vitesse
