@@ -6,6 +6,7 @@ info: |
   Ingénieur 1 - G4
 transition: slide-left
 mdc: true
+monacoTypesSource: local
 fonts:
   sans: Inter
   mono: Fira Code
@@ -981,7 +982,7 @@ Pendant les breakouts : circuler dans 2-3 rooms par tournante, voir où ça coin
 
 Restitution : 1 binôme partage son écran sur C.2 (le test le plus subtil - vérifier l'absence d'effet de bord). Bien insister sur "tester l'absence de mutation après une erreur" - c'est ce qui distingue un bon test d'un test naïf.
 
-Si reste du temps : ouvrir coverage/lcov-report/index.html en démo live, montrer les branches non couvertes — ça fait transition vers le bloc couverture qui suit.
+Si reste du temps : ouvrir coverage/lcov-report/index.html en démo live, montrer les branches non couvertes - ça fait transition vers le bloc couverture qui suit.
 -->
 
 ---
@@ -989,7 +990,7 @@ Si reste du temps : ouvrir coverage/lcov-report/index.html en démo live, montre
 # TP1 - Correction · Partie A & B
 
 ```ts {all|1-7|9-12|14-23|all}
-// Setup commun (déjà dans le fichier) — beforeEach garantit l'isolation
+// Setup commun (déjà dans le fichier) - beforeEach garantit l'isolation
 let db, charge, service;
 beforeEach(() => {
   db = createDb();
@@ -997,12 +998,12 @@ beforeEach(() => {
   service = new EventsService(db, { charge });
 });
 
-// A.1 — get() sur id inconnu
+// A.1 - get() sur id inconnu
 it('throws EventNotFoundError for an unknown id', () => {
   expect(() => service.get('does-not-exist')).toThrow(EventNotFoundError);
 });
 
-// B.1 — charge appelée avec les bons arguments
+// B.1 - charge appelée avec les bons arguments
 it('charges the payment gateway with email and amount', async () => {
   const event = seedEvent(db);                                         // factory
   charge.mockResolvedValue({ success: true, transactionId: 'tx_123' });
@@ -1030,7 +1031,7 @@ Demander : "qui a écrit toHaveBeenCalled tout court sans Args ?" - ça passe ma
 # TP1 - Correction · Partie B.2 & C.1
 
 ```ts {all|1-9|11-19|all}
-// B.2 — compteur incrémenté
+// B.2 - compteur incrémenté
 it('increments the registered count after a successful registration', async () => {
   const event = seedEvent(db, { registered: 0 });
   charge.mockResolvedValue({ success: true, transactionId: 'tx_456' });
@@ -1040,7 +1041,7 @@ it('increments the registered count after a successful registration', async () =
   expect(after).toBe(before + 1);
 });
 
-// C.1 — paiement KO → PaymentFailedError
+// C.1 - paiement KO → PaymentFailedError
 it('throws PaymentFailedError when the gateway returns success=false', async () => {
   const event = seedEvent(db);
   charge.mockResolvedValue({ success: false, error: 'card_declined' });
@@ -1292,8 +1293,6 @@ section: 4
 
 # Tests d'intégration
 
-DJ2 - Bloc 1
-
 <!--
 Bonjour à tous, retour pour la DJ2.
 
@@ -1304,10 +1303,10 @@ Lire 2-3 réponses du chat, rebondir.
 
 ---
 
-# Retour 1
+# Retour J1
 
 <KeyConcept title="📊 Dans le chat" icon="💬">
-Une chose que tu as essayée depuis hier ? Une chose qui a coincé ?
+Une chose que tu as essayée depuis la dernière fois ? Une chose qui a coincé ?
 </KeyConcept>
 
 <!--
@@ -1567,7 +1566,6 @@ Sur une vraie DB : transaction par test (BEGIN au début, ROLLBACK à la fin) - 
 - Tests **dans un fichier** = séquentiels
 - Si tu utilises une DB partagée → conflits
 - Solution : 1 DB par worker, ou DB in-memory par fichier
-- Variable Jest : `process.env.JEST_WORKER_ID`
 
 </v-clicks>
 
@@ -1583,33 +1581,7 @@ Astuce : préfixer avec `JEST_WORKER_ID` pour avoir un namespace par worker.
 
 ---
 
-# Tests de composants front (mention)
-
-```tsx {monaco}
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-it('shows greeting after click', async () => {
-  render(<GreetingForm />);
-
-  await userEvent.type(screen.getByLabelText('Nom'), 'Alice');
-  await userEvent.click(screen.getByRole('button', { name: 'Saluer' }));
-
-  expect(screen.getByText('Bonjour, Alice')).toBeInTheDocument();
-});
-```
-
-<!--
-React Testing Library = standard pour tester les composants React.
-
-Philosophie : tester comme un utilisateur (sélecteurs accessibles : labels, rôles, textes), pas comme un dev (sélecteurs sur l'implémentation interne).
-
-Mention dans ce cours - vous le verrez en projet front. Sur une équipe back/full-stack, c'est l'outil clé pour tester l'UI sans démarrer un navigateur.
--->
-
----
-
-# Contract testing - Pact (mention)
+# Contract testing - Pact 
 
 <KeyConcept title="Contract testing" icon="📜">
 Vérifier que <strong>provider</strong> et <strong>consumer</strong> respectent un contrat partagé d'API.
@@ -1642,8 +1614,6 @@ type: pair
 
 ## Consigne
 
-🔗 **Pair programming en breakout, partage d'écran obligatoire**
-
 Dans `tp-repo/tests/integration/events.api.test.ts`, écrire 3 tests pour `POST /events/:id/register` :
 
 1. ✅ Inscription réussie → 201 + `{ registrationId }`
@@ -1665,6 +1635,69 @@ Solution corrigée disponible dans instructor-solutions/.
 -->
 
 ---
+
+# Exercice 3 - Correction (1/2)
+
+```ts {all|1-9|11-18|all}
+// Helper fourni : chaque test = sa propre app + db seedée → isolation
+function makeApp(payment: PaymentGateway) {
+  const db = createDb();
+  seed(db);
+  return createApp(db, payment);
+}
+const okPayment: PaymentGateway = {
+  charge: async () => ({ success: true, transactionId: 'tx_int' }),
+};
+
+it('returns 404 when the event does not exist', async () => {
+  const app = makeApp(okPayment);
+  const res = await request(app)
+    .post('/api/events/does-not-exist/register')
+    .send({ email: 'alice@example.com', amountCents: 5000 });
+  expect(res.status).toBe(404);
+  expect(res.body).toEqual({ error: 'event_not_found' });
+});
+```
+
+<!--
+Première partie : le setup partagé + le cas 404.
+
+Setup / isolation (1-9) : `makeApp` recrée une app + une db seedée à chaque appel. C'est la réponse à la question de réflexion - aucun test ne dépend de l'état laissé par un autre → pas de flaky lié à l'ordre.
+
+Cas 404 (11-18) : on poste sur un id inexistant. Point clé : on vérifie **status ET body** (`event_not_found`), pas juste le 404. Un body d'erreur typé, c'est ce que le front consomme.
+
+Le happy path (201 + transactionId) était déjà fourni - inutile de le réécrire.
+-->
+
+---
+
+# Exercice 3 - Correction (2/2)
+
+```ts
+it('returns 409 when the event is full', async () => {
+  const app = makeApp(okPayment);          // même helper, app isolée
+  const res = await request(app)
+    .post('/api/events/trail-chamonix/register')
+    .send({ email: 'bob@example.com', amountCents: 5000 });
+  expect(res.status).toBe(409);
+  expect(res.body).toEqual({ error: 'event_full' });
+});
+```
+
+<Tip type="info">
+Toujours vérifier <strong>status ET body</strong>. Et <code>toEqual</code> (pas <code>toBe</code>) pour comparer un objet.
+</Tip>
+
+<!--
+Cas 409 : `trail-chamonix` est seedé comme complet → 409 + `event_full`. Même rigueur sur le body que le 404.
+
+Erreurs fréquentes à relever :
+- tester uniquement `res.status` sans le body
+- réutiliser une app partagée entre les tests (casse l'isolation)
+- `toBe` sur un objet au lieu de `toEqual` (toBe compare les références)
+-->
+
+---
 layout: pause
 duration: 20 min
 ---
@@ -1679,8 +1712,6 @@ section: 5
 ---
 
 # Tests end-to-end avec Cypress
-
-DJ2 - Bloc 2
 
 <!--
 On change d'échelle : on ne teste plus du code, on teste un parcours utilisateur dans un vrai navigateur.
@@ -1733,7 +1764,7 @@ Règle empirique : 5-15 E2E sur une app web moyenne. Si tu en as 200, tu as un p
 <v-click>
 
 <Tip type="warning">
-N'utilise pas Cypress pour tester ce que tu peux tester avec Jest + RTL. Les E2E coûtent <strong>10-100x</strong> plus en CI.
+N'utilise pas Cypress pour tester ce que tu peux tester en unitaire / intégration. Les E2E coûtent <strong>10-100x</strong> plus en CI.
 </Tip>
 
 </v-click>
@@ -2018,8 +2049,6 @@ type: pair
 
 ## Consigne
 
-🔗 **Pair programming en breakout**
-
 Dans `tp-repo/cypress/e2e/registration.cy.ts`, compléter le test E2E :
 
 1. Aller sur `/events`
@@ -2039,13 +2068,50 @@ Bonus si certains finissent vite : utiliser `cy.intercept` pour mocker l'appel A
 -->
 
 ---
+
+# Exercice 4 - Correction
+
+```ts {all|4-7|9-15|all}
+// data-testid first · assertions retry-able · zéro cy.wait(ms)
+cy.get('[data-testid=event-marathon-paris] [data-testid=event-capacity]')
+  .invoke('text').then((before) => {
+    cy.get('[data-testid=register-marathon-paris]').click();
+    cy.get('[data-testid=email-input]').type('alice@example.com');
+    cy.get('[data-testid=submit-btn]').click();
+    cy.get('[data-testid=success-message]').should('contain', 'confirmée');
+
+    // Bonus : le compteur d'inscrits a changé après fermeture
+    cy.get('[data-testid=cancel-btn]').click();
+    cy.get('[data-testid=event-marathon-paris] [data-testid=event-capacity]')
+      .invoke('text')
+      .should((after) => {
+        expect(after).not.to.eq(before);
+      });
+  });
+```
+
+<!--
+Dérouler les v-clicks pendant la restitution.
+
+1) Parcours principal (4-7) : click → type → submit → assertion sur le message de succès. Que des `data-testid`, jamais de classe CSS ni de `nth-child`. Le `.should('contain', ...)` retry tout seul jusqu'à 4s → pas besoin de `cy.wait(2000)`.
+
+2) Bonus (9-15) : on capture le compteur AVANT via `.invoke('text').then((before) => {...})`, on referme la modale, puis on vérifie que la valeur a changé. `should((after) => ...)` est lui aussi retry-able.
+
+Pourquoi le `.then()` : les commandes Cypress sont asynchrones et chaînées - pour comparer un "avant/après", il faut capturer la valeur dans le callback, pas dans une variable synchrone.
+
+Question de réflexion : combien d'E2E ? Peu - uniquement les parcours critiques (inscription, paiement). Le reste descend en intégration/unitaire (plus rapide, plus stable).
+
+Anti-patterns à relever : `cy.wait(2000)`, `cy.get('.btn-primary')`, `cy.get('button').eq(2)`.
+-->
+
+---
 layout: recap
-section: DJ2 - Intégration + E2E
+section: Intégration + E2E
 ---
 
 # Ce qu'il faut retenir
 
-- **Intégration** = plusieurs modules + DB de test (SQLite in-memory)
+- **Intégration** = plusieurs modules + DB de test
 - **Supertest** pour tester une API Express en mémoire
 - **`beforeEach`** = isolation, reset entre tests
 - **Cypress** = parcours utilisateur réel, retry-able assertions
@@ -2065,9 +2131,9 @@ Annoncer DJ3 : on prend tous ces tests et on les met dans une CI qui déploie.
 layout: end
 ---
 
-# Fin DJ2
+# Fin des tests
 
-Demain : on automatise tout ça en CI/CD
+Ensuite : on automatise tout ça en CI/CD
 
 <!--
 Q&A 5-10 min. Demander à 2-3 personnes ce qui les a marqués/confusés.
@@ -2081,8 +2147,6 @@ section: 6
 ---
 
 # Pipeline CI/CD avec GitHub Actions
-
-DJ3 - Bloc 1
 
 <!--
 Dernière DJ. On enchaîne tests → CI → déploiement.
@@ -2201,240 +2265,154 @@ Anatomie minimale :
 
 ---
 
-# Déclencheurs
+# Concepts clés du pipeline
 
-```yaml {monaco}
-on:
-  push:
-    branches: [main, develop]
-    paths-ignore:
-      - 'docs/**'
-  pull_request:
-    types: [opened, synchronize]
-  schedule:
-    - cron: '0 2 * * *'      # 2h du matin
-  workflow_dispatch:           # bouton manuel
-    inputs:
-      env:
-        type: choice
-        options: [staging, prod]
-```
+<v-clicks>
 
-<!--
-`push` : sur certaines branches (souvent main).
-`pull_request` : sur chaque PR ouverte/mise à jour.
-`schedule` : cron, pour les tests nightly ou les rapports périodiques.
-`workflow_dispatch` : déclenchement manuel via l'UI GitHub. Avec inputs pour paramétrer.
+- **Artefact** - la version déployable, **buildée une seule fois**
+- **Promotion** - le *même* artefact passe d'un environnement à l'autre
+- **Gate** - un contrôle **bloquant** (qualité, sécu) avant d'avancer
+- **Rollback** - le retour rapide à une version saine
 
-`paths-ignore` : ne pas déclencher si seuls les docs changent. Économise des minutes runner.
--->
-
----
-
-# Jobs et steps
-
-```yaml {monaco}
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run lint
-
-  test:
-    runs-on: ubuntu-latest
-    needs: lint                  # attend que lint passe
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm test
-
-  e2e:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npx cypress run
-```
-
-<!--
-Jobs = parallélisés par défaut. `needs:` impose une dépendance.
-
-Pattern courant : lint + test en parallèle, puis e2e qui attend les deux.
-
-Chaque job tourne dans une **VM neuve** → pas de partage de fichiers entre jobs (sauf via artifacts/cache).
--->
-
----
-
-# Matrix builds
-
-```yaml {monaco}
-jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [18, 20, 22]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-      - run: npm test
-```
+</v-clicks>
 
 <v-click>
 
 <Tip type="info">
-9 jobs en parallèle (3 OS × 3 Node). Idéal pour valider la compatibilité d'une lib.
+Un pipeline, c'est une suite de <strong>filtres de risque</strong> : chaque étape ne laisse passer que ce qui est sain.
 </Tip>
 
 </v-click>
 
 <!--
-Matrix = produit cartésien. Ici 3 × 3 = 9 jobs, exécutés en parallèle.
+Avant le YAML, les 4 mots à retenir - c'est ça la vraie valeur d'un pipeline, pas la syntaxe.
 
-Cas d'usage :
-- Lib publiée sur npm → tester sur plusieurs versions de Node
-- App multi-plateforme → tester sur plusieurs OS
-- App déployée sur plusieurs DBs → tester avec Postgres 14, 15, 16
+Artefact : le livrable (image Docker, archive, bundle). On le build UNE fois. Anti-pattern classique : rebuild entre staging et prod → tu déploies autre chose que ce que tu as testé.
 
-Limite : ça consomme du quota runner vite.
+Promotion : le même artefact v42 testé en staging est celui poussé en prod. Pas de re-build.
+
+Gate : contrôle bloquant. Tests rouges → on n'avance pas. Couverture sous le seuil → on n'avance pas.
+
+Rollback : pouvoir revenir en arrière vite. On y revient en détail cet après-midi.
 -->
 
 ---
 
-# Caching
+# Quelles étapes dans un pipeline ?
 
-```yaml {monaco}
-- uses: actions/setup-node@v4
-  with:
-    node-version: 20
-    cache: 'npm'                 # cache automatique du ~/.npm
+<div class="grid grid-cols-2 gap-6 mt-4">
 
-# OU manuel :
-- uses: actions/cache@v4
-  with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-    restore-keys: ${{ runner.os }}-npm-
-```
+<div>
+
+**Build & qualité**
+- Checkout + install
+- Lint
+- Build / compile
+- Tests unitaires
+- Tests d'intégration
+- Tests E2E
+
+</div>
+
+<div>
+
+**Sécurité & déploiement**
+- Dependency scan (CVE)
+- Secret scan
+- Déploiement staging
+- Smoke tests
+- Approbation (si besoin)
+- Déploiement prod + health check
+
+</div>
+
+</div>
 
 <v-click>
 
-<Tip type="success">
-Sans cache : <code>npm ci</code> = 1-2 min. Avec cache : 10-20 s.
+<Tip type="info">
+Pour chaque étape : <strong>quoi</strong> (action) · <strong>qu'est-ce qui bloque</strong> (gate) · <strong>qui</strong> (auto ou humain).
 </Tip>
 
 </v-click>
 
 <!--
-Cache = facteur 5-10x sur la durée du pipeline. À mettre **partout** où il y a un install.
+La vraie compétence : savoir QUELLES étapes mettre, dans quel ordre, et lesquelles bloquent.
 
-`actions/setup-node` a un cache built-in pour npm/yarn/pnpm - préférer cette voie.
+Pas besoin de tout mettre dès le jour 1 - mieux vaut un pipeline simple et bien justifié qu'une usine à gaz que personne ne maintient.
 
-Cache key invalidé quand `package-lock.json` change. `restore-keys` = fallback partiel (utilise un cache plus ancien si la clé exacte n'existe pas).
+Le triptyque action / gate / responsable : pour chaque étape on sait ce qu'elle fait, ce qui bloque le passage à la suite, et qui valide (machine ou humain). La colonne "responsable" est souvent celle qui manque dans la vraie vie.
 
-Caches similaires : pip (Python), maven (Java), gradle, cargo (Rust), go modules.
+Exemple : "Tests unitaires" → action: npm test → gate: échec ou couverture < 70% → responsable: auto.
 -->
 
 ---
 
-# Services (DB en CI)
+# Jobs, dépendances & parallélisme
 
-```yaml {monaco}
-jobs:
-  integration:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: test
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run test:integration
-        env:
-          DATABASE_URL: postgres://postgres:test@localhost:5432/postgres
-```
-
-<!--
-`services:` lance un conteneur Docker en parallèle du job → vraie Postgres pour les tests d'intégration.
-
-`health-cmd` : vérifier que la DB est prête avant de lancer les tests.
-
-Alternative : Testcontainers en code → contrôle plus fin mais plus complexe à mettre en place.
--->
-
----
-
-# Secrets
-
-```yaml {monaco}
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: production       # protection (approval)
-    steps:
-      - run: ./deploy.sh
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+```mermaid
+graph LR
+  A[lint] --> C[e2e]
+  B[test] --> C
+  C --> D[deploy]
+  style D fill:#10b981,color:#fff
 ```
 
 <v-clicks>
 
-- Secrets stockés chiffrés dans GitHub
-- Masqués dans les logs (`***`)
-- Scopés par repo, organisation ou environment
-- Jamais dans le code, jamais en clair
+- Un **job** = une unité qui tourne dans une VM neuve
+- Les jobs sont **parallèles** par défaut
+- `needs:` impose un ordre (e2e attend lint + test)
+- Chaque job = un **check** sur la PR
 
 </v-clicks>
 
 <!--
-Settings → Secrets and variables → Actions.
+On reste léger sur la mécanique. L'idée : un workflow se découpe en jobs, parallèles par défaut, qu'on ordonne avec `needs:`.
 
-3 niveaux :
-- Repository secrets : tout workflow du repo
-- Environment secrets : seulement certains environments (prod)
-- Organization secrets : partagés entre repos d'une org
+Ici : lint et test tournent en parallèle, e2e attend les deux, deploy attend e2e.
 
-`environment: production` peut imposer une **approval** humaine avant le déploiement → garde-fou indispensable pour la prod.
+Chaque job apparaît comme un check sur la PR - c'est ce qui permet le gating, qu'on voit dans ce bloc.
+
+Détail à connaître mais pas à mémoriser : chaque job = VM neuve, donc pas de partage de fichiers entre jobs (on passe par artifacts/cache si besoin).
 -->
 
 ---
 
-# `GITHUB_TOKEN`
+# Bonnes pratiques CI
 
-```yaml {monaco}
-permissions:
-  contents: read
-  pull-requests: write
+<v-clicks>
 
-steps:
-  - uses: actions/checkout@v4
-  - run: echo "Hello from PR #${{ github.event.number }}"
-  - run: gh pr comment ${{ github.event.number }} --body "Tests OK ✅"
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+- **Cache des dépendances** - `npm ci` passe de ~1-2 min à ~10-20 s
+- **Secrets** - chiffrés dans GitHub, jamais en clair (`${{ secrets.X }}`)
+- **Environnements protégés** - `environment: production` + approbation humaine
+- **Matrix** - tester plusieurs versions/OS en parallèle (surtout pour une lib)
+- **DB de test** - vraie Postgres lancée en `services:` pour l'intégration
+
+</v-clicks>
+
+<v-click>
+
+<Tip type="success">
+À retenir surtout : <strong>cache</strong> (vitesse) et <strong>secrets</strong> (sécurité). Le reste s'active au besoin.
+</Tip>
+
+</v-click>
 
 <!--
-`GITHUB_TOKEN` : token éphémère, scope automatique au repo, expiré à la fin du workflow.
+On condense ici ce qui était 4 slides de YAML. L'objectif : connaître les leviers, pas les mémoriser.
 
-Permissions par défaut depuis 2023 : **read-only**. À élargir explicitement (principe du moindre privilège).
+Cache : facteur 5-10x sur la durée du pipeline. `actions/setup-node` a un cache npm built-in (`cache: 'npm'`).
 
-Cas d'usage : commenter une PR, créer un release, déclencher un autre workflow, push d'un tag.
+Secrets : Settings → Secrets and variables → Actions. 3 niveaux : repo / environment / organisation. Masqués dans les logs (`***`). Jamais dans le code.
+
+Environnement protégé : `environment: production` peut exiger une approbation humaine avant déploiement - garde-fou prod.
+
+Matrix : produit cartésien (3 OS × 3 Node = 9 jobs parallèles). Surtout utile pour une lib publiée. Attention au quota runner.
+
+DB en CI : `services:` lance un conteneur Postgres en parallèle du job. Alternative : Testcontainers.
+
+Le réflexe à avoir : savoir que ça existe et où chercher. La syntaxe est dans la doc.
 -->
 
 ---
@@ -2446,7 +2424,7 @@ Cas d'usage : commenter une PR, créer un release, déclencher un autre workflow
 - **Status checks** : chaque job = un check sur la PR
 - **Required checks** : Settings → Branches → Branch protection
 - **Block merge** si CI rouge
-- **JUnit reports** : upload du résultat structuré
+- **Test reports** : upload du résultat structuré
 - **Test summary** dans la PR (action `dorny/test-reporter`)
 
 </v-clicks>
@@ -2466,78 +2444,39 @@ Test summary : action qui pose un commentaire récap sur la PR (X passing, Y fai
 
 ---
 
-# Badges
+# Métriques DORA
 
-```markdown
-[![CI](https://github.com/org/repo/actions/workflows/ci.yml/badge.svg)](https://github.com/org/repo/actions)
-[![Coverage](https://codecov.io/gh/org/repo/branch/main/graph/badge.svg)](https://codecov.io/gh/org/repo)
-```
+<KeyConcept title="Mesurer la performance de livraison" icon="📊">
+4 métriques issues de la recherche (Google / DORA) qui prédisent la performance d'une équipe.
+</KeyConcept>
 
-![CI](https://img.shields.io/badge/CI-passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
+<v-clicks>
 
-<!--
-Badges dans le README = signal de qualité. Premier réflexe d'un nouveau dev / d'un recruteur.
+- **Deployment Frequency** — à quelle fréquence on déploie en prod
+- **Lead Time for Changes** — temps entre un commit et sa mise en prod
+- **Change Failure Rate** — % de déploiements qui causent un incident
+- **MTTR** — temps pour rétablir le service après un incident
 
-Badge GitHub Actions = automatique.
-Badge couverture : Codecov, Coveralls (services tiers gratuits pour OSS).
+</v-clicks>
 
-Cosmétique mais utile pour la confiance.
--->
+<v-click>
 
----
-layout: exercise
-duration: 20 min
-type: group
----
+<Tip type="info">
+Vitesse (1-2) <strong>et</strong> stabilité (3-4) ne s'opposent pas : les équipes « élites » sont bonnes sur les quatre.
+</Tip>
 
-# Exercice 5 - Pipeline incomplet
-
-## Consigne
-
-🚪 **Breakouts groupes de 3-4** - 5 min consigne · 12 min travail · 3 min restitution
-
-Dans `tp-repo/.github/workflows/ci.yml`, identifier les **4 étapes manquantes** marquées `# TODO` :
-
-- Caching des dépendances npm
-- Exécution des tests unitaires
-- Gating (échec si tests rouges)
-- Upload du rapport de couverture
-
-Pas besoin d'écrire le YAML : juste dire **où** et **quoi**.
+</v-click>
 
 <!--
-Énoncé complet dans exercices/ex5-pipeline.md.
+Pont entre la CI (mesurée par les gates) et le pilotage d'équipe - pertinent pour un cursus management.
 
-Format : analyse, pas écriture. Plus rapide en distanciel.
+Les 2 premières mesurent la VITESSE (on livre vite et souvent), les 2 dernières la STABILITÉ (et sans casser). Le mythe "vite OU bien" est faux : les équipes élites font les deux, justement grâce à une bonne CI/CD et des déploiements progressifs.
 
-Pendant les breakouts, peser les groupes pour mixer profils tech / moins tech.
+Repères élite (étude DORA) : plusieurs déploiements/jour, lead time < 1h, change failure < 15%, MTTR < 1h. Low performers : 1 déploiement/mois, lead time en semaines, MTTR en jours.
 
-Restitution : 1 groupe au hasard décrit, les autres complètent.
--->
+Source : "Accelerate" (Forsgren, Humble, Kim). À citer - c'est LA référence delivery.
 
----
-layout: pause
-duration: 20 min
----
-
-<!--
-Pause 20 min, dernière du cours.
--->
-
----
-layout: section-cover
-section: 7
----
-
-# Stratégies de déploiement
-
-DJ3 - Bloc 2
-
-<!--
-Dernier bloc. On change de focus : plus de code, on parle architecture de déploiement.
-
-Survol - pas de TP. Objectif : vous savez les distinguer et choisir.
+Côté management : ces 4 chiffres pilotent la santé delivery sans lire une ligne de code.
 -->
 
 ---
@@ -2594,6 +2533,49 @@ Anti-pattern : re-builder pour chaque environnement → tu déploies un truc dif
 Bonne pratique : 1 commit → 1 build → 1 artefact (image Docker, archive) → propagé partout. Reproductibilité totale.
 
 Variables d'environnement injectées au runtime (12-factor app) → l'artefact est agnostique à l'env.
+-->
+
+---
+
+# Conteneurisation (culture)
+
+<v-clicks>
+
+- **Image** = package immuable de l'app + ses dépendances
+- **Conteneur** = exécution isolée d'une image
+- **Registry** = stockage et versioning des images (comme npm, mais pour les images)
+
+</v-clicks>
+
+<v-click>
+
+<KeyConcept title="L'artefact moderne" icon="📦">
+Une <strong>image Docker</strong> est l'artefact qu'on build une fois et qu'on promeut partout.
+</KeyConcept>
+
+</v-click>
+
+<!--
+Lien direct avec le cours DevOps : l'artefact, aujourd'hui, c'est très souvent une image Docker.
+
+Image = le package immuable (code + deps + runtime). Conteneur = l'image qui tourne, isolée. Registry = là où on stocke/versionne les images (Docker Hub, GHCR, ECR).
+
+Le gros bénéfice : la même image tourne en local, en staging et en prod. Cohérence dev→prod, fin du "ça marche chez moi".
+
+On ne fait pas de TP Docker ici - c'est de la culture. Vous l'avez vu (ou le verrez) côté DevOps.
+-->
+
+---
+layout: section-cover
+section: 7
+---
+
+# Stratégies de déploiement
+
+<!--
+On change de focus : plus de pipeline, on parle architecture de déploiement.
+
+Survol - pas de TP. Objectif : savoir les distinguer et choisir.
 -->
 
 ---
@@ -2726,6 +2708,62 @@ Dans la vraie vie : combinaison. Ex : déploiement rolling + feature flag pour a
 -->
 
 ---
+layout: pause
+duration: 20 min
+---
+
+<!--
+Pause 20 min, au milieu de l'après-midi. Reprise sur les aspects opérationnels du déploiement.
+-->
+
+---
+layout: section-cover
+section: 8
+---
+
+# Réussir la mise en production
+
+<!--
+Reprise après la pause. On passe des stratégies (théorie) aux aspects opérationnels : migrations, feature flags, rollback, et comment se déroule une vraie mise en prod.
+-->
+
+---
+
+# Migrations BDD & ordre de déploiement
+
+```mermaid
+graph LR
+  A[Migration BDD] --> B[Déploiement API]
+  B --> C[Déploiement Front]
+```
+
+<v-clicks>
+
+- L'**ordre** compte : BDD → backend → frontend
+- Migrations **rétro-compatibles** : l'ancien code doit tourner avec la nouvelle base
+- Sinon blue/green et rolling cassent (2 versions coexistent un instant)
+
+</v-clicks>
+
+<v-click>
+
+<Tip type="warning">
+Déployer le front avant l'API = appels vers des endpoints qui n'existent pas encore.
+</Tip>
+
+</v-click>
+
+<!--
+Point souvent oublié et pourtant central pour TOUTES les stratégies vues juste avant.
+
+L'ordre : toujours de bas en haut. D'abord la base (migrations), puis le backend, puis le frontend. L'inverse = le front appelle des endpoints absents.
+
+Rétro-compatibilité : c'est LE prérequis du blue/green, du canary et du rolling. Pendant la bascule, l'ancienne ET la nouvelle version tournent en même temps sur la même base. Si la migration casse l'ancien code, tout tombe.
+
+Technique : migrations en 2 temps (expand / contract). On ajoute une colonne (compatible), on déploie le code, puis seulement après on supprime l'ancienne colonne. Mention - ils approfondiront en projet.
+-->
+
+---
 
 # Feature flags
 
@@ -2782,7 +2820,7 @@ Piège : la dette de flag. Un flag oublié pendant 2 ans = code mort qui compliq
 - **Smoke tests** post-déploiement (health, parcours critiques)
 - Si rouge → rollback automatique
 - Métriques : taux d'erreur, latence p95
-- Alerting : Slack/PagerDuty sur rollback
+- Alerting : Slack/autre sur rollback
 
 </v-clicks>
 
@@ -2806,8 +2844,6 @@ type: group
 
 ## Consigne
 
-🚪 **Breakouts groupes de 3-4** - 10 min · 5 min restitution
-
 Pour chaque contexte, choisir la stratégie de déploiement et **justifier** :
 
 1. **E-commerce Black Friday** - pic de trafic, downtime = $$$ perdus
@@ -2829,7 +2865,134 @@ Restitution : un groupe par contexte, échange.
 
 ---
 
-# Sécu CI/CD (mention)
+# Exercice 6 - Correction
+
+<v-clicks>
+
+- **E-commerce Black Friday** → 🔵🟢 **Blue/Green** - downtime intolérable, bascule et rollback instantanés. On assume le coût 2× le temps du pic.
+- **SaaS B2B (SLA stricts, 1 release/mois)** → 🐦 **Canary** - valider sur un client pilote avant le rollout général, blast radius limité.
+- **App interne (5×/jour, tolérance forte)** → 🔄 **Rolling** - défaut K8s, simple, zéro coût double. Largement suffisant.
+
+</v-clicks>
+
+<v-click>
+
+<Tip type="info">
+Pas de réponse unique. Et les <strong>feature flags</strong> complètent les trois : activer une fonctionnalité sensible indépendamment du déploiement.
+</Tip>
+
+</v-click>
+
+<!--
+Pas de "bonne" réponse unique - on note la cohérence du raisonnement, pas le mot exact.
+
+1) Black Friday : le critère qui tranche = downtime intolérable + besoin de rollback < 2 min. Blue/green coche les deux. Canary défendable aussi mais plus complexe à orchestrer en urgence. + feature flag sur le correctif sensible.
+
+2) SaaS B2B : peu d'utilisateurs simultanés mais risque métier élevé → on veut valider en conditions réelles sur un périmètre réduit. Canary, ou déploiement client par client (1 pilote → les 2 autres).
+
+3) App interne : forte tolérance, déploiements fréquents → pas besoin d'artillerie. Rolling K8s standard suffit. Feature flags pour les expériences.
+
+Erreur classique à recadrer : "blue/green partout par défaut". C'est cher (2× infra) et inutile quand la tolérance est forte.
+
+Point transverse à rappeler : toutes ces stratégies supposent des migrations BDD rétro-compatibles (slide vue juste avant).
+-->
+
+---
+
+# Anatomie d'une mise en prod
+
+| Phase | Actions clés |
+|---|---|
+| **Avant** | Backup, vérifier le plan de rollback, prévenir les équipes, geler les merges |
+| **Pendant** | Migrations BDD → déployer l'artefact → vérifier les health checks |
+| **Après** | Surveiller les métriques ~30 min, valider les parcours critiques, confirmer |
+
+<v-clicks>
+
+- Choisir une **fenêtre** à faible impact (jamais le vendredi soir)
+- Chaque étape a un **responsable** et un **critère de succès** mesurable
+
+</v-clicks>
+
+<!--
+Une mise en prod, ce n'est pas "git push origin main". C'est un événement préparé, avec une checklist, des responsables et un plan B.
+
+Avant : on s'assure qu'on peut revenir en arrière (backup + rollback prêt), on prévient le support / les équipes métier, on gèle les merges pour ne pas mélanger les changements.
+
+Pendant : l'ORDRE compte (migrations BDD d'abord, cf. slide migrations). Un health check à 200 ne suffit pas - vérifier que l'app fonctionne vraiment.
+
+Après : les 30 premières minutes sont critiques. On surveille (golden signals), on teste les parcours clés, et SEULEMENT après on déclare la MEP réussie.
+
+La fenêtre : pour du B2B, la nuit / le week-end. Règle d'or : jamais le vendredi après-midi, sauf si on aime bosser le week-end.
+
+Même les pilotes chevronnés utilisent une checklist - ce n'est pas un manque de compétence, c'est de la rigueur.
+-->
+
+---
+
+# Étude de cas : quand le déploiement tourne mal
+
+<v-clicks>
+
+- **Knight Capital (2012)** — déploiement manuel, 1 serveur sur 8 garde l'ancien code → **440 M$ perdus en 45 min**, faillite.
+- **CrowdStrike (2024)** — une mise à jour poussée à **tous** les clients d'un coup → 8,5 M de PC Windows en écran bleu, panne mondiale.
+- **GitLab (2017)** — suppression accidentelle de la prod, backups non testés → 6h de données perdues, en direct.
+
+</v-clicks>
+
+<v-click>
+
+<KeyConcept title="Question" icon="🔍">
+Pour chacun : qu'est-ce qui a manqué dans la <strong>façon de déployer</strong> ?
+</KeyConcept>
+
+</v-click>
+
+<!--
+Capstone storytelling, juste après la checklist MEP - on raconte, on fait réagir le chat avant le debrief.
+
+Knight Capital : déploiement manuel, un ingé oublie un serveur sur huit. L'ancien code réactive une fonction de test qui passe des ordres en boucle. 440 M$ en 45 min, la boîte coule. Le cas d'école absolu.
+
+CrowdStrike (juillet 2024) : un fichier de config défectueux poussé à TOUT le parc d'un coup, pas de rollout progressif. 8,5 M de machines Windows down. Aéroports, hôpitaux cloués.
+
+GitLab (2017) : un admin supprime le mauvais répertoire en prod, et découvre que 5 mécanismes de backup sur 5 étaient cassés. Incident streamé en live sur YouTube - leçon d'humilité et de transparence.
+
+Laisser le chat proposer avant de passer au debrief.
+-->
+
+---
+
+# Ce qui aurait changé la donne
+
+| Incident | Cause côté déploiement | Garde-fou manquant |
+|---|---|---|
+| Knight Capital | Déploiement manuel incomplet | Automatisation + artefact unique + kill switch |
+| CrowdStrike | Big bang sur 100 % du parc | **Canary** / rollout progressif |
+| GitLab | Aucun filet | Backups testés + **rollback** + staging |
+
+<v-click>
+
+<Tip type="success">
+Fil rouge : <strong>automatiser</strong>, <strong>déployer progressivement</strong>, <strong>savoir revenir en arrière</strong> — exactement ce qu'on vient de voir cet après-midi.
+</Tip>
+
+</v-click>
+
+<!--
+Debrief en capstone : on relie chaque incident à tout ce qu'on vient de voir aujourd'hui.
+
+Knight Capital → un pipeline automatisé déploie le MÊME artefact partout (pas de serveur oublié), et un kill switch / feature flag coupe la fonction folle en 1 clic.
+
+CrowdStrike → canary : 1% du parc d'abord, on observe, puis on monte. Le bug aurait touché 1% au lieu de 100%.
+
+GitLab → un plan de rollback + des backups testés régulièrement + un vrai staging.
+
+Conclusion : vous avez maintenant tous ces garde-fous en main. Il reste 2-3 mentions (sécu, monitoring) puis la synthèse.
+-->
+
+---
+
+# Sécu CI/CD 
 
 <v-clicks>
 
@@ -2844,7 +3007,7 @@ Restitution : un groupe par contexte, échange.
 <v-click>
 
 <Tip type="info">
-GitHub Advanced Security : SAST + secrets + dependency review en natif (gratuit OSS, payant privé).
+GitHub Advanced Security : SAST + secrets + dependency review.
 </Tip>
 
 </v-click>
@@ -2865,7 +3028,7 @@ Mention dans ce cours, pas TP. Important pour stage / job en sécurité-aware sh
 
 ---
 
-# Tests de performance (mention)
+# Tests de performance 
 
 ```js {monaco}
 // k6 - script de charge
@@ -2911,7 +3074,7 @@ Mention : pas dans ce cours, mais important sur projet à fort trafic.
 
 ---
 
-# Refactoring sécurisé (mention)
+# Refactoring sécurisé 
 
 <KeyConcept title="Tests de caractérisation" icon="🛡️">
 Capturer le comportement <strong>actuel</strong> du code legacy avant de refactorer.
@@ -2940,7 +3103,7 @@ Mention : pertinent pour vous quand vous attaquerez du code legacy en stage.
 
 ---
 
-# Monitoring (mention) - 4 golden signals
+# Monitoring  - 4 golden signals
 
 <v-clicks>
 
@@ -3006,7 +3169,7 @@ Vous savez maintenant tester et déployer une app. La maturité vient avec la pr
 | 🌐 Web | jestjs.io · docs.cypress.io · docs.github.com/actions |
 | 🌐 Article | Martin Fowler - "Test Pyramid" |
 | 🌐 Web | The Twelve-Factor App (12factor.net) |
-| 🎯 Practice | Codewars + tests · contribuer à un projet OSS |
+| 🎯 Practice | Codewars + tests |
 
 <!--
 Liste à mettre dans le repo aussi.
@@ -3019,17 +3182,6 @@ Codewars / Exercism : exercices avec tests fournis, vous gagnez le réflexe TDD.
 ---
 
 # QCM - modalités
-
-<v-clicks>
-
-- **30 questions** à choix multiples
-- **30 minutes**
-- Couvre les **3 DJ**
-- Mix **théorie** + **lecture de code**
-- **Plateforme** : à confirmer (Moodle / Forms / Quizlet)
-- **Disponible** : fin de DJ3 ou en différé selon planning
-
-</v-clicks>
 
 <!--
 Modalités à finaliser avec l'institut.

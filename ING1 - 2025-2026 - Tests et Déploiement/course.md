@@ -89,33 +89,31 @@
 
 ### Demi-journée 3 — CI/CD et stratégies de déploiement (3h30)
 
-#### Bloc 1 — Pipeline CI/CD avec GitHub Actions (90 min)
+#### Bloc 1 — Pipeline CI/CD + stratégies de déploiement (95 min)
 
 | Durée | Contenu | Méthode |
 |-------|---------|---------|
-| 10 min | Retour DJ2 — questions, observations sur les tests. Tour rapide : "tu as déjà déclenché un pipeline ?" | Échange |
-| 15 min | Anatomie d'un pipeline CI/CD — build, test, package, deploy, promote, rollback | Cours magistral |
-| 20 min | GitHub Actions — workflows YAML, déclencheurs (`push`, `pull_request`), jobs, steps | Cours + démo live |
-| 15 min | Matrix builds, runners, services, caching des dépendances | Cours + démo |
-| 15 min | Secrets, environments, protections, GITHUB_TOKEN | Cours magistral |
-| 10 min | Gating — rapports JUnit, GitHub Checks, badges, statuts requis | Cours magistral |
-| 5 min | Synthèse bloc 1 | Synthèse |
+| 10 min | Retour + tour rapide : "tu as déjà déclenché un pipeline ?" | Échange |
+| 15 min | Anatomie d'un pipeline + concepts clés — artefact, promotion, gate, rollback | Cours magistral |
+| 10 min | Quelles étapes dans un pipeline — action / gate / responsable, aide-mémoire | Cours magistral |
+| 15 min | GitHub Actions — workflow minimal, jobs, parallélisme, gating + bonnes pratiques CI | Cours + démo |
+| 10 min | Métriques DORA — fréquence, lead time, change failure rate, MTTR | Cours magistral |
+| 15 min | Fondations du déploiement — environnements, promotion d'artefact, conteneurisation | Cours + diagramme |
+| 20 min | Stratégies — Blue/Green, Canary, Rolling, comparaison | Cours + diagrammes |
 
-#### Pause (20 min)
+#### Pause (20 min) — après la comparaison des stratégies
 
-#### Bloc 2 — Stratégies de déploiement et qualité en production (100 min)
+#### Bloc 2 — Réussir la mise en production (95 min)
 
 | Durée | Contenu | Méthode |
 |-------|---------|---------|
-| 15 min | Environnements — dev, staging, preprod, prod. Promotion d'artefacts | Cours magistral |
-| 15 min | Blue/Green — bascule sans interruption, schémas, prérequis | Cours + diagramme |
-| 10 min | Canary release — déploiement progressif, métriques de bascule | Cours magistral |
-| 10 min | Feature flags — activation sélective, dark launch | Cours magistral |
-| 10 min | Rollback automatique — détection de régression, retour arrière | Cours magistral |
-| 10 min | Sécurité CI/CD — SAST (mention), dependency scanning (Dependabot, Snyk) | Cours magistral |
-| 15 min | Monitoring & observabilité (mention) — logs, métriques, traces, 4 golden signals | Cours magistral |
-| 15 min | Synthèse globale des 3 demi-journées + ressources pour aller plus loin | Synthèse |
-| 10 min | Modalités du QCM + mot de fin | Échange |
+| 10 min | Migrations BDD & ordre de déploiement — rétro-compatibilité, expand/contract | Cours + diagramme |
+| 10 min | Feature flags + rollback automatique | Cours magistral |
+| 15 min | Exercice 6 — choisir une stratégie (breakout) + correction | Exercice |
+| 10 min | Anatomie d'une mise en prod — checklist avant / pendant / après | Cours magistral |
+| 15 min | Étude de cas : déploiements ratés (Knight Capital, CrowdStrike, GitLab) + debrief | Étude de cas / chat |
+| 10 min | Sécurité CI/CD + monitoring (mentions) — SAST, dependency scanning, 4 golden signals | Cours magistral |
+| 15 min | Synthèse globale + ressources + mot sur le QCM (fait ultérieurement) | Synthèse |
 
 ---
 
