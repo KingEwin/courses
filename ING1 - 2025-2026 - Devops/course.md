@@ -131,10 +131,9 @@ Ce cours est **prérequis** du cours Tests et Déploiement (ING1). Pour éviter 
 
 | Durée | Contenu | Méthode |
 |-------|---------|---------|
-| 10 min | Brief TP final — pipeline `lint → test → build Docker → push image → deploy` | Présentation |
-| 50 min | TP — construire le pipeline étape par étape, avec validation à chaque step | TP guidé |
-| 15 min | Secrets, environments et `GITHUB_TOKEN` — gestion sécurisée des credentials | Cours + démo |
-| 10 min | Restitution + correction collective. Erreurs fréquentes | Échange |
+| 10 min | Brief TP final — pipeline `lint → test → build Docker` (obligatoire) + push/deploy en bonus | Présentation |
+| 60 min | TP guidé — étape par étape jusqu'au build (cible obligatoire ~60 min) ; bonus (push GHCR, deploy simulé) + micro-tâches d'observation pour les rapides | TP guidé |
+| 15 min | Secrets / `GITHUB_TOKEN` + restitution + erreurs fréquentes | Cours + échange |
 | 5 min | Synthèse bloc 1 | Synthèse |
 
 **Pause (20 min)**

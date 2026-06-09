@@ -1505,9 +1505,8 @@ Avec Compose : un seul fichier, un seul `up`. Reproductible, partagé, versionn�
 
 # Anatomie d'un docker-compose.yml
 
-```yaml {all|1-2|4-13|15-22|all}
+```yaml {all|1-1|2-11|13-19|all}
 services:
-
   api:
     build: ./api
     ports:
@@ -1518,7 +1517,6 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
-
   db:
     image: postgres:16-alpine
     environment:
@@ -1534,6 +1532,11 @@ services:
 volumes:
   db-data:
 ```
+
+<style scoped>
+.slidev-code { font-size: 0.66em !important; line-height: 1.3 !important; }
+h1 { margin-bottom: 0.3rem; }
+</style>
 
 <!--
 Le fichier minimum viable d'une stack moderne.
@@ -1705,7 +1708,7 @@ Limite : ça reste local. Pour de la vraie multi-env (staging, prod cloud), on b
 
 ---
 layout: exercise
-duration: 25 min
+duration: 30 min
 type: solo
 ---
 
@@ -1727,11 +1730,14 @@ type: solo
 6. Persister les données de la DB via un volume nommé
 
 <!--
-TP de 25 min. Un repo est fourni avec :
+TP de 30 min. Un repo est fourni avec :
 - /api : le code Node + son Dockerfile
 - /nginx/nginx.conf : la conf de proxy déjà écrite
+- docker-compose.yml à trous (TODO balisés)
 
-Ils n'ont qu'à composer le fichier YAML.
+Ils n'ont qu'à composer le fichier YAML. Filet : fichier solution dispo, snippets de rattrapage projetés.
+
+Travail en binôme conseillé (10 postes au lieu de 20) pour limiter les points de support.
 
 Erreurs fréquentes :
 - Oublier d'exposer le port nginx (80:80)
@@ -1754,103 +1760,48 @@ C'est la partie la plus dense de la journée - prends bien la pause.
 
 ---
 
-# CI vs CD vs CD
+# Rappel CI/CD — déjà vu en Tests & Déploiement
 
-<v-clicks>
+<div class="grid grid-cols-2 gap-4 mt-4">
 
-- **CI** - Continuous Integration : intégrer le code souvent, le valider automatiquement
-- **CD** - Continuous Delivery : prêt à déployer à tout moment (mais clic manuel)
-- **CD** - Continuous Deployment : déploiement **automatique** en prod
+<div>
 
-</v-clicks>
+**Les 3 sigles**
+- **CI** — intégrer + valider souvent
+- **CD** (Delivery) — prêt à déployer (clic manuel)
+- **CD** (Deployment) — déploiement auto
 
-<Tip type="info">
-La nuance Delivery vs Deployment porte sur le dernier mètre : intervention humaine ou pas pour mettre en prod.
-</Tip>
+</div>
 
-<!--
-3 termes proches, parfois confondus.
+<div>
 
-CI = on intègre les changements de code en continu (vs branches qui vivent 6 mois sans merge).
+**Anatomie d'un workflow**
+- `name` · `on` · `jobs` · `steps` · `runs-on`
+- Fichier dans `.github/workflows/`
+- `uses:` = action marketplace · `run:` = shell
 
-Continuous Delivery : à tout moment, le main est dans un état déployable. Mais on déclenche le déploiement manuellement.
+</div>
 
-Continuous Deployment : le déploiement en prod est automatique dès que le pipeline est vert.
-
-La majorité des boîtes font CI + Continuous Delivery. Continuous Deployment demande beaucoup de confiance dans les tests automatisés.
--->
-
----
-
-# Pipeline CI/CD type
+</div>
 
 ```mermaid
 graph LR
-  A[Push / PR] --> B[Lint]
-  B --> C[Tests]
-  C --> D[Build]
-  D --> E[Push Image]
-  E --> F[Deploy Staging]
-  F --> G[Deploy Prod]
-  style B fill:#7c3aed,stroke:#6d28d9,color:#fff
-  style C fill:#7c3aed,stroke:#6d28d9,color:#fff
+  A[Push / PR] --> B[Lint] --> C[Tests] --> D[Build] --> E[Push Image] --> F[Deploy]
+  style D fill:#2563eb,stroke:#1d4ed8,color:#fff
   style E fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style G fill:#16a34a,stroke:#15803d,color:#fff
 ```
 
 <!--
-Le pipeline classique. C'est ce qu'on va construire en TP de DJ4.
+RAPPEL ASSUMÉ - ne pas réenseigner. Les élèves ont vu tout ça en Tests & Déploiement (DJ3) : CI vs CD, anatomie YAML, gating.
 
-Chaque étape (job) peut prendre quelques secondes à plusieurs minutes. L'idéal : pipeline complet < 10 minutes pour ne pas bloquer le flux.
+Dérouler vite (~10 min) : on revalide le vocabulaire, on rappelle le gating (si tests cassent, pas de build), et on annonce le cap : aujourd'hui, la valeur ajoutée c'est Docker dans la CI - build + push d'image vers un registry. C'est ça qui n'était PAS dans le cours Tests.
 
-Pas de saut d'étape : si les tests cassent, on ne build pas. Si le build casse, on ne push pas. C'est le **gating**.
-
-On approfondit le gating en cours Tests et Déploiement.
+Si la salle connaît bien : poser 2-3 questions flash et passer directement à la suite (marketplace docker/build-push).
 -->
 
 ---
 
-# GitHub Actions - anatomie
-
-```yaml {all|1-2|4-7|9-15|all}
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
-```
-
-<!--
-Anatomie minimale. À mémoriser.
-
-`name` : nom du workflow (visible dans l'UI GitHub).
-`on` : déclencheurs.
-`jobs` : un ou plusieurs jobs. Chaque job tourne sur un runner indépendant.
-`steps` : étapes séquentielles dans le job.
-
-Mots-clés clés :
-- `uses` : utilise une action publiée (du marketplace)
-- `run` : commande shell brute
-- `runs-on` : OS du runner (ubuntu-latest est le défaut)
-
-Ce fichier va dans `.github/workflows/<nom>.yml`.
--->
-
----
-
-# Déclencheurs (`on:`)
+# Déclencheurs (`on:`) — aide-mémoire
 
 | Trigger | Quand ? |
 |---|---|
@@ -1872,52 +1823,13 @@ on:
 ```
 
 <!--
-Tu peux combiner plusieurs triggers sur un même workflow.
+Aide-mémoire combiné déclencheurs + jobs. Déjà vu en Tests & Déploiement, donc on ne s'attarde pas.
 
-Patterns courants :
-- `push: branches: [main]` + `pull_request:` → CI sur main + sur toutes les PRs
-- `schedule:` → tests de non-régression nocturnes, scan de sécu
-- `workflow_dispatch:` → bouton manuel pour redéployer ou rejouer une étape
+Déclencheurs : combinables. push+pull_request = pattern CI standard. schedule = nocturne. workflow_dispatch = bouton manuel.
 
-Le cron utilise la syntaxe Unix classique. crontab.guru pour t'aider.
--->
+Jobs : parallèles sauf `needs:`. `needs: lint` = ne lance test que si lint a passé (gating). Chaque job = machine fraîche → checkout/npm ci à refaire → le cache (slide suivante) règle la lenteur.
 
----
-
-# Jobs et steps
-
-```yaml
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run lint
-
-  test:
-    runs-on: ubuntu-latest
-    needs: lint    # attendre que lint passe
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm test
-```
-
-<v-clicks>
-
-- Jobs **parallèles par défaut**
-- `needs:` pour ordonner
-- Chaque job a son propre runner (machine fraîche)
-
-</v-clicks>
-
-<!--
-Jobs en parallèle = gain de temps. lint et test peuvent tourner en même temps... sauf si on met `needs`.
-
-Le `needs: lint` dit "ne lance test que si lint a passé". Gating fin.
-
-Conséquence importante : chaque job repart de zéro. Si tu fais `npm ci` dans lint, tu dois le refaire dans test. Sauf si tu utilises le cache (qu'on voit juste après).
+On enchaîne vite sur ce qui est NEUF : marketplace docker/* et cache.
 -->
 
 ---
@@ -1945,13 +1857,15 @@ steps:
 <Credit source="github.com/marketplace?type=actions" />
 
 <!--
-Le marketplace, c'est l'écosystème qui rend GitHub Actions puissant.
+ICI commence la VRAIE valeur ajoutée DevOps (pas vue en Tests & Déploiement) : Docker dans la CI.
 
-Actions officielles GitHub : préfixe `actions/`. Toujours fiables.
+Les 2 actions à retenir aujourd'hui :
+- `docker/setup-buildx-action` : active BuildKit (build moderne, cache de layers).
+- `docker/build-push-action` : build + push d'image en une action. C'est le cœur du TP de cet après-midi.
 
-Actions tierces (`docker/`, `aws-actions/`, etc.) : très utilisées. Fais attention aux actions de comptes inconnus - c'est du code qui tourne sur ton runner avec accès au repo.
+Reste : actions officielles `actions/` (fiables) ; actions tierces `docker/`, `aws-actions/` (très utilisées, mais c'est du code qui tourne sur ton runner → épingler par version `@v4`/`@<sha>`).
 
-Bonne pratique : épingler par version (`@v4` ou même `@<sha>`) pour la reproductibilité et la sécurité.
+Insister : ce qu'on construit aujourd'hui = un pipeline qui produit et publie une IMAGE. Le cours Tests faisait du gating de tests ; nous, on conteneurise la livraison.
 -->
 
 ---
@@ -1990,39 +1904,6 @@ Astuce : la clé doit changer dès que les dépendances changent. Sinon tu trava
 -->
 
 ---
-layout: exercise
-duration: 25 min
-type: solo
----
-
-# Mini-TP - premier workflow
-
-## Mission
-
-Sur un repo fourni avec une **app TypeScript**, créer `.github/workflows/ci.yml` :
-
-1. Se déclenche sur **push** et **pull_request** sur `main`
-2. Job `quality` qui :
-   - Checkout du repo
-   - Setup Node 20 avec cache npm
-   - `npm ci`
-   - `npm run lint`
-   - `npm test`
-3. **Pousser** sur une branche
-4. **Vérifier** que l'action tourne dans l'onglet Actions de GitHub
-
-<!--
-Premier workflow. Simple, pas de Docker encore.
-
-Erreurs classiques :
-- `actions/checkout@v4` oublié → erreur "no such file"
-- mauvais nom de script (`npm run lint` mais pas de script lint dans package.json)
-- workflow placé hors de `.github/workflows/` → ignoré
-
-Tester en push sur une branche, ouvrir l'onglet Actions, regarder les logs.
--->
-
----
 layout: recap
 section: Demi-journée 3 - Compose et CI/CD bases
 ---
@@ -2032,17 +1913,16 @@ section: Demi-journée 3 - Compose et CI/CD bases
 - **Compose** = orchestration locale, un YAML, un `up`
 - **services + volumes + (networks)** = squelette du fichier
 - **healthcheck + depends_on** = robustesse au démarrage
-- **CI ≠ Continuous Delivery ≠ Continuous Deployment**
-- **GitHub Actions** : workflow YAML, jobs, steps, runners
-- **Marketplace** : actions/checkout, setup-node, docker/build-push
-- **Cache** des deps = pipeline rapide
+- **CI/CD + GitHub Actions** = rappel (vu en Tests & Déploiement)
+- **La nouveauté DevOps** : `docker/build-push` → produire et publier une image
+- **Cache** des deps + layers = pipeline rapide
 
 <!--
 Synthèse de la DJ3.
 
-Demain en DJ4 : on construit un pipeline complet, lint + test + build Docker + push + deploy.
+On a fait le neuf (Compose) et revu le connu (CI/CD). Le mini-TP "premier workflow" a été retiré : on le fait directement dans le TP pipeline de cet après-midi, qui démarre justement par lint + test.
 
-Et on termine par un survol K8s, IaC et observabilité.
+DJ4 : on construit LE pipeline complet en une fois (lint → test → build → push bonus), puis survol K8s/IaC/observabilité en mode révision QCM, et QCM.
 -->
 
 ---
@@ -2057,9 +1937,9 @@ Le grand œuvre + l'écosystème autour
 <!--
 Dernière demi-journée.
 
-Programme : un gros TP guidé pour construire un pipeline complet, puis un survol culturel de K8s, IaC et observabilité pour avoir le vocabulaire.
+Programme : UN gros TP guidé pour construire un pipeline complet de zéro (lint → test → build Docker → push bonus), puis un survol culturel de K8s, IaC et observabilité en mode révision, et le QCM.
 
-Le TP est ambitieux mais on le fait étape par étape ensemble.
+Le TP est le sommet du cours : on le fait étape par étape ensemble, repo fourni avec fichiers à trous et solution par étape.
 -->
 
 ---
@@ -2068,24 +1948,28 @@ Le TP est ambitieux mais on le fait étape par étape ensemble.
 
 ## Objectif
 
-Construire un workflow GitHub Actions qui, à chaque push sur `main` :
+Construire un workflow GitHub Actions de zéro, à chaque push sur `main` :
 
 1. **Lint** le code
 2. **Test** unitaires
-3. **Build** une image Docker
-4. **Push** l'image vers GitHub Container Registry (ghcr.io)
-5. **Deploy** (simulé) - étape de notification
+3. **Build** une image Docker ← **objectif obligatoire** (`push: false`)
+4. 🎁 **Bonus** — **Push** l'image vers ghcr.io
+5. 🎁 **Bonus** — **Deploy** (simulé) - étape de notification
 
 ## Repo fourni
 
-App TypeScript + Dockerfile multi-stage déjà écrits. Tu te concentres sur le workflow.
+App TypeScript + Dockerfile multi-stage déjà écrits + workflow **à trous** + solution par étape. Tu te concentres sur le YAML.
 
 <!--
-Le TP final, durée totale ~50 min en TP guidé. On fait étape par étape, je projette en parallèle, ils suivent sur leur poste.
+LE TP central de la journée. Cible obligatoire ~60 min en TP guidé (jusqu'au build) ; le reste du créneau = bonus + micro-tâches élastiques pour les rapides (voir README du repo). On fait étape par étape, je projette en parallèle, ils suivent en binôme sur leur poste.
 
-Repo fourni : pas de drame d'install ou d'écriture d'app à partir de zéro. L'effort va sur le YAML.
+C'est ce TP qui absorbe l'ancien "mini-TP" : il DÉMARRE par lint + test, donc tout le monde construit le workflow de base ici. Pas de doublon.
 
-À la fin, ils ont un pipeline qui pousse une image dans ghcr.io. Le déploiement est simulé via une étape qui affiche "deploy ok" - pour le vrai déploiement, ils verront ça en cours Tests et Déploiement.
+Cible obligatoire = jusqu'à l'étape 3 (build l'image, push: false). Ça marche à coup sûr, sans credentials, sans config de fork. Tout le monde doit y arriver.
+
+Étapes 4 (push ghcr) et 5 (deploy simulé) = BONUS pour ceux qui avancent. Le push réel vers ghcr.io demande des permissions sur le fork (Actions activées + packages: write) → on ne bloque pas la classe dessus.
+
+Filet : fichiers à trous balisés, solution par étape (copier-coller de rattrapage), je projette en live.
 -->
 
 ---
@@ -2168,14 +2052,18 @@ build:
     - uses: docker/build-push-action@v5
       with:
         context: .
-        push: false
+        push: false          # on BUILD, on ne pousse pas
         tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 ```
 
 <!--
+C'EST LA CIBLE OBLIGATOIRE DU TP. Tout le monde doit arriver ici.
+
 On ajoute le build Docker.
+
+`push: false` : on construit l'image, on ne pousse nulle part. Aucun credential, aucune config de fork nécessaire → ça marche pour les 20 élèves sans friction. C'est le palier "réussi" du TP.
 
 `docker/setup-buildx-action` : active BuildKit, le moteur moderne (multi-arch, cache avancé).
 
@@ -2190,7 +2078,7 @@ On ajoute le build Docker.
 
 ---
 
-# Étape 4 - push vers GHCR
+# Étape 4 - push vers GHCR _(bonus)_
 
 ```yaml
 build:
@@ -2216,6 +2104,10 @@ build:
 ```
 
 <!--
+BONUS - pour ceux qui ont fini l'étape 3. Ne pas bloquer la classe ici.
+
+Pré-requis sur le fork de l'élève : Actions activées + permissions packages. Si ça coince, ce n'est pas grave : l'objectif obligatoire (build) est déjà atteint.
+
 Maintenant on pousse vers ghcr.io (GitHub Container Registry, gratuit pour les repos publics).
 
 `permissions: packages: write` : nécessaire pour pousser sur le registry du repo.
@@ -2229,7 +2121,7 @@ Après ce push, ton image est visible dans l'onglet Packages du repo.
 
 ---
 
-# Étape 5 - déploiement (simulé)
+# Étape 5 - déploiement (simulé) _(bonus)_
 
 ```yaml
 deploy:
@@ -2247,7 +2139,6 @@ deploy:
 
 - `environment: production` = approbation manuelle possible
 - Le vrai deploy = SSH + docker compose pull, ou `kubectl apply`, ou Terraform
-- Approfondi dans le cours **Tests et Déploiement**
 
 </v-clicks>
 
@@ -2326,9 +2217,9 @@ section: TP pipeline complet
 
 - Écrire un workflow YAML avec triggers, jobs, steps
 - Utiliser le marketplace (checkout, setup-node, docker/*)
-- Cacher les dépendances pour un pipeline rapide
-- Builder et pousser une image Docker vers ghcr.io
-- Gérer des secrets GITHUB_TOKEN et custom
+- Cacher les dépendances + layers pour un pipeline rapide
+- **Builder une image Docker** dans la CI (et la pousser vers ghcr.io en bonus)
+- Comprendre secrets / `GITHUB_TOKEN` / environments
 - Chaîner les jobs avec `needs:` et gates
 
 <!--
@@ -2350,191 +2241,142 @@ duration: 20 min
 ---
 
 <!--
-Dernière pause du cours. Au retour : survol culturel.
+Dernière pause du cours. Au retour : survol culturel EN MODE RÉVISION QCM (~40 min), puis le QCM (~60 min).
 
-L'objectif des 100 min restantes : donner le vocabulaire et le panorama. Pas de TP, beaucoup de "tu as déjà entendu parler de X ? voici en 5 min ce que c'est".
+Objectif des slides restantes : donner/réviser le vocabulaire K8s, IaC, observabilité, DevSecOps - juste ce qui tombe au QCM. Format interactif : on pose des questions à la salle, on fait lire les manifestes/tableaux, on ne déroule PAS un monologue. C'est de la révision active avant l'épreuve.
+
+ATTENTION TIMING : garder 60 min pleines pour le QCM en fin de journée. Si on déborde, couper dans les stacks d'observabilité et le comparatif IaC, pas dans le vocabulaire K8s de base.
 -->
 
 ---
 
-# Au-delà de Docker : Kubernetes
+# Kubernetes, c'est quoi ?
 
 <v-clicks>
 
-- Docker = **un conteneur sur une machine**
-- Compose = **plusieurs conteneurs sur une machine**
-- Kubernetes = **plusieurs conteneurs sur plusieurs machines**
+- Docker = **1 conteneur** sur **1 machine**
+- Compose = **plusieurs conteneurs** sur **1 machine**
+- Kubernetes = **plein de conteneurs** répartis sur **plusieurs machines**
 
 </v-clicks>
 
+<KeyConcept title="L'image à retenir" icon="🎻">
+Kubernetes est un <strong>chef d'orchestre</strong> : tu lui donnes tes conteneurs et une consigne (« garde mon app en marche »), il s'occupe de les lancer, les surveiller et les répartir sur un parc de machines.
+</KeyConcept>
+
 <Tip type="info">
-K8s entre en jeu quand tu as besoin de scalabilité horizontale, haute dispo, et orchestration multi-noeuds. Pour la majorité des projets, Compose suffit.
+Pour la majorité des projets, Docker Compose suffit largement. K8s, c'est quand on grossit beaucoup.
 </Tip>
 
 <!--
-Le pourquoi de Kubernetes en 1 slide.
+RÉVISION / DÉCOUVERTE - public qui n'a jamais entendu parler de K8s. On reste très simple, imagé.
 
-Tu n'as **pas besoin** de K8s pour la majorité des projets. C'est complexe, lourd, et la plupart des startups vivent très bien avec Docker Compose ou Docker Swarm.
+Le fil rouge : on monte en échelle. 1 conteneur (Docker) → plusieurs sur 1 machine (Compose) → plusieurs sur plusieurs machines (Kubernetes).
 
-K8s prend tout son sens quand :
-- tu as plusieurs équipes qui déploient sur la même infra
-- tu as besoin d'auto-scaling poussé
-- tu fais du multi-cloud
-- tu veux gérer 100+ services
+L'analogie du chef d'orchestre : tu ne diriges plus chaque musicien à la main, tu donnes la partition et le chef coordonne. Idem K8s : tu décris ce que tu veux, il s'arrange.
 
-Pour ton premier projet : Compose. Pour ta première mission cloud : peut-être K8s.
+Message clé : ils n'ont PAS besoin de K8s tout de suite. C'est de la culture générale. Compose suffit pour leurs projets. K8s arrive quand une boîte a beaucoup de trafic, plusieurs équipes, du multi-machines.
 -->
 
 ---
 
-# Architecture Kubernetes
+# Comment ça marche, en gros
 
 ```mermaid
 graph TB
-  subgraph Cluster
-    subgraph Node1[Node 1]
-      P1[Pod A] --- P2[Pod B]
+  subgraph Cluster["Cluster = le parc de machines"]
+    subgraph Node1[Machine 1]
+      P1[Pod] --- P2[Pod]
     end
-    subgraph Node2[Node 2]
-      P3[Pod A] --- P4[Pod C]
+    subgraph Node2[Machine 2]
+      P3[Pod] --- P4[Pod]
     end
   end
-  S[Service] -->|Load balance| P1
+  S[Service<br/>la porte d'entrée] --> P1
   S --> P3
-  D[Deployment] -.gère.-> P1
-  D -.gère.-> P3
   style S fill:#16a34a,stroke:#15803d,color:#fff
-  style D fill:#7c3aed,stroke:#6d28d9,color:#fff
 ```
 
+---
+
+# Comment ça marche, en gros
+
+<div class="text-sm">
+
+| Mot | En langage simple |
+|---|---|
+| **Cluster** | le parc de machines |
+| **Node** | une machine du parc |
+| **Pod** | ton conteneur qui tourne (la plus petite unité) |
+| **Service** | la porte d'entrée vers ton app |
+| **Namespace** | des « dossiers » pour ranger/isoler |
+
+</div>
+
 <!--
-Vocabulaire à retenir :
+On garde le schéma (le visuel aide les novices) mais on parle en français simple, pas en jargon.
 
-**Cluster** : ensemble de machines (nodes) qui fait tourner tes conteneurs.
+Les mots, expliqués comme à un débutant :
+- Cluster = le parc de machines mises en commun.
+- Node = une de ces machines.
+- Pod = l'endroit où tourne ton conteneur (la brique de base).
+- Service = l'adresse stable par laquelle on joint ton app, même si les pods bougent.
+- Namespace = des dossiers pour séparer (prod/test, équipes). Dans la fiche → peut tomber au QCM.
 
-**Node** : une machine du cluster (VM ou physique).
-
-**Pod** : la plus petite unité K8s. Contient 1 (parfois plusieurs) conteneur.
-
-**Deployment** : décrit "je veux N instances de ce pod". K8s fait en sorte qu'elles tournent.
-
-**Service** : point d'entrée stable pour accéder à un groupe de pods (load balancing).
-
-Tu retiens ces 5 mots, tu peux suivre 80% des conversations K8s.
+Ne pas réciter une définition académique : montrer le schéma, pointer chaque mot dessus. 5 mots suffisent pour suivre une conversation K8s.
 -->
 
 ---
 
-# Manifeste Kubernetes - exemple
+# Ce que Kubernetes t'apporte
 
-```yaml {all|1-12|14-22|all}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api
-spec:
-  replicas: 3
-  selector:
-    matchLabels: { app: api }
-  template:
-    metadata:
-      labels: { app: api }
-    spec:
-      containers:
-        - name: api
-          image: ghcr.io/my-org/api:v1.2.3
-          ports:
-            - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: api
-spec:
-  selector: { app: api }
-  ports:
-    - port: 80
-      targetPort: 3000
-```
+<div class="grid grid-cols-2 gap-6">
 
-<!--
-Manifeste type. À ne pas mémoriser, juste à reconnaître.
+<div>
 
-`Deployment` : 3 replicas du pod, basé sur l'image ghcr.io/.../api:v1.2.3.
+<v-clicks>
 
-`Service` : expose le port 80 du service vers le 3000 des pods.
+- 🔁 **Auto-réparation** — un conteneur plante ? il le relance tout seul
+- 📈 **Montée en charge** — plus de trafic ? il ajoute des copies
+- 🚀 **Mise à jour sans coupure** — déploiement progressif
+- ⚖️ **Répartition de charge** entre les copies
 
-C'est purement déclaratif : tu dis l'état souhaité, K8s s'arrange pour l'atteindre.
+</v-clicks>
 
-Tu appliques avec `kubectl apply -f manifest.yaml`. Tu observes avec `kubectl get pods`, `kubectl logs`.
--->
+</div>
 
----
+<div>
 
-# kubectl - commandes essentielles
+<v-clicks>
 
-```bash
-# Voir l'état
-kubectl get pods
-kubectl get deployments
-kubectl get services
+**Quand basculer ?**
 
-# Détails
-kubectl describe pod <nom>
-kubectl logs <nom>
-kubectl logs -f <nom>           # follow
 
-# Appliquer/supprimer
-kubectl apply -f deployment.yaml
-kubectl delete -f deployment.yaml
+✅ **Reste sur Compose** si 1-3 serveurs, petite équipe, trafic stable
 
-# Debugging
-kubectl exec -it <pod> -- sh
-```
+🟣 **Passe à K8s** si plusieurs machines, gros trafic à absorber, beaucoup de services
+</v-clicks>
+</div>
+
+</div>
+
+<Tip type="info">
+On décrit tout ça dans des fichiers texte (les « manifestes » YAML) et on pilote avec un outil en ligne de commande, <code>kubectl</code>.
+</Tip>
 
 <!--
-Les commandes à connaître pour survivre.
+LE message de la séquence K8s : ce que ça APPORTE concrètement. C'est ça qui parle à des débutants, pas la syntaxe.
 
-`get` : liste. `describe` : détail. `logs` : sorties. `apply` : pousser un manifeste.
+- Auto-réparation : le pod meurt, K8s en recrée un. Tu dors la nuit.
+- Montée en charge : pic de trafic (Black Friday), K8s ajoute des copies, puis les retire après.
+- Mise à jour sans coupure (rolling update) : il remplace les anciennes versions progressivement, sans éteindre le service.
+- Répartition de charge : le trafic est distribué entre les copies.
 
-Pour expérimenter localement : Minikube (cluster K8s mono-noeud sur ta machine) ou k3s (K8s léger). Pas dans le scope de ce cours.
+C'est exactement ce qu'on devrait faire À LA MAIN avec Compose + scripts. K8s l'automatise.
 
-Si tu as une mission qui touche à K8s, ces 6-7 commandes te font tenir 80% des cas.
--->
+Quand basculer : pas de techno-fétichisme. Compose pour leurs projets/PME/startup. K8s = gros trafic, multi-machines, plusieurs équipes.
 
----
-
-# Quand basculer vers Kubernetes ?
-
-<Comparison left="Reste sur Docker Compose" right="Bascule vers K8s" leftColor="green" rightColor="purple">
-  <template #left>
-
-  - 1 à 3 serveurs
-  - Équipe < 10 dev
-  - Pas d'auto-scaling
-  - Stack relativement stable
-  - Budget infra modéré
-
-  </template>
-  <template #right>
-
-  - Multi-noeuds nécessaire
-  - Plusieurs équipes
-  - Auto-scaling, HA exigés
-  - Beaucoup de microservices
-  - Infrastructure cloud mature
-
-  </template>
-</Comparison>
-
-<!--
-La bonne question n'est pas "est-ce que K8s est mieux que Compose ?" mais "est-ce que mon contexte le justifie ?".
-
-K8s a un coût : complexité, opérateur dédié (souvent un poste à temps plein), courbe d'apprentissage longue.
-
-Pour un projet de cours, une startup early-stage, une PME : Compose ou un PaaS (Render, Railway, Heroku-style) suffit largement.
-
-K8s c'est pour quand tu hits les limites du précédent.
+Le Tip "manifestes + kubectl" : juste pour qu'ils reconnaissent les mots s'ils les croisent. On NE fait PAS de démo kubectl - hors scope, niveau vocabulaire (cf. fiche).
 -->
 
 ---
@@ -2545,53 +2387,40 @@ K8s c'est pour quand tu hits les limites du précédent.
 Décrire son infrastructure (serveurs, réseaux, bases) dans du code versionné, plutôt qu'en cliquant dans une console.
 </KeyConcept>
 
-<v-clicks>
+<div class="grid grid-cols-2 gap-4 mt-3 text-sm">
 
-- ✅ **Reproductibilité** - l'infra est rejouable à l'identique
-- ✅ **Versioning** - git log de l'infra
-- ✅ **Code review** - l'infra passe par PR
-- ✅ **Automatisation** - création/destruction par script
+<div>
 
-</v-clicks>
+**Pourquoi ?** Le clic-clic en console = pas reproductible, pas d'historique, pas de review.
+- ✅ Reproductibilité · Versioning
+- ✅ Code review (PR) · Automatisation
 
-<!--
-Le clic-clic dans la console AWS / Azure / GCP, c'est le mal absolu :
-- impossible de reproduire à l'identique
-- pas d'historique
-- pas de review
-- savoir tribal (la personne qui a cliqué a la connaissance)
+</div>
 
-L'IaC répond à tout ça : code, dans Git, reviewé, testable.
+<div>
 
-Concept à connaître absolument. Outils à survoler dans la slide suivante.
--->
+| Outil | Cible |
+|---|---|
+| **Terraform** | Provisionne le cloud (déclaratif, standard) |
+| **Ansible** | Configure des serveurs (SSH, sans agent) |
+| CloudFormation / Pulumi | AWS natif / code TS-Python |
 
----
+</div>
 
-# Comparatif IaC
-
-| Outil | Approche | Cible | Notes |
-|---|---|---|---|
-| **Terraform** | Déclaratif | Cloud (multi-provider) | Standard de fait |
-| **Ansible** | Procédural | Config de serveurs | SSH, sans agent |
-| **CloudFormation** | Déclaratif | AWS uniquement | Natif AWS |
-| **Pulumi** | Programmatif | Cloud | Code TS/Python/Go |
+</div>
 
 <Tip type="info">
-Pour ce cours, on s'arrête au vocabulaire. Tu en feras dans des cours dédiés ou en mission.
+Souvent ensemble : Terraform crée la VM, Ansible la configure. Pour ce cours : vocabulaire seulement.
 </Tip>
 
 <!--
-Disclaimer honnête : je ne suis pas le mieux placé pour t'enseigner IaC en profondeur.
+2 slides fusionnées. Mode survol, on ne s'attarde pas.
 
-Ce que tu dois retenir :
-- Terraform pour provisionner du cloud (créer des VMs, des réseaux, des DBs managées)
-- Ansible pour configurer des serveurs existants (installer paquets, déployer config)
-- Souvent les deux ensemble : Terraform crée la VM, Ansible la configure
+Concept clé QCM : l'infra-as-code = infra décrite en code versionné (vs clic dans la console). Bénéfices = reproductibilité, versioning, review, automatisation.
 
-Les autres : variantes, niches, ou natifs cloud.
+Outils : Terraform (provisionne du cloud), Ansible (configure des serveurs existants), souvent les deux ensemble. CloudFormation = AWS natif, Pulumi = en vrai langage.
 
-Si une mission touche à IaC, demande à un référent technique. Ne pas improviser.
+Disclaimer assumé : on ne fait pas d'IaC en profondeur ici. Si une mission y touche, voir un référent.
 -->
 
 ---
@@ -2617,6 +2446,8 @@ graph TB
 </v-clicks>
 
 <!--
+LES 3 PILIERS = question QCM quasi-certaine. Faire répéter à la salle.
+
 Les 3 piliers de l'observabilité (terminologie standard).
 
 Logs : "user X a tenté de se logger à 10h32, échec, mauvais mot de passe".
@@ -2630,55 +2461,46 @@ Les 3 sont complémentaires. Une stack obs moderne combine les trois.
 
 ---
 
-# Stacks d'observabilité courantes
+# Stacks d'observabilité + alerting
 
-| Stack | Forte sur | Notes |
-|---|---|---|
-| **ELK** (Elasticsearch + Logstash + Kibana) | Logs | Standard logs, gros volume, payant en cloud |
-| **Prometheus + Grafana** | Métriques | Standard métriques, open source, K8s-native |
-| **Jaeger / Tempo** | Traces | Tracing distribué, OpenTelemetry |
-| **Datadog / New Relic** | Tout-en-un | SaaS payant, productif, lock-in |
-| **Sentry** | Erreurs applicatives | Capture exceptions, contexte riche |
+<div class="grid grid-cols-2 gap-4 text-sm">
 
-<!--
-Panorama des stacks réelles.
+<div>
 
-ELK : la stack logs historique, encore très présente. Lourde à opérer en self-hosted.
+**Stacks courantes**
+| Stack | Forte sur |
+|---|---|
+| **ELK** | Logs |
+| **Prometheus + Grafana** | Métriques (K8s-native) |
+| Jaeger / Tempo | Traces |
+| Datadog / Sentry | Tout-en-un / erreurs |
 
-Prometheus + Grafana : THE stack métriques moderne, surtout sur K8s. Open source, "free as in beer".
+</div>
 
-Jaeger / Tempo : tracing. Plus récent, OpenTelemetry est le standard d'instrumentation.
+<div>
 
-Datadog / New Relic : SaaS payant, packagé. Très utilisé en entreprise mature, mais cher.
+**Alerting — bonnes pratiques**
+- 🎯 Alerter sur les **symptômes** (taux d'erreur, latence), pas les causes
+- 🔕 Chaque alerte doit être **actionnable**
+- 📞 Astreinte (nuit) = critique seulement
+- 📧 Email/Slack = info
 
-Sentry : à part, focus sur les exceptions applicatives. Quasi-incontournable pour du frontend/backend prod.
--->
+</div>
 
----
-
-# Alerting - les bonnes pratiques
-
-<v-clicks>
-
-- 🎯 **Alerter sur les symptômes**, pas les causes (taux d'erreur, latence)
-- 🔕 **Pas de fatigue d'alerte** - chaque alerte doit être actionnable
-- 📞 **Astreinte = alerte qui réveille la nuit** - réservée au critique
-- 📧 **Email/Slack** = info, pas urgence
-
-</v-clicks>
+</div>
 
 <Tip type="warning">
-Une alerte qui n'est jamais actionnée doit être supprimée. La fatigue d'alerte tue les vraies urgences.
+Une alerte jamais actionnée doit être supprimée. La fatigue d'alerte tue les vraies urgences.
 </Tip>
 
 <!--
-La théorie de l'alerting est sous-estimée.
+2 slides fusionnées, survol rapide.
 
-Symptôme vs cause : alerte sur "5% de 500 dans la dernière minute" (symptôme observable par l'utilisateur), pas sur "CPU à 80%" (cause possible mais peut-être pas un problème).
+Stacks : Prometheus+Grafana = LA stack métriques moderne (open source, K8s). ELK = logs historique. Le reste à connaître de nom.
 
-Fatigue d'alerte : si tu reçois 100 alertes par jour, tu ignoreras la 101e qui était la vraie urgence. C'est un anti-pattern documenté (Google SRE book).
+Alerting : symptôme vs cause (alerter sur "5% de 500", pas "CPU 80%"). Fatigue d'alerte = anti-pattern SRE. Astreinte réservée à ce qui doit être réglé la nuit.
 
-Astreinte = nuit. Donc seulement pour ce qui doit être réglé dans la nuit (panne totale, fuite de données). Le reste : ticket pour le lendemain.
+On ne s'attarde pas - c'est du vocabulaire.
 -->
 
 ---
@@ -2695,7 +2517,7 @@ Astreinte = nuit. Donc seulement pour ce qui doit être réglé dans la nuit (pa
 </v-clicks>
 
 <Tip type="info">
-GitHub propose Dependabot, secret scanning et code scanning gratuits sur les repos publics. Aucune excuse pour ne pas les activer.
+GitHub propose Dependabot, secret scanning et code scanning gratuits sur les repos publics.
 </Tip>
 
 <!--
@@ -2738,22 +2560,20 @@ Mon conseil : ne te disperse pas. Choisis 1 sujet qui t'attire (ex: Docker), cre
 
 <v-clicks>
 
-- Tu as les **bases CI/CD** - on les approfondira en gating, JUnit, parallélisation
-- Tu sais **builder une image** - on verra comment tester son contenu
-- Tu connais **les déploiements simples** - on ajoutera blue/green, canary, rollback
-- Bref : ce cours pose les **fondations**, le suivant pose les **stratégies**
+- En **Tests & Déploiement**, vous aviez vu : CI/CD, gating, JUnit, stratégies (blue/green, canary, rollback)
+- **Ici en DevOps**, on a ajouté la couche qui manquait : **conteneuriser** la livraison — build + push d'**image Docker** dans la CI
+- Les deux se complètent : Tests = *fiabiliser et déployer* · DevOps = *empaqueter et publier*
+- Vous avez maintenant la chaîne complète : du code testé à l'image publiée
 
 </v-clicks>
 
 <!--
-Important : tu vas voir GitHub Actions une 2e fois. C'est volontaire, ce n'est pas une redondance - on creuse différemment.
+Les deux cours se recoupent volontairement sur GitHub Actions, mais sous des angles différents.
 
-Cours DevOps = comment construire un pipeline.
-Cours Tests = comment le rendre fiable et déployer en sécurité.
+Cours Tests = comment rendre le pipeline fiable et déployer en sécurité (gating, stratégies).
+Cours DevOps = comment conteneuriser et publier (Docker dans la CI, registry).
 
-Si tu as adoré ce cours, tu vas adorer le suivant.
-
-Si tu as pataugé : pas de panique, le cours suivant te donnera 2 occasions de revoir GitHub Actions.
+C'est pour ça qu'on a traité CI/CD en rappel aujourd'hui : vous l'aviez déjà vu. La vraie nouveauté DevOps, c'est l'image Docker dans le pipeline.
 -->
 
 ---
@@ -2780,27 +2600,18 @@ Pour Docker / GitHub Actions : la doc officielle est excellente. Pas besoin de c
 
 ---
 
-# Évaluation
-
-<v-clicks>
-
-- **TP noté** - pipeline CI/CD complet pour une application web
-  - Lint, test, build Docker, push registry, déploiement auto
-  - Évalué : pipeline fonctionnel + qualité du Dockerfile + structure YAML
-- **QCM final** - 25-30 questions
-  - Couvre culture, Git, Docker, Compose, CI/CD, K8s/IaC/monitoring (vocabulaire)
-- **Modalités** - communiquées en début de période d'évaluation
-
-</v-clicks>
+# Évaluation - QCM
 
 <!--
-Modalités d'évaluation.
+DERNIÈRE SLIDE AVANT LE QCM. On enchaîne directement sur l'épreuve (~60 min).
 
-TP noté : c'est presque ce qu'on a fait en DJ4, sur une autre app. Tu as toutes les briques.
+Le survol écosystème qu'on vient de faire était la révision : K8s (pod/node/service/deployment/namespace), 3 piliers obs, IaC, DevSecOps.
 
-QCM : essentiellement de la compréhension de concepts et de la lecture de YAML/Dockerfile. Si tu suis ce cours sérieusement, tu n'as rien à craindre.
+QCM : compréhension de concepts + lecture de YAML/Dockerfile. Ceux qui ont suivi n'ont rien à craindre.
 
-Annonce les modalités précises (quand, où) si tu les as.
+TP noté : presque ce qu'on a fait au TP pipeline, sur une autre app. Modalités précises annoncées à part.
+
+Distribuer le QCM maintenant. Le "Merci" vient après l'épreuve.
 -->
 
 ---

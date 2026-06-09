@@ -1,0 +1,13 @@
+var R=require("../chunks/ssr/[turbopack]_runtime.js")("server/app/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0icjh3y._.js")
+R.c("server/chunks/ssr/0ugy_next_dist_esm_build_templates_app-page_06~3tov.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0vaiyee._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0ewsxsl._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0~_w0b2._.js")
+R.c("server/chunks/ssr/0ugy_next_dist_client_components_11~f71i._.js")
+R.c("server/chunks/ssr/0ugy_next_dist_client_components_builtin_forbidden_0liw8kd.js")
+R.c("server/chunks/ssr/0ugy_next_dist_client_components_builtin_unauthorized_0h9~2db.js")
+R.c("server/chunks/ssr/0ugy_next_dist_client_components_builtin_global-error_0zm0g3-.js")
+R.c("server/chunks/ssr/0au9_cinetrack-rendus_janick_lazasoa__next-internal_server_app_page_actions_0z49-as.js")
+R.m(74720)
+module.exports=R.m(74720).exports
