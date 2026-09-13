@@ -1,8 +1,8 @@
 ---
 theme: seriph
-title: "DevOps"
+title: "Cloud, Réseaux et DevOPS"
 info: |
-  ## DevOps
+  ## Cloud, Réseaux et DevOPS
   ING1 - Cycle ingénieur G4
 transition: slide-left
 mdc: true
@@ -13,11 +13,11 @@ drawings:
   persist: false
 layout: course-cover
 subtitle: De la culture aux pipelines automatisés
-session: 4 demi-journées
-instructor: Yoann Bohssain
+session: 4 demi-journées / 4x3h
+instructor: Clément Daou
 ---
 
-# DevOps
+# Cloud, Réseaux et DevOPS
 
 <!--
 Présentation rapide : parcours, expérience terrain en automatisation, conteneurisation et CI/CD.
