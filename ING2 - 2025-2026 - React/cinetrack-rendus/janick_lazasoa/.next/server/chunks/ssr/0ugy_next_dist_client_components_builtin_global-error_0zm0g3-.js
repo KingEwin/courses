@@ -1,3 +1,0 @@
-module.exports=[31892,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(16228);a.n(d("[project]/ING2 - 2025-2026 - React/cinetrack-rendus/janick_lazasoa/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},18461,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(16228);a.n(d("[project]/ING2 - 2025-2026 - React/cinetrack-rendus/janick_lazasoa/node_modules/next/dist/client/components/builtin/global-error.js"))},99901,a=>{"use strict";a.i(31892);var b=a.i(18461);a.n(b)},26471,a=>{a.n(a.i(99901))}];
-
-//# sourceMappingURL=0ugy_next_dist_client_components_builtin_global-error_0zm0g3-.js.map

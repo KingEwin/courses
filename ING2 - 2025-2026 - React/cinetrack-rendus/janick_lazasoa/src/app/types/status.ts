@@ -1,1 +1,0 @@
-export type Status = "to-watch" | "watching" | "completed";
