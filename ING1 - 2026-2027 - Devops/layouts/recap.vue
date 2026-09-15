@@ -8,7 +8,7 @@ defineProps({
   <div class="slidev-layout h-full flex flex-col">
     <!-- Header -->
     <div class="flex items-center gap-3 mb-4">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563eb] to-[#7c3aed] flex-center text-white text-lg">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#c1502e] to-[#b45309] flex-center text-white text-lg">
         📋
       </div>
       <div>

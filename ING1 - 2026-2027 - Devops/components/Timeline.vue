@@ -20,13 +20,13 @@ defineProps({
         <div
           class="w-3 h-3 rounded-full mt-1.5 z-1 ring-4"
           :class="step.active
-            ? 'bg-[#2563eb] ring-[#2563eb]/20 dark:(bg-[#60a5fa] ring-[#60a5fa]/20)'
-            : 'bg-[#94a3b8] ring-[#94a3b8]/10 dark:(bg-[#475569] ring-[#475569]/10)'"
+            ? 'bg-[#c1502e] ring-[#c1502e]/20 dark:(bg-[#e08a63] ring-[#e08a63]/20)'
+            : 'bg-[#94a3b8] ring-[#94a3b8]/10 dark:(bg-[#6b6259] ring-[#6b6259]/10)'"
         />
         <div
           v-if="i < steps.length - 1"
           class="w-0.5 flex-1 -mt-0.5"
-          :class="step.active ? 'bg-[#2563eb]/30 dark:bg-[#60a5fa]/30' : 'bg-[#e2e8f0] dark:bg-[#334155]'"
+          :class="step.active ? 'bg-[#c1502e]/30 dark:bg-[#e08a63]/30' : 'bg-[#e7ddd3] dark:bg-[#3d362f]'"
         />
       </div>
       <!-- Content -->

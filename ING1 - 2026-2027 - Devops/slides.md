@@ -1,9 +1,10 @@
 ---
 theme: seriph
-title: "Cloud, Réseaux et DevOPS"
+title: "Cloud, Réseaux et DevOps"
 info: |
-  ## Cloud, Réseaux et DevOPS
-  ING1 - Cycle ingénieur G4
+  ## Cloud, Réseaux et DevOps
+  Master Ingénierie Informatique et Management — G4 — ING1
+class: text-center
 transition: slide-left
 mdc: true
 fonts:
@@ -12,48 +13,77 @@ fonts:
 drawings:
   persist: false
 layout: course-cover
-subtitle: De la culture aux pipelines automatisés
-session: 4 demi-journées / 4x3h
-instructor: Clément Daou
+subtitle: Des fondamentaux réseau aux pipelines automatisés
+session: 4 séances de 3h — 12h
+instructor: Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes)
 ---
 
-# Cloud, Réseaux et DevOPS
+# Cloud, Réseaux et DevOps
 
 <!--
-Présentation rapide : parcours, expérience terrain en automatisation, conteneurisation et CI/CD.
+Durée : 3 min.
 
-L'objectif central de ces 2 jours : comprendre la culture DevOps, savoir conteneuriser une app, et construire un pipeline CI/CD qui marche.
+Se présenter : Clément DAOU, ingénieur Cloud-DevOps, expérience terrain sur AWS, Azure et Kubernetes. Préciser le contexte professionnel : conception d'architectures cloud, automatisation de pipelines, exploitation de clusters Kubernetes en production.
 
-Format : on alterne théorie courte, démos live, et TPs guidés. Hésite pas à interrompre, à poser des questions, à partager des galères vécues sur des projets.
+Objectif du module en une phrase : donner les fondations réseau, cloud et automatisation nécessaires pour comprendre comment une application passe du poste du développeur à un service accessible, supervisé et reproductible.
 
-Je précise dès le début : on ne fera pas tout en profondeur. DevOps c'est un univers, on pose les fondations solides ici, vous en reverrez beaucoup en cours Tests et Déploiement et plus tard en stage.
+Exemple concret à partager : raconter un incident réel où un déploiement a cassé en production faute de pipeline fiable, pour ancrer l'intérêt du cours dès la première minute.
+
+Transition : passer au plan global des 4 séances.
 -->
 
 ---
 
-# Plan du cours
+# Qui suis-je ?
 
 <v-clicks>
 
-- **Jour 1 matin** - Culture DevOps & métriques
-  <span class="text-sm opacity-70">CALMS, 3 voies, cycle de vie, DevSecOps, DORA</span>
-- **Jour 1 après-midi** - Git avancé & collaboration
-  <span class="text-sm opacity-70">Branching strategies, PR, hooks, SemVer, merge vs rebase</span>
-- **Jour 1 après-midi (suite)** - Docker & images
-  <span class="text-sm opacity-70">Architecture, Dockerfile, multi-stage, optimisation</span>
-- **Jour 2 matin** - Docker Compose & bases CI/CD
-  <span class="text-sm opacity-70">Stack locale, GitHub Actions, workflows YAML</span>
-- **Jour 2 après-midi** - Pipeline complet & écosystème
-  <span class="text-sm opacity-70">TP CI/CD, K8s, IaC, observabilité (survol)</span>
+- **Clément DAOU** — Ingénieur Cloud-DevOps
+- Expérience terrain : **AWS**, **Azure**, **Kubernetes**
+- Conception d'architectures cloud et automatisation de pipelines CI/CD
+- Exploitation et supervision de services en production
 
 </v-clicks>
 
 <!--
-On a 2 jours espacés de 2 semaines. Entre J1 et J2, je te donnerai une consigne d'observation : regarder les pipelines de tes projets et identifier ce qui est versionné/auto vs cliqué à la main.
+Durée : 2 min.
 
-Le fil rouge : culture → outils de collaboration → conteneurisation → automatisation.
+Développer brièvement le parcours : missions autour de la conteneurisation, de l'infrastructure cloud et des chaînes CI/CD, dans des contextes multi-fournisseurs (pas un seul hyperscaler).
 
-Tout est lié - tu ne fais pas du DevOps en faisant juste du Docker, ni juste du GitHub Actions. C'est un mindset autant qu'un toolset.
+Point à verbaliser : le cours reste volontairement généraliste — il ne pousse ni AWS, ni Azure, ni GCP comme référence unique. L'objectif est de comprendre les concepts communs pour être autonome face à n'importe lequel de ces environnements en stage ou en poste.
+
+Exemple concret : mentionner qu'un même schéma d'architecture (répartiteur + instances + base de données) se retrouve chez tous les fournisseurs, seuls les noms de service changent.
+
+Transition : présenter le plan global des 4 séances.
+-->
+
+---
+
+# Plan global du module
+
+<v-clicks>
+
+- **Séance 1** — Réseaux, cloud et haute disponibilité
+  <span class="text-sm opacity-70">Couches réseau, IP/DNS, IaaS/PaaS/SaaS/serverless, AWS/Azure/GCP, HA</span>
+- **Séance 2** — DevOps, Git, Docker et écosystème cloud-native
+  <span class="text-sm opacity-70">Histoire DevOps, Git collaboratif, Infrastructure as Code, Docker, Compose, CNCF, intro Kubernetes</span>
+- **Séance 3** — CI/CD avec GitHub Actions et GitLab CI
+  <span class="text-sm opacity-70">Anatomie d'un pipeline, workflows YAML, TP pipeline installation → tests → build</span>
+- **Séance 4** — Sécurité, observabilité, déploiement et audit IA
+  <span class="text-sm opacity-70">TLS, secrets, stratégies de déploiement, logs/métriques/traces, audit IA, TP final</span>
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Verbaliser le fil rouge : une application Node.js simple sert de trame sur les 4 séances. Elle est versionnée avec Git, conteneurisée avec Docker, puis validée par un pipeline CI. Le déploiement public reste une option, jamais une obligation bloquante.
+
+Exemple concret : montrer rapidement (sans détailler) le dépôt final attendu — code, Dockerfile, fichier de pipeline, README d'audit — pour donner une cible visuelle dès le départ.
+
+Point important à dire à voix haute : Kubernetes sera vu en introduction pure (vocabulaire), jamais en TP noté ni en installation de cluster.
+
+Transition : détailler les objectifs pédagogiques précis du module.
 -->
 
 ---
@@ -62,147 +92,731 @@ Tout est lié - tu ne fais pas du DevOps en faisant juste du Docker, ni juste du
 
 <v-clicks>
 
-- Comprendre la culture DevOps et le mouvement CALMS
-- Lire les métriques DORA et savoir où ton équipe se situe
-- Collaborer en équipe avec Git (branching, PR, hooks, SemVer)
-- Conteneuriser une application avec un Dockerfile optimisé
-- Orchestrer une stack locale avec Docker Compose
-- Construire un pipeline CI/CD GitHub Actions complet
-- Reconnaître le vocabulaire de Kubernetes, IaC et observabilité
+- Expliquer l'adressage IP, le DNS, la passerelle et le routage
+- Distinguer IaaS, PaaS, SaaS et serverless, puis justifier un choix
+- Comparer VM et conteneur, construire une image Docker, situer Kubernetes
+- Décrire les mécanismes de haute disponibilité
+- Expliquer les principes de l'Infrastructure as Code (déclaratif, plan, apply) et situer Terraform
+- Utiliser Git en flux collaboratif : branches, commits, revue, versionnage
+- Construire un pipeline CI qui installe, teste, construit et fabrique une image
+- Identifier les risques secrets, dépendances, TLS et images
+- Lire des logs et choisir des métriques utiles
+- Auditer une configuration Docker/CI générée par une IA
 
 </v-clicks>
 
 <!--
-À la fin du cours tu sauras containeriser une app, automatiser son test et son build via un pipeline, et tu auras le vocabulaire pour discuter sereinement avec un Ops en stage.
+Durée : 3 min.
 
-L'objectif n'est pas de te transformer en SRE ou en architecte cloud - c'est de te donner les fondations pour que tu puisses construire dessus.
+Ces 10 objectifs sont ceux évalués par le TP final et les quiz formatifs. Les lire une fois à voix haute, sans les commenter un par un — l'idée est de donner une checklist de référence, pas de noyer le début du cours.
 
-Le QCM final couvrira ces 7 objectifs, plus un TP noté sur le pipeline CI/CD.
+Exemple concret : rappeler qu'un futur chef de projet IT n'a pas besoin de tout coder lui-même, mais doit savoir lire ces éléments pour dialoguer avec une équipe technique — lien direct avec le profil management du master.
+
+Transition : entrer dans la séance 1, réseaux et cloud.
 -->
 
 ---
 layout: section-cover
-section: Session 1
+section: Séance 1 — 3h
 ---
 
-# Culture et principes DevOps
+# Réseaux, cloud et haute disponibilité
 
-Avant les outils, l'état d'esprit
+Comprendre le trajet d'une requête avant de choisir un hébergement
 
 <!--
-On commence par la culture. Pourquoi ? Parce que DevOps n'est pas un poste, ni un outil - c'est une façon de bosser.
+Durée : 1 min.
 
-Si on plonge directement dans Docker sans poser le pourquoi, on rate l'essentiel.
+Annoncer le fil de la séance : on part du réseau (comment une requête voyage), on enchaîne sur le cloud (où héberger), on termine sur la haute disponibilité (comment résister aux pannes).
+
+Exemple concret : poser la question à la salle — "quand vous tapez une URL dans un navigateur, que se passe-t-il avant que la page s'affiche ?" — et noter les réponses au tableau pour y revenir plus tard.
+
+Transition : démarrer par le modèle en couches.
 -->
 
 ---
 
-# DevOps, c'est quoi pour toi ?
+# Le modèle en couches
 
-<v-clicks>
-
-- En 1 phrase : ta définition
-- Un outil DevOps que tu connais déjà
-
-</v-clicks>
-
-<!--
-Tour rapide pour casser la glace et voir où en est le groupe.
-
-Réponses fréquentes : "Docker", "CI/CD", "automatisation", "déploiement". Toutes correctes mais incomplètes.
-
-Le piège classique : penser que DevOps = un poste, ou que c'est juste "les Ops qui font un peu de dev". On va voir que c'est plus large.
--->
-
----
-
-# Origine : les silos Dev vs Ops
-
-```mermaid
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
-  A[Dev<br/>« ça marche chez moi »] -->|Livraison| B[Ops<br/>« ça marche pas en prod »]
-  B -->|Tickets| A
-  style A fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style B fill:#dc2626,stroke:#991b1b,color:#fff
+  A[Application<br/>HTTP, HTTPS] --> B[Transport<br/>TCP, UDP]
+  B --> C[Réseau<br/>IP]
+  C --> D[Liaison / Physique<br/>Ethernet, Wi-Fi]
 ```
 
 <v-clicks>
 
-- **Dev** : ajoute des features, change vite
-- **Ops** : stabilise, refuse les changements
-- **Conflit structurel** : objectifs opposés
+- Chaque couche résout **un problème précis**
+- Une couche ne connaît que sa voisine directe
+- **Encapsulation** : chaque couche ajoute son en-tête
 
 </v-clicks>
 
 <!--
-Avant DevOps, deux mondes séparés.
+Durée : 12 min (dont ~5 min d'échange avec la salle).
 
-Le dev veut livrer vite, l'ops veut un système stable. Ces objectifs s'opposent : chaque livraison nouvelle est un risque pour l'ops.
+Simplifier le modèle OSI/TCP-IP en 4 couches pratiques plutôt que les 7 couches OSI complètes — suffisant au niveau ING1.
 
-Le ticket de prod tombe le vendredi soir, le dev est rentré chez lui, l'ops doit réveiller le tech lead. Classique.
+Exemple concret : une lettre postée dans une enveloppe, elle-même dans un sac postal, lui-même dans un camion. Chaque couche ajoute son propre "emballage" sans se soucier du contenu des couches internes.
 
-Le mouvement DevOps (Patrick Debois, 2009, premier "DevOpsDays") cherche à dissoudre ce silo.
+Point à verbaliser : HTTP ne sait pas comment les bits circulent sur le câble, et l'inverse est vrai aussi — c'est la force de l'abstraction en couches.
+
+Faire réagir la salle avant de conclure : demander à deux ou trois étudiants de retrouver, pour un protocole de leur choix (SSH, DNS, HTTPS...), la couche à laquelle il appartient — ce temps d'échange consolide la compréhension avant de passer au schéma d'encapsulation.
+
+Transition : détailler l'encapsulation avec un schéma de paquet.
 -->
 
 ---
 
-# Le mouvement CALMS
+# Encapsulation : le paquet qui grossit
 
-<KeyConcept title="CALMS" icon="🎯">
-Cadre de référence du DevOps en 5 piliers : Culture, Automation, Lean, Measurement, Sharing.
-</KeyConcept>
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Données applicatives] --> B[+ en-tête TCP]
+  B --> C[+ en-tête IP]
+  C --> D[+ en-tête Ethernet]
+```
 
 <v-clicks>
 
-- **Culture** - collaboration, responsabilité partagée
-- **Automation** - automatiser tout ce qui est répétitif
-- **Lean** - flux continu, réduire le gaspillage
-- **Measurement** - mesurer pour s'améliorer
-- **Sharing** - partager connaissances et outils
+- **Émission** : chaque couche ajoute un en-tête (encapsulation)
+- **Réception** : chaque couche retire son en-tête (décapsulation)
+- Rôle des **ports** : identifier quelle application reçoit les données sur une machine
 
 </v-clicks>
 
 <!--
-CALMS, c'est l'acronyme à retenir. C'est le squelette philosophique du DevOps.
+Durée : 13 min (dont ~6 min de manipulation guidée).
 
-Important : la "Culture" est en premier, pas par hasard. Sans culture partagée, les outils ne servent à rien.
+Le port complète l'adresse IP : l'IP dirige vers la bonne machine, le port dirige vers la bonne application sur cette machine (80/443 pour le web, 22 pour SSH, 5432 pour PostgreSQL).
 
-Anecdote : j'ai vu des boîtes acheter Jenkins, Docker, Kubernetes, et continuer à fonctionner en silos. Résultat : zéro gain, complexité en plus.
+Exemple concret : un immeuble (l'adresse IP) contient plusieurs appartements (les ports) ; le facteur (le réseau) doit connaître les deux pour livrer au bon destinataire.
+
+Manipulation guidée : demander à chaque étudiant d'ouvrir un terminal et de lister les ports en écoute sur son poste (`netstat -tulpn` sous Linux, `netstat -ano` sous Windows), puis de retrouver à quelle application chaque port correspond — ancre concrètement la notion avant de passer à l'adressage IP.
+
+Transition : passer à l'adressage IPv4/IPv6.
 -->
 
 ---
 
-# Les trois voies DevOps
+# IPv4 : structure d'une adresse
+
+```text
+192.168.1.10 / 24
+└──┬──┘        └┬┘
+ adresse      masque (préfixe CIDR)
+```
 
 <v-clicks>
 
-- **1re voie - Le flux** : du code qui circule de Dev vers Ops sans friction
-- **2e voie - Le feedback** : retour rapide depuis la prod vers Dev
-- **3e voie - L'apprentissage continu** : expérimenter, mesurer, capitaliser
+- 4 octets, format décimal pointé
+- **Adresse privée** (192.168.x.x, 10.x.x.x) vs **adresse publique**
+- Le **masque** délimite la partie réseau de la partie machine
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~4 min d'exercices de lecture d'adresses).
+
+Rappeler que les adresses privées ne sont pas routables sur Internet : elles servent en interne (LAN, VPC cloud), une passerelle NAT fait le pont vers l'extérieur.
+
+Exemple concret : le Wi-Fi de la salle attribue probablement des adresses 192.168.x.x aux postes ; c'est une adresse privée, pas visible depuis l'extérieur.
+
+Exercice express : proposer 3-4 adresses IP à la salle et demander pour chacune si elle est privée ou publique, en levant la main — corrige immédiatement les erreurs de lecture avant d'aborder le CIDR.
+
+Transition : introduire la lecture du CIDR.
+-->
+
+---
+
+# Lire un CIDR simplement
+
+| Notation | Nombre d'adresses | Usage typique |
+|---|---:|---|
+| `/32` | 1 | Une machine précise |
+| `/24` | 256 | Petit réseau local |
+| `/16` | 65 536 | Grand réseau d'entreprise |
+| `/8` | 16 777 216 | Bloc historique très large |
+
+<Tip type="info">
+Plus le préfixe est petit, plus le réseau est grand : `/8` couvre bien plus d'adresses que `/24`.
+</Tip>
+
+<!--
+Durée : 10 min (dont ~5 min d'exercices de lecture de CIDR).
+
+Objectif : que l'étudiant sache lire "192.168.1.0/24" comme "256 adresses possibles dans ce réseau", sans exiger de calcul binaire complexe.
+
+Exemple concret : un cloud provider alloue souvent un bloc `/16` à un VPC, puis le découpe en plusieurs sous-réseaux `/24` par zone de disponibilité — lien direct avec la séance cloud qui suit.
+
+Exercice guidé : donner 3 notations CIDR (`/28`, `/20`, `/12`) et demander à la salle d'estimer, sans calculatrice, laquelle couvre le plus d'adresses — corriger ensemble en s'appuyant sur le tableau affiché.
+
+Transition : passer à IPv6 en contraste rapide.
+-->
+
+---
+
+# IPv6 : pourquoi et à quoi ça ressemble
+
+<v-clicks>
+
+- **Pourquoi** : épuisement des adresses IPv4 disponibles
+- Format : 128 bits, notation hexadécimale (`2001:db8::1`)
+- Coexiste avec IPv4 (dual-stack) sur la majorité des réseaux actuels
+
+</v-clicks>
+
+<!--
+Durée : 5 min.
+
+Rester bref : IPv6 n'est pas le cœur du cours, mais l'étudiant doit savoir le reconnaître et comprendre pourquoi il existe.
+
+Exemple concret : un enregistrement DNS `AAAA` (vu juste après) sert précisément à publier une adresse IPv6, en miroir du `A` pour IPv4.
+
+Point d'échange rapide : demander si quelqu'un dans la salle a déjà vu une adresse IPv6 en pratique (chez un fournisseur d'accès, un cloud) — sert de transition naturelle et concrète.
+
+Transition : enchaîner sur le DNS, qui traduit les noms de domaine en adresses IP.
+-->
+
+---
+
+# DNS : traduire un nom en adresse
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Navigateur] -->|"exemple.com ?"| B[Résolveur DNS]
+  B -->|"203.0.113.10"| A
+  A -->|Requête HTTP| C[Serveur 203.0.113.10]
+```
+
+<v-clicks>
+
+- Le **DNS** évite de mémoriser des adresses IP
+- Résolution en cascade : résolveur local → serveurs racine → TLD → serveur autoritaire
+- Résultat souvent **mis en cache** (TTL)
+
+</v-clicks>
+
+<!--
+Durée : 12 min (dont ~7 min de démonstration live).
+
+Insister sur l'analogie annuaire téléphonique : on cherche un nom, on obtient un numéro (ici une adresse IP).
+
+Exemple concret : demander à la salle de citer un site qu'ils visitent souvent, puis expliquer que taper son nom déclenche cette résolution avant même l'envoi de la requête HTTP.
+
+Démonstration live : exécuter `dig exemple.com` (ou `nslookup`) devant la salle sur le nom de domaine cité, commenter chaque champ de la réponse (TTL, adresse résolue, serveur ayant répondu) puis relancer la commande pour montrer l'effet du cache.
+
+Transition : détailler les types d'enregistrements DNS les plus courants.
+-->
+
+---
+
+# Enregistrements DNS courants
+
+| Type | Rôle | Exemple |
+|---|---|---|
+| `A` | Nom → adresse IPv4 | `exemple.com → 203.0.113.10` |
+| `AAAA` | Nom → adresse IPv6 | `exemple.com → 2001:db8::1` |
+| `CNAME` | Alias vers un autre nom | `www.exemple.com → exemple.com` |
+| `MX` | Serveur de messagerie | `exemple.com → mail.exemple.com` |
+
+<!--
+Durée : 8 min (dont ~4 min d'échange sur des cas vécus).
+
+Ces 4 types couvrent la majorité des cas rencontrés en entreprise. Insister sur `CNAME` : très utilisé pour pointer un sous-domaine vers un service géré (CDN, plateforme cloud) sans exposer d'adresse IP brute.
+
+Exemple concret : un enregistrement `MX` mal configuré est une cause fréquente d'emails qui n'arrivent jamais — bon exemple de conséquence business d'une erreur réseau.
+
+Échange avec la salle : demander si quelqu'un a déjà configuré un enregistrement DNS (sous-domaine personnel, projet perso) et faire raconter brièvement le cas — ancre la notion dans du vécu avant de continuer.
+
+Transition : voir comment un paquet trouve son chemin jusqu'au bon serveur (routage).
+-->
+
+---
+
+# Routage et passerelle par défaut
+
+<v-clicks>
+
+- La **passerelle par défaut** est la porte de sortie du réseau local
+- Chaque **routeur** décide du prochain saut vers la destination
+- Le chemin peut traverser plusieurs réseaux intermédiaires
 
 </v-clicks>
 
 <Tip type="info">
-Concept introduit par Gene Kim dans "The Phoenix Project" (roman fondateur, lecture recommandée).
+Le routage ne garantit pas un chemin unique : plusieurs routes peuvent exister, le routeur choisit la plus pertinente selon sa table.
 </Tip>
 
 <!--
-Les 3 voies, c'est la formalisation du flux DevOps.
+Durée : 7 min (dont ~3 min d'échange).
 
-1re voie : on optimise le sens "gauche → droite" (du code à la prod). Outils : CI, CD, automatisation.
+Rester conceptuel : pas besoin de détailler les protocoles de routage (BGP, OSPF) à ce niveau, juste le principe de saut en saut.
 
-2e voie : on remonte les signaux de la prod vers le code. Outils : monitoring, alerting, post-mortems.
+Exemple concret : `traceroute`/`tracert` révèle visuellement ces sauts intermédiaires — sert de transition parfaite vers les outils de diagnostic.
 
-3e voie : on transforme les leçons apprises en améliorations systémiques. Culture du blameless, expérimentation.
+Échange avec la salle : demander combien de sauts ils imaginent entre leur poste et un site connu, noter les estimations au tableau, puis les confronter au résultat réel lors de la démonstration `traceroute` qui suit.
 
-Si tu lis un seul livre cette année : "The Phoenix Project". C'est un roman, ça se lit en 2 soirs.
+Transition : présenter les commandes de diagnostic réseau du quotidien.
 -->
 
 ---
 
-# Cycle de vie DevOps
+# Diagnostic réseau — outils du quotidien
 
-```mermaid
+```bash
+# Vérifier qu'un hôte répond
+ping exemple.com
+
+# Voir le chemin emprunté par les paquets
+traceroute exemple.com   # tracert sous Windows
+
+# Interroger le DNS directement
+nslookup exemple.com
+dig exemple.com
+```
+
+<!--
+Durée : 8 min (dont ~5 min de manipulation guidée en terminal).
+
+Ces commandes suffisent à diagnostiquer 80 % des incidents réseau simples : "le site ne répond pas" (ping), "où ça bloque" (traceroute), "le nom ne résout pas correctement" (nslookup/dig).
+
+Exemple concret : un `ping` qui échoue mais un `nslookup` qui fonctionne indique souvent un pare-feu qui bloque le protocole ICMP, pas un vrai problème réseau — nuance utile à transmettre.
+
+Manipulation guidée : demander à chaque étudiant d'exécuter les quatre commandes sur son propre poste contre un domaine de son choix, puis de comparer les résultats avec son voisin — transforme la démonstration en pratique individuelle avant la pause.
+
+Transition : refermer le bloc réseau, ouvrir le cloud après la pause.
+-->
+
+---
+layout: pause
+duration: 10 min
+---
+
+<!--
+Durée : 10 min de pause.
+
+Rester disponible pour des questions individuelles sur le bloc réseau qui vient de se terminer.
+
+Transition au retour : ouvrir le bloc cloud avec les trois promesses (élasticité, mutualisation, paiement à l'usage).
+-->
+
+---
+
+# Le cloud : trois promesses
+
+<v-clicks>
+
+- **Élasticité** — ajuster la capacité à la demande
+- **Mutualisation** — des ressources partagées entre clients
+- **Paiement à l'usage** — payer ce qui est consommé, pas une capacité figée
+
+</v-clicks>
+
+<Comparison left="On-premise" right="Fournisseur cloud" leftColor="orange" rightColor="green">
+  <template #left>
+
+  - **Responsabilité** : 100 % équipe (matériel, OS, réseau)
+  - **Coût** : investissement initial (CapEx)
+  - Capacité figée, à sur-dimensionner « au cas où »
+
+  </template>
+  <template #right>
+
+  - **Responsabilité** : partagée fournisseur/client
+  - **Coût** : dépense à l'usage (OpEx)
+  - Capacité élastique, ajustée à la demande
+
+  </template>
+</Comparison>
+
+<KeyConcept title="Pièges de facturation" icon="💸">
+Le paiement à l'usage cache des coûts faciles à manquer : transfert sortant (**egress**) facturé au Go, ressources oubliées qui tournent sans usage, instances surdimensionnées par excès de prudence. Réflexe côté management : poser un budget et une alerte de dépassement dès la mise en service, pas après la première facture.
+</KeyConcept>
+
+<!--
+Durée : 15 min (dont ~7 min d'échange avec la salle sur des cas vécus).
+
+Le modèle de responsabilité partagée est un point d'examen classique et une vraie source d'incidents en entreprise (buckets de stockage mal configurés, ouverts publiquement par erreur du client, pas du fournisseur).
+
+Point à bien détailler : on-premise, le client porte 100 % de la responsabilité (et du coût fixe immobilisé) ; chez un fournisseur cloud, la responsabilité et le coût se déplacent — le fournisseur sécurise le socle physique et facture à l'usage, le client garde la main sur sa configuration et ses données. Ce basculement CapEx → OpEx est un argument de gestion de projet aussi important que l'argument technique.
+
+Exemple concret : citer sans jugement de valeur qu'un compte cloud mal configuré (accès trop ouverts) reste la faute du client, même si l'hébergeur est un grand acteur reconnu — la responsabilité partagée n'est pas négociable.
+
+Développer les pièges de facturation avec un cas concret : une machine de test qu'on oublie d'éteindre le week-end, ou un transfert de données volumineux vers un autre cloud qui déclenche des frais d'egress inattendus en fin de mois. Insister sur le réflexe budget/alerte comme geste de gestion de projet, pas seulement technique — lien direct avec le profil management du master.
+
+Temps d'échange dédié : demander à la salle si quelqu'un a déjà vu ou vécu une facture cloud plus élevée que prévu (stage, projet perso, entreprise) et faire raconter le cas ; enchaîner sur un tour de table rapide des trois promesses pour vérifier la compréhension avant de continuer.
+
+Transition : détailler les modèles de service cloud (IaaS, PaaS, SaaS, serverless).
+-->
+
+---
+
+# IaaS, PaaS, SaaS, serverless
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[On-premise<br/>tout géré par vous] --> B[IaaS<br/>machines virtuelles, réseau]
+  B --> C[PaaS<br/>runtime applicatif managé]
+  C --> D[SaaS<br/>logiciel prêt à l'emploi]
+  B --> E[Serverless<br/>fonctions à la demande]
+```
+
+<v-clicks>
+
+- **IaaS** — vous gérez l'OS et l'application, le fournisseur gère le matériel
+- **PaaS** — vous déployez du code, le fournisseur gère le runtime
+- **SaaS** — vous utilisez un logiciel, rien à administrer
+- **Serverless** — le code s'exécute à la demande, sans gestion de serveur
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~4 min d'exemples filés).
+
+Chaque modèle déplace le curseur de responsabilité : plus on monte vers le SaaS, moins le client gère d'infrastructure, mais moins il a de contrôle fin.
+
+Exemple concret : IaaS = louer un appartement vide (vous meublez tout) ; PaaS = un appartement meublé (vous apportez vos affaires) ; SaaS = un hôtel (tout est fourni, service inclus) ; serverless = payer une chambre uniquement pendant la nuit où vous dormez.
+
+Développer chaque analogie avec un exemple de service réel (VM chez un hébergeur pour IaaS, plateforme de déploiement d'application pour PaaS, suite bureautique en ligne pour SaaS, fonction déclenchée par un événement pour serverless) pour ancrer le vocabulaire avant l'étude de cas.
+
+Transition : comparer ces modèles à un hébergement classique via une étude de cas.
+-->
+
+---
+
+# Étude de cas — quel modèle choisir ?
+
+| Contexte | Modèle pertinent | Pourquoi |
+|---|---|---|
+| Contrôle fin de l'OS, legacy | IaaS | Liberté totale de configuration |
+| Équipe réduite, déploiement fréquent | PaaS | Le runtime est déjà géré |
+| Besoin métier standard (mail, CRM) | SaaS | Aucune administration technique |
+| Traitement ponctuel, trafic imprévisible | Serverless | Facturation à l'exécution réelle |
+
+<Tip type="warning">
+Aucun modèle n'est universellement supérieur : le choix dépend du contexte, de l'équipe et du budget.
+</Tip>
+
+<!--
+Durée : 12 min (temps d'étude de cas en petits groupes puis mise en commun).
+
+Faire réagir la salle : donner un cas (ex. "startup de 3 développeurs qui lance un MVP") et demander quel modèle ils choisiraient, puis confronter les réponses.
+
+Exemple concret : une PME qui migre sa messagerie vers un SaaS (type Microsoft 365 ou Google Workspace) gagne en simplicité mais perd en personnalisation fine — bon exemple pour le profil management du master (arbitrage coût/contrôle).
+
+Déroulé pratique : former des binômes, distribuer 2-3 minutes pour trancher sur le cas proposé et justifier le choix à l'oral, puis passer à un second cas contrasté (ex. "grand compte avec exigences de conformité strictes") pour montrer que la réponse change selon le contexte. Prévoir 5 min de mise en commun collective à la fin.
+
+Transition : voir comment AWS, Azure et GCP incarnent ces modèles.
+-->
+
+---
+
+# AWS, Azure, GCP : mêmes briques, noms différents
+
+| Besoin | AWS | Azure | GCP |
+|---|---|---|---|
+| Machine virtuelle | EC2 | Virtual Machines | Compute Engine |
+| Stockage objet | S3 | Blob Storage | Cloud Storage |
+| Base de données managée | RDS | Azure SQL | Cloud SQL |
+| Fonctions serverless | Lambda | Functions | Cloud Functions |
+
+<!--
+Durée : 6 min (dont ~2 min d'échange sur les exemples publics).
+
+Message clé : ce ne sont pas des familles de services fondamentalement différentes — ce sont des implémentations différentes des mêmes concepts (calcul, stockage, base de données, fonctions).
+
+Exemple concret à formuler avec prudence : des architectures cloud sont documentées publiquement par des entreprises comme Netflix (AWS), ou par Microsoft et Google pour leurs propres services Azure et GCP — ce sont des cas publics datés, pas des relations exclusives ni des modèles universels à copier tel quel.
+
+Transition : passer à la haute disponibilité, dernier bloc de la séance 1.
+-->
+
+---
+
+# Haute disponibilité — les mécanismes clés
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  U[Utilisateur] --> LB[Load balancer]
+  LB --> I1[Instance A]
+  LB --> I2[Instance B]
+  I1 -.->|Health check| LB
+  I2 -.->|Health check| LB
+```
+
+<v-clicks>
+
+- **Zones multiples** — répartir sur des salles de machines distinctes
+- **Instances multiples** — pas de point unique de défaillance
+- **Load balancer** — répartit le trafic entre instances saines
+- **Health check** — détecte et retire une instance défaillante
+
+</v-clicks>
+
+<!--
+Durée : 15 min (dont ~7 min d'échange approfondi sur les mécanismes).
+
+Relier au vocabulaire du cloud vu juste avant : ces mécanismes existent chez tous les fournisseurs, sous des noms différents (Auto Scaling Group, Availability Set, Managed Instance Group...).
+
+Exemple concret : si une seule instance tombe, le load balancer cesse de lui envoyer du trafic dès que son health check échoue — l'utilisateur ne voit rien passer.
+
+Approfondir avec la salle : reprendre chaque mécanisme (zones, instances, load balancer, health check) et demander un scénario de panne concret où il intervient — le temps supplémentaire, libéré par le passage du QCM en clôture de séance, sert à consolider ce bloc plutôt qu'à un exercice écrit isolé.
+
+Transition : synthèse de la séance 1.
+-->
+
+---
+layout: recap
+section: Séance 1 — Réseaux, cloud et haute disponibilité
+---
+
+# Ce qu'il faut retenir
+
+- **Couches réseau** : application, transport, réseau, liaison — encapsulation à l'émission
+- **IPv4/IPv6, CIDR** : adresse + masque définissent la taille d'un réseau
+- **DNS** : `A`/`AAAA`/`CNAME`/`MX` traduisent des noms en ressources
+- **Routage** : passerelle par défaut, sauts successifs, diagnostic via ping/traceroute/dig
+- **Cloud** : élasticité, mutualisation, paiement à l'usage, responsabilité partagée
+- **IaaS/PaaS/SaaS/serverless** : le curseur de contrôle vs simplicité
+- **Haute disponibilité** : zones, instances multiples, load balancer, health check
+
+<!--
+Durée : 3 min.
+
+Consigne interséance : demander aux étudiants d'observer, sur un service qu'ils utilisent (banque en ligne, jeu vidéo, réseau social), ce qui pourrait relever de la haute disponibilité (multi-région annoncée, statut de service public, etc.).
+
+Transition : lancer le QCM de clôture de la séance 1.
+-->
+
+---
+layout: exercise
+duration: 12 min
+type: solo
+---
+
+# QCM de clôture — Séance 1
+
+<div class="grid grid-cols-2 gap-8 items-center h-full">
+<div>
+
+**Couvre** : couches réseau, IP/DNS, routage, cloud (IaaS/PaaS/SaaS/serverless), AWS/Azure/GCP, haute disponibilité
+
+<v-clicks>
+
+- 8 à 10 questions, une bonne réponse par question
+- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
+- Score individuel, débrief collectif juste après
+
+</v-clicks>
+
+</div>
+<div class="flex flex-col items-center justify-center gap-4">
+  <div
+    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
+    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
+  >
+    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
+      <span class="block font-bold text-[#c1502e]">QR CODE</span>
+      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
+    </div>
+  </div>
+  <div class="text-center">
+    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
+    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
+  </div>
+</div>
+</div>
+
+<!--
+Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+
+Verbaliser avant de lancer : objectif individuel de vérification des acquis, pas une compétition à forte pression ; laisser large sur le temps par question pour absorber une connexion réseau lente en salle.
+
+Exemple concret de question possible : "Quel type d'enregistrement DNS pointe vers une adresse IPv4 ?" (réponse attendue : A) — à adapter selon les questions réellement configurées dans le quiz.
+
+Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 2 — DevOps, Git, Docker et écosystème cloud-native.
+-->
+
+---
+layout: section-cover
+section: Séance 2 — 3h
+---
+
+# DevOps, Git, Docker et écosystème cloud-native
+
+De la culture aux premières images exécutables
+
+<!--
+Durée : 1 min.
+
+Annoncer le fil de la séance : d'abord la culture DevOps et son histoire, puis Git en équipe, puis Docker, puis un premier pas dans l'écosystème cloud-native avec la CNCF et une introduction à Kubernetes.
+
+Exemple concret : rappeler le fil rouge — l'application Node.js va être versionnée avec Git puis conteneurisée avec Docker dans cette séance.
+
+Transition : retour rapide sur la séance 1.
+-->
+
+---
+
+# Retour sur la séance 1
+
+<v-clicks>
+
+- Réseau : couches, IP, DNS, routage — acquis ?
+- Cloud : IaaS/PaaS/SaaS/serverless — un exemple retenu ?
+- Haute disponibilité — qu'avez-vous observé sur un service que vous utilisez ?
+
+</v-clicks>
+
+<!--
+Durée : 7 min (dont ~3 min de tour de table).
+
+Tour de table rapide sur la consigne interséance (observation de haute disponibilité sur un service utilisé). Objectif : réactiver les acquis avant d'enchaîner.
+
+Exemple concret attendu des étudiants : "l'appli de ma banque affiche une page de maintenance par zone", "mon jeu en ligne a un statut serveur public".
+
+Tour de table complet : donner la parole à 4-5 étudiants successivement (pas seulement les volontaires spontanés) pour maximiser la diversité des exemples et vérifier que la consigne a été comprise par l'ensemble du groupe.
+
+Transition : rappeler le scénario applicatif du fil rouge avant d'attaquer le DevOps.
+-->
+
+---
+
+# Le scénario applicatif du fil rouge
+
+<v-clicks>
+
+- Une application web **Node.js minimale** : une page, un endpoint de contrôle
+- Elle sera **versionnée** avec Git (cette séance)
+- Elle sera **conteneurisée** avec Docker (cette séance)
+- Elle sera **validée par un pipeline** (séance 3) puis **sécurisée et supervisée** (séance 4)
+
+</v-clicks>
+
+<!--
+Durée : 5 min.
+
+Ce rappel évite que les étudiants perçoivent Git, Docker et CI/CD comme des blocs isolés — c'est une seule chaîne, appliquée au même projet du début à la fin.
+
+Exemple concret : montrer la structure attendue du dépôt final (code, tests, Dockerfile, fichier de pipeline) pour donner un repère visuel stable.
+
+Vérification rapide : demander qui a déjà cloné le dépôt fil rouge et lancé l'application localement — traiter en direct les deux ou trois blocages d'environnement les plus fréquents avant de continuer.
+
+Transition : entrer dans l'histoire du DevOps.
+-->
+
+---
+
+# Avant DevOps : des silos Dev et Ops
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A["Dev<br/>livre vite, veut du changement"] -->|Livraison| B["Ops<br/>stabilise, refuse le risque"]
+  B -->|Tickets, incidents| A
+```
+
+<v-clicks>
+
+- **Dev** : ajoute des fonctionnalités, veut livrer vite
+- **Ops** : maintient le service stable, redoute chaque changement
+- Objectifs structurellement opposés → tensions, lenteurs, blâme mutuel
+
+</v-clicks>
+
+<!--
+Durée : 4 min.
+
+Poser le problème avant la solution : sans culture partagée, chaque livraison devient un conflit d'intérêt entre celui qui code et celui qui exploite.
+
+Exemple concret : une mise en production qui casse un vendredi soir, le développeur injoignable, l'équipe d'exploitation seule pour gérer l'incident — schéma classique pré-DevOps.
+
+Transition : introduire le mouvement DevOps comme réponse à ce silo.
+-->
+
+---
+
+# Le besoin : vitesse ET fiabilité
+
+<v-clicks>
+
+- Le marché exige des livraisons **plus fréquentes**
+- Le service doit rester **fiable** malgré la fréquence des changements
+- Solution : rapprocher développement et exploitation autour d'objectifs communs
+- Les leviers : **cloud**, **conteneurs**, **automatisation**, **CI/CD**, **observabilité**
+
+</v-clicks>
+
+<!--
+Durée : 4 min.
+
+DevOps n'est pas né d'une mode mais d'une contrainte business réelle : livrer plus vite sans casser la production. Les 5 leviers cités seront chacun développés dans les séances suivantes.
+
+Exemple concret : une équipe qui déployait une fois par trimestre avant, plusieurs fois par jour après adoption de pratiques DevOps — pas une promesse marketing, une conséquence mesurable de l'automatisation.
+
+Transition : préciser que DevOps ne remplace pas la responsabilité, il la partage.
+-->
+
+---
+
+# Responsabilité partagée, pas diluée
+
+<KeyConcept title="Responsabilité partagée" icon="🤝">
+DevOps ne supprime pas les rôles : il fait porter conjointement le résultat de bout en bout, du code au service en production.
+</KeyConcept>
+
+<v-clicks>
+
+- Le développeur pense à l'exploitabilité de son code
+- L'exploitant participe aux choix qui impactent la fiabilité
+- L'automatisation absorbe les tâches répétitives, pas la responsabilité humaine
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Nuance importante à verbaliser : "responsabilité partagée" ne veut pas dire "personne n'est responsable" — c'est l'inverse, chacun reste responsable mais sur un objectif commun.
+
+Exemple concret : un développeur qui ajoute un healthcheck à son service facilite le travail de l'équipe d'exploitation — petit geste, grand effet sur la fiabilité partagée.
+
+Transition : montrer comment ces pratiques ont évolué dans les métiers, sans figer un intitulé universel.
+-->
+
+---
+
+# Une évolution des métiers, pas un poste unique
+
+<v-clicks>
+
+- Des pratiques associées à des intitulés variés selon les organisations (ingénieur plateforme, SRE, ingénieur DevOps...)
+- Aucun intitulé n'est une norme universelle — le contexte de l'entreprise prime
+- Ce qui compte : les **pratiques** (automatisation, mesure, collaboration), pas l'étiquette du poste
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Éviter tout discours prescriptif sur "le" métier DevOps : insister sur la diversité des organisations et des appellations selon les entreprises et les pays.
+
+Exemple concret : deux entreprises comparables peuvent appeler la même fonction "DevOps Engineer" et "Site Reliability Engineer" sans différence pratique majeure — l'intitulé suit la culture de l'entreprise, pas une règle figée.
+
+Transition : formaliser le cycle DevOps et introduire les métriques DORA.
+-->
+
+---
+class: flex flex-col items-center justify-center text-center
+---
+
+# Le cycle DevOps
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
   A[Plan] --> B[Code]
   B --> C[Build]
@@ -212,43 +826,16 @@ graph LR
   F --> G[Operate]
   G --> H[Monitor]
   H --> A
-  style A fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style F fill:#16a34a,stroke:#15803d,color:#fff
-  style H fill:#7c3aed,stroke:#6d28d9,color:#fff
 ```
 
 <!--
-Le cycle infini DevOps. Tu vas le voir partout, sur tous les sites de DevOps. C'est le visuel emblématique.
+Durée : 3 min.
 
-Important : c'est un cycle, pas une ligne. Le monitoring nourrit le plan suivant.
+Ce cycle est un visuel classique du domaine. Insister : c'est un cycle, pas une ligne droite — le monitoring nourrit le plan suivant (boucle de rétroaction).
 
-Chaque étape a son outillage : Plan → Jira/GitHub Projects, Build → Docker, Deploy → ArgoCD/GitHub Actions, Monitor → Prometheus/Grafana.
+Exemple concret : un pic d'erreurs observé en Monitor déclenche une nouvelle tâche en Plan — la boucle se referme concrètement.
 
-On va couvrir surtout Build, Test, Release, Deploy dans ces 2 jours.
--->
-
----
-
-# DevSecOps
-
-<KeyConcept title="DevSecOps" icon="🛡️">
-Intégrer la sécurité dans chaque étape du cycle DevOps, plutôt qu'en fin de chaîne.
-</KeyConcept>
-
-<v-clicks>
-
-- **Avant** : audit sécu en fin de projet → blocage tardif
-- **Maintenant** : scan de dépendances à chaque PR
-- **Outils** : Dependabot, Snyk, Trivy, secret scanning
-
-</v-clicks>
-
-<!--
-Le sec dans DevSecOps, c'est l'évolution naturelle. La sécurité ne peut plus être une étape finale - c'est trop tard, trop cher.
-
-Shift-left : on déplace la sécurité vers la gauche du cycle, vers le code.
-
-On verra ça en DJ4 avec Dependabot et le secret scanning. Ce sont des outils gratuits, intégrés à GitHub, sans excuse pour ne pas les activer.
+Transition : présenter les métriques DORA comme façon de mesurer ce cycle.
 -->
 
 ---
@@ -256,678 +843,339 @@ On verra ça en DJ4 avec Dependabot et le secret scanning. Ce sont des outils gr
 # Les métriques DORA
 
 <KeyConcept title="DORA" icon="📊">
-Quatre métriques qui caractérisent la performance DevOps d'une équipe (DevOps Research and Assessment, Google).
+Quatre métriques qui caractérisent la performance d'une organisation logicielle (DevOps Research and Assessment).
 </KeyConcept>
 
 <v-clicks>
 
-- **Deployment Frequency** - à quelle fréquence on déploie
-- **Lead Time for Changes** - temps du commit au déploiement
-- **Change Failure Rate** - % de déploiements qui causent un incident
-- **Mean Time to Restore (MTTR)** - temps moyen de retour à la normale
+- **Fréquence de déploiement** — à quelle cadence on livre en production
+- **Délai de mise en œuvre** — du commit au déploiement
+- **Taux d'échec des changements** — proportion de déploiements causant un incident
+- **Temps moyen de rétablissement (MTTR)** — vitesse de retour à la normale
 
 </v-clicks>
 
 <!--
-DORA = DevOps Research and Assessment, c'est l'équipe Google qui produit le rapport "State of DevOps" chaque année.
+Durée : 4 min.
 
-Ces 4 métriques sont devenues le standard pour évaluer une équipe DevOps. Tu les verras citées en entretien, en mission, partout.
+DORA est devenu un standard de référence pour évaluer objectivement une organisation, au-delà des impressions subjectives ("on livre vite" n'est pas mesurable sans ces métriques).
 
-Astuce : les deux premières mesurent la vitesse, les deux dernières mesurent la stabilité. Une bonne équipe excelle aux 4 - pas de trade-off entre vitesse et qualité dans les top performers.
+Exemple concret pour le profil management du master : ces 4 métriques permettent à un chef de projet de dialoguer avec une DSI sur la performance réelle d'une équipe, sans jargon technique excessif.
+
+Transition : refermer le bloc DevOps, ouvrir le bloc Git.
 -->
 
 ---
 
-# DORA - niveaux de performance
-
-| Métrique | Elite | High | Medium | Low |
-|---|---|---|---|---|
-| Deployment frequency | Plusieurs par jour | 1/jour à 1/sem | 1/sem à 1/mois | < 1/mois |
-| Lead time | < 1 heure | 1 jour à 1 sem | 1 sem à 1 mois | > 1 mois |
-| Change failure rate | 0-15% | 16-30% | 16-30% | 16-30% |
-| MTTR | < 1 heure | < 1 jour | < 1 sem | > 1 sem |
-
-<Credit source="State of DevOps Report - DORA / Google Cloud" />
-
-<!--
-Tableau de référence DORA. Je te recommande de le mémoriser ou au moins de savoir où le retrouver.
-
-L'écart "Elite" vs "Low" est gigantesque : 200x plus de déploiements, 2 600x plus rapide en lead time. Ce n'est pas un facteur 2, c'est un facteur 200 à 2600.
-
-Question : où se situe ton équipe de stage ? Si tu n'as pas fait de stage, demande à un alternant autour de toi. Tu seras surpris.
-
-La majorité des équipes en France sont en "Medium" ou "Low" - mais ce qui compte c'est la trajectoire, pas la position absolue.
--->
-
----
-
-# Synthèse - culture DevOps
-
-<Recap title="Ce qu'il faut retenir">
-
-- DevOps casse les silos Dev/Ops par la culture **CALMS**
-- 3 voies : flux, feedback, apprentissage
-- Cycle de vie : Plan → ... → Monitor → Plan
-- DevSecOps = sécu intégrée dès le code
-- DORA mesure la performance en 4 axes (vitesse + stabilité)
-
-</Recap>
-
-<!--
-Synthèse rapide avant de basculer sur Git.
-
-Si tu retiens une chose : DevOps = culture + automatisation + mesure. Sans la culture, l'automatisation ne sert à rien. Sans la mesure, on ne sait pas si on s'améliore.
-
-Pause de 20 minutes, ensuite on enchaîne sur Git en équipe.
--->
-
----
-layout: pause
-duration: 20 min
----
-
-<!--
-Pause de 20 min. J'en profite pour répondre aux questions individuelles si besoin.
-
-Au retour, on attaque Git en équipe - branching, PR, hooks, SemVer.
--->
-
----
-
-# Git en équipe : pourquoi ce bloc ?
+# Git en équipe : au-delà du solo
 
 <v-clicks>
 
-- Tu connais `add` / `commit` / `push` - c'est acquis
-- Mais en équipe, il faut des **conventions** partagées
-- Branching, PR, code review, versioning - c'est le quotidien
-- L'objectif : éviter les guerres de merge le vendredi soir
+- Les commandes de base (`add`, `commit`, `push`) sont acquises
+- En équipe, il faut des **conventions partagées**
+- **Branches**, **pull/merge requests**, **revue de code** structurent la collaboration
 
 </v-clicks>
 
 <!--
-Tu as tous les bases Git, c'est un prérequis. Ce qu'on va voir maintenant, c'est ce qui distingue Git utilisé en solo de Git utilisé en équipe.
+Durée : 5 min.
 
-Anecdote : j'ai vu des équipes de 8 dev passer 1 jour par semaine à résoudre des conflits parce qu'ils n'avaient pas de stratégie de branching. C'est pas un problème de Git, c'est un problème de convention.
+Vérifier rapidement les acquis : lever la main qui utilise déjà des branches régulièrement. Adapter le rythme selon la réponse de la salle.
+
+Exemple concret : une équipe qui travaille tous sur `main` sans branche finit par écraser le travail des autres — bon point de départ pour justifier le besoin de convention.
+
+Prolonger l'échange : demander à un étudiant de raconter un conflit de fusion (merge conflict) déjà vécu, en stage ou en projet — sert d'accroche concrète avant de détailler dépôt/commit/branche.
+
+Transition : détailler dépôt, commit, branche et merge/pull request.
 -->
 
 ---
 
-# Branching strategies - 3 grandes familles
+# Dépôt, commit, branche
 
-<Comparison left="Git Flow" right="GitHub Flow" leftColor="blue" rightColor="green">
-  <template #left>
-
-  - `main` + `develop` + features + release + hotfix
-  - Cycle de release planifié
-  - Adapté aux logiciels packagés (versions)
-  - ⚠️ Lourd pour du web continu
-
-  </template>
-  <template #right>
-
-  - `main` + branches features
-  - Déploiement continu depuis `main`
-  - Adapté aux SaaS modernes
-  - ✅ Simple, rapide
-
-  </template>
-</Comparison>
-
-<!--
-Git Flow (Vincent Driessen, 2010) : 5 types de branches. Ça structure mais c'est lourd. Adapté aux logiciels avec des versions tagguées (logiciel client, mobile).
-
-GitHub Flow : `main` + features, c'est tout. Adapté au SaaS où on déploie en continu. C'est ce que tu trouveras dans 80% des boîtes web modernes.
-
-Et il existe une 3e voie encore plus radicale : Trunk Based Development.
--->
-
----
-
-# Trunk Based Development
-
-<KeyConcept title="Trunk Based Development" icon="🌲">
-Toute l'équipe pousse sur `main` (le "trunk"), avec des feature flags pour cacher les fonctionnalités non finies.
-</KeyConcept>
-
-<v-clicks>
-
-- Une seule branche longue durée : `main`
-- Les feature flags activent/désactivent les fonctionnalités
-- Demande une discipline forte (tests, CI rapide)
-- Pratique chez Google, Facebook, Netflix
-
-</v-clicks>
-
-<!--
-TBD c'est l'évolution ultime. On pousse tous sur main, avec des feature flags qui décident à runtime ce qui est activé.
-
-Ça suppose une CI très rapide (< 10 min) et une couverture de tests solide. Sinon c'est le chaos.
-
-Pour un débutant, je recommande GitHub Flow. Pour une boîte mature, TBD.
-
-Les 3 sont des stratégies valides : ce qui compte c'est de **choisir** et que toute l'équipe **suive** la même.
--->
-
----
-
-# Choisir sa stratégie
-
-| Critère | Git Flow | GitHub Flow | TBD |
-|---|---|---|---|
-| Taille équipe | 5-50 | 1-20 | 10-100+ |
-| Cadence release | Planifiée | Continue | Continue rapide |
-| Maturité tests | Variable | Bonne | Excellente |
-| Complexité | Élevée | Faible | Modérée |
-
-<Tip type="info">
-Pas de bonne réponse universelle. Le contexte (produit, équipe, maturité CI) dicte le choix.
-</Tip>
-
-<!--
-Tableau récap. Le critère "maturité des tests" est sous-estimé.
-
-TBD sans tests automatisés = catastrophe assurée. GitHub Flow sans tests = pareil.
-
-En entretien, si on te demande quelle stratégie tu préfères : réponds "ça dépend du contexte" et explique tes critères.
--->
-
----
-
-# Pull Requests - workflow
-
-```mermaid
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
-  A[Feature branch] -->|Push| B[PR ouverte]
-  B --> C[CI exécutée]
-  C -->|Tests OK| D[Code review]
-  C -->|Tests KO| A
-  D -->|Approuvée| E[Merge sur main]
-  D -->|Changes requested| A
-  style E fill:#16a34a,stroke:#15803d,color:#fff
+  A[main] --> B[Branche feature]
+  B --> C[Commits successifs]
+  C --> D[Merge / Pull Request]
+  D --> A
 ```
 
-<!--
-Workflow standard d'une PR : tu pousses sur ta branche, ouvres une PR, la CI tourne, un collègue review, tu corriges, et au bout c'est mergé.
-
-Le CI bloque si les tests cassent - pas de discussion possible. C'est le rôle du gating, on en reparle en DJ3/DJ4.
-
-Astuce : ne jamais forcer un merge avec CI rouge "parce que c'est urgent". Tu paies toujours la dette plus tard.
--->
-
----
-
-# Code review - checklist
-
 <v-clicks>
 
-- ✅ **Le code répond-il à l'objectif** de la PR ?
-- ✅ **Les tests** couvrent-ils le changement ?
-- ✅ **Lisibilité** - un nouvel arrivant comprendrait-il ?
-- ✅ **Sécurité** - secrets, injections, dépendances suspectes ?
-- ✅ **Performance** - N+1, boucles inutiles, mémoire ?
-- ❌ Pas de review pour le **style** (le linter le fait)
+- **Dépôt** — historique complet du projet
+- **Commit** — un instantané logique et atomique du code
+- **Branche** — une ligne de travail isolée, fusionnée ensuite
 
 </v-clicks>
 
 <!--
-La review n'est pas du flicage. C'est :
-- un filet de sécurité technique
-- un transfert de connaissance
-- un alignement d'équipe
+Durée : 9 min (dont ~5 min de démonstration live).
 
-Ce qui ne doit JAMAIS faire l'objet d'une review : le style. Si ton équipe débat sur les espaces vs tabs en PR, vous avez un problème de tooling, pas de code.
+Insister sur "atomique" : un commit doit correspondre à un changement logique cohérent, pas à un mélange de plusieurs sujets non liés.
 
-Outils pour automatiser le style : Prettier, ESLint, Black. On le verra dans les hooks.
+Exemple concret : un commit "fix typo + ajoute feature X + change la config CI" est un anti-pattern — trois commits séparés seraient plus lisibles et plus faciles à annuler individuellement si besoin.
+
+Démonstration live : créer une branche, faire deux commits atomiques distincts sur le dépôt fil rouge, puis lancer `git log --oneline --graph` devant la salle pour montrer un historique lisible. Pointer chaque commit et faire deviner son objet avant de l'ouvrir.
+
+Transition : détailler le flux de pull/merge request et la revue de code.
 -->
 
 ---
 
-# Tailles de PR - la règle d'or
+# Pull Request / Merge Request et revue
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Branche feature] -->|Push| B[PR/MR ouverte]
+  B --> C[Revue de code]
+  C -->|Approuvée| D[Merge sur main]
+  C -->|Changements demandés| A
+```
 
 <v-clicks>
 
-- **< 200 lignes** : PR idéale, review en 15 min
-- **200-500 lignes** : acceptable, review en 30-45 min
-- **> 500 lignes** : ❌ à éviter - la qualité de la review chute brutalement
-- **> 1000 lignes** : 🚨 personne ne lit vraiment, le bug passe
+- La **revue** vérifie objectif, tests, lisibilité et sécurité
+- Le style (espaces, formatage) relève d'un outil automatique, pas de la revue humaine
+- Une **petite PR/MR** se relit mieux qu'une PR/MR massive
 
 </v-clicks>
 
-<Tip type="warning">
-Une PR trop grosse n'est pas reviewable. La découper est une compétence à part entière.
-</Tip>
-
 <!--
-Étude célèbre : au-delà de 500 lignes modifiées, le taux de détection de bugs en review chute de 50%.
+Durée : 5 min.
 
-Conséquence : découper tes PR. Une feature = potentiellement 5-10 PRs cohérentes.
+La revue de code est un filet technique ET un transfert de connaissance dans l'équipe, pas du flicage.
 
-Comment découper ? Par couche (modèle, puis API, puis UI), par étape (squelette, puis logique, puis tests), ou par feature flag (PR mergée mais inactive).
+Exemple concret : une PR de plus de 500 lignes modifiées voit son taux de détection de bugs chuter fortement en revue — découper le travail est une compétence à part entière.
 
-C'est une compétence qui se travaille. Au début c'est dur, ensuite ça devient naturel.
+Point d'échange : demander si quelqu'un a déjà reçu une demande de changement en revue qu'il jugeait injustifiée, et comment il l'a gérée — ouvre sur la posture professionnelle attendue en équipe.
+
+Transition : détailler commits atomiques et SemVer.
 -->
 
 ---
 
-# Conventions de commits
+# Commits atomiques et historique lisible
 
 ```text
-feat: add user authentication endpoint
-fix: handle null pointer in payment service
-docs: update README with new env vars
-refactor: extract validation logic into separate module
-test: add integration tests for /api/users
-chore: bump dependencies
+feat: add health-check endpoint
+fix: handle missing environment variable
+docs: update README with run instructions
 ```
 
 <v-clicks>
 
-- Préfixe sémantique → automatisation possible
-- Format : `<type>: <description courte>`
-- Outil de référence : **Conventional Commits**
+- Un commit = **un changement logique**, un message clair
+- Préfixe sémantique (`feat`, `fix`, `docs`...) → historique navigable
+- Historique lisible = diagnostic plus rapide en cas d'incident
 
 </v-clicks>
 
 <!--
-Conventional Commits : c'est un standard, pas une obligation. Mais une fois adopté, ça permet :
-- de générer un changelog automatiquement
-- de calculer la prochaine version SemVer (feat → minor, fix → patch, BREAKING → major)
-- de filtrer les commits par type
+Durée : 7 min (dont ~4 min d'exercice écrit).
 
-Au début ça peut paraître pédant. Au bout d'une semaine c'est naturel et tu te demandes comment tu faisais avant.
+Ce format de message n'est pas obligatoire par Git lui-même, mais devient vite un standard d'équipe efficace, notamment pour retrouver rapidement quel commit a introduit un bug.
 
-Tooling associé : commitlint pour valider le format en hook pre-commit.
+Exemple concret : un `git log` lisible permet de répondre en 30 secondes à "qui a changé ce fichier et pourquoi", contre plusieurs minutes sur un historique de commits vagues ("update", "fix", "wip").
+
+Exercice écrit rapide : donner 3 changements en une phrase (ex. "corrige le crash au démarrage", "ajoute le endpoint /health", "met à jour la doc d'installation") et demander à chacun d'écrire le message de commit correspondant avec le bon préfixe — corriger collectivement.
+
+Transition : introduire SemVer pour le versionnage des livrables.
 -->
 
 ---
 
-# Hooks Git - pre-commit, pre-push
-
-<KeyConcept title="Hook Git" icon="🪝">
-Script exécuté automatiquement à un moment précis du cycle Git (avant commit, avant push, etc.).
-</KeyConcept>
-
-<v-clicks>
-
-- **pre-commit** : lint, format, tests rapides → bloque les commits sales
-- **pre-push** : tests complets → bloque les push cassés
-- **commit-msg** : validation du format du message
-
-</v-clicks>
-
-<!--
-Les hooks Git sont natifs (`.git/hooks/`) mais pas versionnés. Pour partager les hooks dans une équipe, on utilise un outil.
-
-L'idée : déplacer les vérifications de la CI vers le poste du dev. Plus rapide, feedback immédiat, on n'attend pas que le pipeline rouge surgisse.
-
-Attention : les hooks lourds (10s+) tuent le flux du dev. Garder le pre-commit < 5 secondes.
--->
-
----
-
-# Husky + lint-staged en pratique
-
-```json {all|2-7|9-14|all}
-// package.json
-{
-  "scripts": {
-    "prepare": "husky install",
-    "lint": "eslint .",
-    "format": "prettier --write ."
-  },
-  "lint-staged": {
-    "*.{js,ts}": ["eslint --fix", "prettier --write"],
-    "*.md": ["prettier --write"]
-  }
-}
-```
+# SemVer — versionnage sémantique
 
 ```bash
-# .husky/pre-commit
-npx lint-staged
+v1.4.2
+│ │ └── PATCH — correction rétrocompatible
+│ └──── MINOR — fonctionnalité rétrocompatible
+└────── MAJOR — changement incompatible
 ```
-
-<!--
-Husky : gestionnaire de hooks Git versionnés (dans le repo).
-
-lint-staged : ne lance les outils que sur les fichiers stagés, pas sur tout le projet. Ça rend le hook très rapide.
-
-Combo gagnant : 5 minutes de setup, des heures gagnées sur la durée du projet.
-
-Démo rapide à faire si tu veux : faire un commit avec un fichier mal formatté, voir le hook le formatter automatiquement.
--->
-
----
-
-# Tags et SemVer
-
-<KeyConcept title="SemVer (Semantic Versioning)" icon="🏷️">
-Format `MAJOR.MINOR.PATCH` - chaque chiffre a une signification précise.
-</KeyConcept>
 
 <v-clicks>
 
-- **MAJOR** - breaking change (incompatibilité ascendante)
-- **MINOR** - nouvelle fonctionnalité rétrocompatible
-- **PATCH** - correction de bug rétrocompatible
+- Communique clairement l'impact d'une nouvelle version
+- Un changement **incompatible** force un incrément **MAJOR**
+- Référence : semver.org
 
 </v-clicks>
 
-```bash
-v1.2.3
-│ │ └── PATCH
-│ └──── MINOR
-└────── MAJOR
-```
-
 <!--
-SemVer = standard de versioning depuis ~2010. Référence : semver.org.
+Durée : 7 min (dont ~4 min de questions-réponses).
 
-La règle clé : un changement breaking force un MAJOR. C'est non négociable. Sinon tu casses tes utilisateurs sans prévenir.
+Poser la question à la salle : "renommer un endpoint d'API, c'est quel type de changement ?" — réponse attendue : MAJOR (breaking change).
 
-En pratique tu tagges avec `git tag v1.2.3` puis `git push --tags`. C'est ça qui déclenche souvent une release dans la CI.
+Exemple concret : un client qui consomme une API et valide strictement le format de réponse verra son intégration casser si un champ obligatoire est ajouté sans bump MAJOR — impact direct sur la confiance du versionnage.
+
+Prolonger avec 2-3 cas supplémentaires à la volée (ajouter un champ optionnel, corriger un bug sans changer l'API, changer le format d'une date en réponse) et faire trancher la salle à main levée avant de donner la réponse — consolide la compréhension MAJOR/MINOR/PATCH avant de basculer sur l'Infrastructure as Code.
+
+Transition : passer de Git à une autre forme de code versionné — celui qui décrit l'infrastructure elle-même.
 -->
 
 ---
 
-# Quand bumper quoi ?
+# Infrastructure as Code : le problème
 
-| Changement | Bump |
-|---|---|
-| Renommage d'un endpoint API | MAJOR |
-| Ajout d'un endpoint | MINOR |
-| Fix d'un bug existant | PATCH |
-| Ajout d'un paramètre optionnel | MINOR |
-| Suppression d'un paramètre | MAJOR |
-| Refactoring interne sans impact API | PATCH |
-
-<Tip type="warning">
-La question à se poser : "Est-ce qu'un utilisateur de la version précédente va devoir changer son code ?"
-</Tip>
-
-<!--
-Petit jeu pour vérifier la compréhension. Demander aux étudiants de classer 3-4 cas.
-
-Piège classique : ajouter un champ obligatoire dans une réponse JSON → MAJOR (les clients qui validaient strictement le schéma cassent).
-
-Autre piège : changer la valeur par défaut d'un paramètre → souvent MAJOR car comportement modifié sans changement de signature.
--->
-
----
-
-# Merge vs Rebase
-
-<Comparison left="Merge" right="Rebase" leftColor="blue" rightColor="purple">
+<Comparison left="Infra manuelle" right="Infra as Code" leftColor="orange" rightColor="green">
   <template #left>
 
-  - Conserve l'historique réel
-  - Crée un commit de merge
-  - Historique « branchu »
-  - ✅ Sûr, pas de réécriture
+  - Créée à la main (console, SSH) — pas de trace écrite
+  - Dérive silencieuse entre environnements (dev ≠ prod)
+  - Aucune revue avant changement, dépendance à une personne
 
   </template>
   <template #right>
 
-  - Réécrit l'historique
-  - Pas de commit de merge
-  - Historique linéaire
-  - ⚠️ Ne jamais rebase une branche partagée
+  - Décrite dans des fichiers versionnés avec Git
+  - Relue comme du code (pull/merge request)
+  - Reproductible : recréer l'environnement à l'identique
 
   </template>
 </Comparison>
 
 <!--
-Le débat éternel.
+Durée : 4 min.
 
-Merge : sûr, transparent, mais l'historique devient un plat de spaghettis sur les gros projets.
+Verbaliser le problème avant la solution : sans trace écrite, la configuration réelle d'un serveur finit par ne vivre que dans la tête d'une seule personne — le jour où elle est absente ou part, plus personne ne sait reproduire l'environnement.
 
-Rebase : historique propre, linéaire, plus facile à lire avec `git log`. Mais ça réécrit les commits - interdit sur une branche que d'autres ont récupérée.
+Exemple concret : deux serveurs censés être identiques (dev et prod) qui divergent après plusieurs interventions manuelles étalées sur plusieurs mois — un bug n'apparaît qu'en production parce qu'un paquet a été mis à jour à la main sur un seul des deux.
 
-La règle d'or : rebase tes branches **locales avant push**, jamais après. Merge sur main.
-
-Côté outil : VS Code, GitHub Desktop, GitKraken te le font à la souris si la CLI te stresse.
+Transition : voir comment l'Infrastructure as Code répond à ce problème avec quatre principes simples.
 -->
 
 ---
 
-# Cherry-pick et undo
+# Déclaratif, plan, apply, idempotence
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Code déclaratif<br/>état voulu] --> B[Plan<br/>prévoir les changements]
+  B --> C[Apply<br/>appliquer réellement]
+  C --> D[Infra réelle]
+  D -.->|Ré-exécution| B
+```
+
+<KeyConcept title="Le state, un fichier sensible" icon="🗄️">
+Terraform garde la correspondance entre le code et l'infra réelle dans un fichier d'état (**state**). Il peut contenir des informations sensibles : à protéger et à partager prudemment, jamais commité tel quel dans un dépôt public — un sujet approfondi hors de ce module.
+</KeyConcept>
 
 <v-clicks>
 
-- **Cherry-pick** - récupérer un commit précis d'une autre branche
-- **Revert** - créer un commit qui annule un autre commit (sûr, public)
-- **Reset** - déplacer le pointeur de branche (dangereux, local)
+- **Déclaratif** — on décrit l'état voulu, pas les étapes pour y arriver
+- **Plan** — prévisualiser les changements avant de les appliquer
+- **Apply** — exécuter le changement réel sur l'infrastructure
+- **Idempotence** — ré-exécuter le même code ne crée pas de dérive
 
 </v-clicks>
 
-<Tip type="danger">
-`git reset --hard` perd des commits. Ne jamais l'utiliser sur une branche partagée. En cas de doute, `git revert` est plus sûr.
+<!--
+Durée : 4 min.
+
+Verbaliser la boucle : on décrit ce qu'on veut (déclaratif), l'outil calcule ce qui doit changer (plan) sans encore rien toucher, puis applique réellement le changement (apply) ; ré-exécuter le même code sur une infra déjà conforme ne doit rien changer (idempotence).
+
+Exemple concret : demander « 3 machines virtuelles » ; si une existe déjà, le plan ne recrée que les deux manquantes — pas les trois, contrairement à un script impératif qui rejouerait bêtement toutes les étapes depuis le début.
+
+Transition : voir maintenant qui propose ce genre d'outil, à commencer par Terraform.
+-->
+
+---
+
+# Terraform et son écosystème
+
+| Terrain | Terraform et alternatives | Exemple couvert |
+|---|---|---|
+| Provisioning cloud public | **Terraform** (multi-cloud), OpenTofu, Pulumi, CloudFormation/Bicep | Réseaux, VM, stockage (AWS/Azure/GCP) |
+| Provisioning hors cloud | **Terraform** (via providers dédiés) | VMware, matériel on-premise |
+| Configuration de serveurs | Ansible (hors Terraform) | Installer un paquet, éditer un fichier de config |
+
+<Tip type="info">
+Terraform et ses alternatives **provisionnent** des ressources (créer une VM, un réseau) ; un outil comme Ansible **configure** ensuite ce qui tourne dessus (installer, paramétrer). Les deux rôles sont complémentaires, pas concurrents.
 </Tip>
 
 <!--
-Cherry-pick : utile quand tu veux porter un fix sur une autre branche (un hotfix sur une release par ex).
+Durée : 4 min.
 
-Revert vs reset, c'est la nuance critique :
-- Revert crée un nouveau commit "anti", l'historique reste honnête, c'est public-friendly
-- Reset déplace le HEAD, c'est purement local, et destructif si tu as déjà push
+Terraform reste l'outil dominant et multi-cloud : un seul langage pour AWS, Azure, GCP et bien d'autres providers, y compris VMware pour du hors-cloud. Les alternatives sont positionnées sans être détaillées : OpenTofu est un fork open source né après un changement de licence de Terraform ; Pulumi permet d'écrire l'infra dans un langage de programmation classique (Python, TypeScript) plutôt qu'un langage déclaratif dédié ; CloudFormation (AWS) et Bicep (Azure) sont les équivalents propriétaires liés à un seul fournisseur.
 
-Mon conseil pratique : 99% du temps, utilise revert. Reset ne sert qu'à rattraper une boulette locale.
+Exemple concret : une entreprise avec des serveurs VMware en interne ET des ressources AWS peut utiliser Terraform pour les deux, avec un provider différent pour chaque cible — un seul outil, deux terrains.
 
-Si tu galères : Pro Git book (gratuit, en français). Tape "Pro Git" sur Google, c'est le premier résultat.
--->
-
----
-layout: recap
-section: Demi-journée 1 - Culture & Git
----
-
-# Ce qu'il faut retenir
-
-- **DevOps** = culture (CALMS) + automation + mesure (DORA)
-- **3 voies** - flux, feedback, apprentissage
-- **Branching** : choisir entre Git Flow / GitHub Flow / TBD selon contexte
-- **PR** : petites, reviewées, avec CI verte avant merge
-- **Hooks** : pre-commit (lint) + pre-push (tests rapides)
-- **SemVer** : MAJOR.MINOR.PATCH - breaking change = MAJOR
-- **Merge vs Rebase** : rebase local, merge partagé
-
-<!--
-Synthèse de fin de DJ1.
-
-Demain matin (DJ2) : on attaque Docker. Tu vas écrire ton premier Dockerfile, le tester, puis l'optimiser en multi-stage.
-
-Pour ce soir : si tu n'as jamais lu "The Phoenix Project", essaie un chapitre. Ça change la vision du métier.
--->
-
----
-layout: section-cover
-section: Session 2
----
-
-# Docker et conteneurisation
-
-De « ça marche chez moi » à des images reproductibles
-
-<!--
-Deuxième demi-journée : Docker.
-
-L'objectif : que tu puisses, à la fin de la DJ, écrire un Dockerfile fonctionnel et l'optimiser en multi-stage.
-
-Si Docker est nouveau pour toi, ne t'inquiète pas : on commence par le pourquoi, puis l'architecture, puis on code.
-
-Commencer, comprendre ce qu’est un conteneur.
-
-Pour faire simple un conteneur c’est une sorte de machine virtuelle mais beaucoup plus légère et qui va embarquer le minimum vital pour pouvoir s’exécuter. Par exemple, l’image de l’OS Windows fais plusieurs gigas quand certains conteneurs pèsent à peine quelques megas, il suffisent pourtant à faire tourner des applications - et c’est là que cela devient intéressant pour nous.
-
-Avant, pour développer un projet PHP par exemple, avions besoin d’installer un serveur PHP local sur notre machine, une base de données, etc.. afin de pouvoir faire tourner notre application. 
-Pour le déployer, il fallait installer les mêmes logiciels sur un serveur, et chaque collaborateur avait également besoin de l’installer sur sa machine : vient aux problématiques liées aux OS, liées aux versions, et également aux autres applications tournant sur l’ordinateur/serveur.
+Transition : Infrastructure as Code posée, retour à Docker avec la comparaison VM versus conteneur.
 -->
 
 ---
 
-# Pourquoi conteneuriser ?
+# VM versus conteneur
 
-<v-clicks>
-
-- ✅ **Reproductibilité** - même image, même comportement partout
-- ✅ **Isolation** - les conteneurs ne se marchent pas dessus
-- ✅ **Portabilité** - local, CI, prod : même artefact
-- ✅ **Démarrage rapide** - secondes vs minutes pour une VM
-- ✅ **Densité** - plus d'apps sur la même machine
-
-</v-clicks>
-
-<!--
-Les 5 raisons principales d'utiliser Docker.
-
-L'argument numéro 1 reste la reproductibilité. "Ça marche sur ma machine" était la blague des années 2000. Docker l'a tué.
-
-L'argument densité : sur un serveur de 16 Go, tu peux faire tourner 50 conteneurs là où tu n'aurais fait tourner que 4-5 VMs. Économie d'infrastructure massive.
--->
-
----
-
-# VM vs Conteneur
-
-<Comparison left="Machine virtuelle" right="Conteneur" leftColor="blue" rightColor="purple">
+<Comparison left="Machine virtuelle" right="Conteneur" leftColor="orange" rightColor="green">
   <template #left>
 
   - OS complet par VM
-  - Démarrage : minutes
-  - Taille : Go
-  - Hyperviseur (VMware, KVM)
-  - Forte isolation
-  - Lourde sur ressources
+  - Démarrage en minutes
+  - Isolation forte, via hyperviseur
+  - Empreinte en gigaoctets
 
   </template>
   <template #right>
 
-  - Partage le kernel hôte
-  - Démarrage : secondes
-  - Taille : Mo
-  - Moteur Docker / containerd
-  - Isolation namespaces/cgroups
-  - Légère
+  - Partage le noyau de la machine hôte
+  - Démarrage en secondes
+  - Isolation par espaces de noms (namespaces)
+  - Empreinte en mégaoctets
 
   </template>
 </Comparison>
 
 <!--
-Le truc à comprendre : un conteneur n'embarque pas un OS complet. Il partage le kernel de l'hôte.
+Durée : 8 min (dont ~5 min de discussion comparée).
 
-Conséquence : un conteneur Linux ne tourne pas nativement sur Windows. Il faut une VM Linux dessous (Docker Desktop fait ça pour toi).
+Le point à faire comprendre : un conteneur n'embarque pas un système d'exploitation complet, il partage le noyau de la machine hôte — c'est ce qui explique sa légèreté.
 
-Pour la plupart des usages applicatifs (API, microservices, jobs batch), le conteneur a tout gagné. La VM reste pour des cas avec forte isolation requise (multi-tenant strict).
+Exemple concret : le fameux "ça marche sur ma machine" des années 2000-2010, quand chaque développeur avait un environnement légèrement différent — la conteneurisation résout ce problème en figeant l'environnement d'exécution.
+
+Discussion comparée : reprendre chaque ligne du tableau une par une et demander à la salle d'expliquer, dans ses propres mots, pourquoi le conteneur gagne sur ce critère (démarrage, empreinte, isolation) — transforme la lecture passive du tableau en vérification active de compréhension avant de plonger dans Docker.
+
+Transition : introduire l'architecture Docker (image, couche, registre, conteneur).
 -->
 
 ---
 
 # Architecture Docker
 
-```mermaid
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
-  A[Docker CLI<br/>docker run...] -->|API| B[Docker Daemon<br/>dockerd]
-  B -->|Pull| C[Registry<br/>Docker Hub, GHCR]
-  B -->|Crée| D[Conteneur 1]
-  B -->|Crée| E[Conteneur 2]
-  C -.->|Image| B
-  style B fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style C fill:#7c3aed,stroke:#6d28d9,color:#fff
+  A[Client Docker] -->|Commandes| B[Démon Docker]
+  B -->|Récupère| C[Registre d'images]
+  B -->|Crée| D[Conteneur]
 ```
 
-<!--
-Docker, comment ça fonctionne ? 
-
-Composé de plusieurs briques, docker engine permet de faire tourner tout simplement système docker, et va avoir 2 services satellites afin de pouvoir communiquer avec ce système, le daemon, et finalement le client qu’on utilise tout le temps lorsque l’on requête Docker, via terminal par exemple
-
-3 acteurs principaux :
-- CLI (docker) : ce que tu tapes dans ton terminal
-- Daemon (dockerd) : le démon qui fait le boulot
-- Registry : le stockage distant des images (Docker Hub, GitHub Container Registry, AWS ECR...)
-
-Quand tu fais `docker run nginx` :
-1. CLI appelle daemon
-2. Daemon vérifie si l'image nginx existe localement
-3. Sinon il la pull du registry
-4. Il crée et démarre un conteneur basé sur l'image
-
-C'est tout. Le reste c'est de la sophistication par-dessus.
--->
-
----
-
-# Image vs Conteneur
-
-<KeyConcept title="Image vs Conteneur" icon="📦">
-L'image est un <b>template figé</b> (lecture seule). Le conteneur est une <b>instance vivante</b> d'une image.
-</KeyConcept>
-
 <v-clicks>
 
-- **Image** ≈ classe en POO
-- **Conteneur** ≈ instance/objet en POO
-- 1 image → N conteneurs simultanés
-- Une image ne change pas, un conteneur a un état runtime
+- **Image** — modèle figé, en lecture seule
+- **Couche (layer)** — chaque instruction du Dockerfile ajoute une couche, mise en cache
+- **Registre** — stockage distant des images (Docker Hub, GitHub Container Registry...)
+- **Conteneur** — instance vivante, exécutée à partir d'une image
 
 </v-clicks>
 
 <!--
-Analogie POO classique mais qui fonctionne.
+Durée : 8 min (dont ~5 min de manipulation guidée).
 
-Une image, c'est un fichier (en réalité plusieurs layers, on va y venir). Un conteneur, c'est un processus qui tourne basé sur cette image.
+Analogie utile : image = classe en programmation orientée objet, conteneur = instance de cette classe. Une image ne change pas, un conteneur a un état d'exécution propre.
 
-Tu peux lancer 10 conteneurs basés sur la même image - ils ont chacun leur état mémoire propre, leurs logs, etc.
+Exemple concret : dix conteneurs peuvent démarrer depuis la même image, chacun avec ses propres logs et son propre état mémoire, sans interférer entre eux.
 
-À l'arrêt du conteneur, son état est perdu (sauf volumes). C'est pour ça que les conteneurs doivent être stateless.
--->
+Manipulation guidée : demander à chaque étudiant d'exécuter `docker version` puis `docker info` sur son poste, de repérer le client et le démon dans la sortie, puis de lancer `docker run hello-world` pour observer en direct la récupération d'image et la création du conteneur décrites sur le schéma.
 
----
-
-# Layers - la pile de l'image
-
-<div class="grid grid-cols-2 gap-8 items-center">
-
-<div class="text-sm font-mono">
-
-<div class="rounded px-3 py-2 mb-1 text-white" style="background:#16a34a">Layer R/W - Conteneur</div>
-<div class="text-center text-xs opacity-60">▲</div>
-<div class="rounded px-3 py-2 mb-1 bg-gray-200 dark:bg-gray-700">Layer 4 - CMD</div>
-<div class="rounded px-3 py-2 mb-1 bg-gray-200 dark:bg-gray-700">Layer 3 - COPY package.json</div>
-<div class="rounded px-3 py-2 mb-1 bg-gray-200 dark:bg-gray-700">Layer 2 - RUN apt update</div>
-<div class="rounded px-3 py-2 text-white" style="background:#2563eb">Layer 1 - FROM node:20</div>
-
-</div>
-
-<div>
-
-<v-clicks>
-
-- Chaque instruction `Dockerfile` = un layer
-- Layers immuables, **mis en cache**, **partagés** entre images
-- Le conteneur ajoute un layer R/W au-dessus
-
-</v-clicks>
-
-</div>
-
-</div>
-
-<!--
-Concept central. Une image = empilement de layers.
-
-Quand tu modifies une instruction dans le Dockerfile, seuls les layers à partir de cette instruction sont reconstruits. Les layers en-dessous sont récupérés du cache.
-
-D'où l'importance de l'ordre des instructions : on met les choses qui changent rarement au début, ce qui change souvent à la fin.
-
-Conséquence pratique : ta première construction prend 5 minutes, les suivantes prennent 10 secondes si tu n'as touché qu'au code.
+Transition : écrire un premier Dockerfile.
 -->
 
 ---
 
 # Anatomie d'un Dockerfile
 
-```dockerfile {all|1|3-4|6-7|9-10|12-13|all}
+```dockerfile {all|1|3|5-6|8-9|11|all}
 FROM node:20-alpine
 
 WORKDIR /app
@@ -942,570 +1190,146 @@ CMD ["node", "server.js"]
 ```
 
 <!--
-Dockerfile minimal pour une app Node.
+Durée : 14 min (démonstration live complète).
 
-FROM : image de base (Alpine = Linux ultra léger, ~5 Mo)
-WORKDIR : répertoire de travail dans le conteneur
-COPY package*.json : on copie d'abord les fichiers de dépendances
-RUN npm ci : installation des dépendances
-COPY . . : copie du reste du code
-EXPOSE : documentation du port (informatif, n'ouvre rien)
-CMD : commande lancée au démarrage
+Dérouler chaque instruction : image de base, répertoire de travail, copie ciblée des fichiers de dépendances avant le reste du code (pour préserver le cache), exposition documentaire du port, commande de démarrage.
 
-Pourquoi copier package.json **avant** le code ? Pour profiter du cache : si tu changes ton code mais pas tes dépendances, le `npm ci` ne se rejoue pas.
--->
+Exemple concret : si le code applicatif change mais pas `package.json`, l'étape `npm ci` n'est pas rejouée — gain de temps de build significatif sur un projet qui grossit.
 
----
+Démonstration live pas à pas (bloc le plus dense de la séance, prévoir le temps complet) : écrire ce Dockerfile ligne par ligne devant la salle sur le dépôt fil rouge, en commentant chaque choix ; lancer `docker build` et montrer les couches se construire une par une dans le terminal ; lancer `docker run` avec la publication du port, puis vérifier l'endpoint exposé avec `curl localhost:3000` ou dans le navigateur ; enfin modifier une ligne du code applicatif et relancer un build pour observer le cache en action sur les couches inchangées. Faire venir un ou deux étudiants au clavier pour reproduire une étape en conditions réelles avant de conclure.
 
-# Instructions Dockerfile clés
-
-| Instruction | Rôle | Exemple |
-|---|---|---|
-| `FROM` | Image de base | `FROM node:20-alpine` |
-| `WORKDIR` | Répertoire de travail | `WORKDIR /app` |
-| `COPY` | Copie hôte → conteneur | `COPY src ./src` |
-| `RUN` | Exécute au build | `RUN npm install` |
-| `ENV` | Variable d'environnement | `ENV PORT=3000` |
-| `EXPOSE` | Doc du port (informatif) | `EXPOSE 3000` |
-| `CMD` | Commande au démarrage | `CMD ["node", "server.js"]` |
-| `USER` | User non-root | `USER node` |
-
-<!--
-Référence rapide. À avoir sous la main au début.
-
-Quelques pièges :
-- EXPOSE n'ouvre PAS de port. C'est juste de la doc. L'ouverture se fait avec `docker run -p`.
-- CMD vs ENTRYPOINT : on en parle juste après.
-- USER : par défaut un conteneur tourne en root. C'est mal. Il faut basculer sur un utilisateur non-root.
--->
-
----
-
-# CMD vs ENTRYPOINT
-
-<v-clicks>
-
-- **CMD** - commande par défaut, peut être surchargée
-- **ENTRYPOINT** - commande fixe, les arguments en plus
-- **Combo** - `ENTRYPOINT` + `CMD` pour fixer la commande, paramétrer les flags
-
-</v-clicks>
-
-```dockerfile
-# Souvent suffisant
-CMD ["node", "server.js"]
-
-# Pattern avancé : binaire fixe + flags par défaut
-ENTRYPOINT ["node"]
-CMD ["server.js"]
-```
-
-<!--
-Distinction subtile mais importante.
-
-CMD seul : `docker run mon-image autre-commande` remplace le CMD.
-
-ENTRYPOINT seul : la commande est figée, `docker run mon-image arg1 arg2` ajoute des arguments.
-
-Dans 90% des cas, CMD seul suffit. ENTRYPOINT est utile pour des conteneurs qui jouent le rôle d'un binaire (ex: image curl, image kubectl).
--->
-
----
-
-# Bonnes pratiques d'ordre des couches
-
-<KeyConcept title="Règle d'or" icon="🎯">
-Les instructions les **moins susceptibles de changer** doivent être **en haut** du Dockerfile.
-</KeyConcept>
-
-```dockerfile
-# ❌ MAUVAIS - tout invalidé au moindre changement de code
-COPY . .
-RUN npm ci
-
-# ✅ BON - npm ci ne se rejoue que si package.json change
-COPY package*.json ./
-RUN npm ci
-COPY . .
-```
-
-<!--
-LE pattern à retenir.
-
-Conséquence : tu changes une virgule dans `server.js`, le rebuild prend 2 secondes au lieu de 2 minutes. Sur la durée d'un projet, c'est des heures gagnées.
-
-Petit défi en CI : faire de même côté Docker layer cache. On verra ça en DJ4.
--->
-
----
-
-# Gestion des conteneurs
-
-```bash
-# Lancer
-docker run -d -p 3000:3000 --name mon-app mon-image
-
-# Lister
-docker ps              # actifs
-docker ps -a           # tous (y compris arrêtés)
-
-# Logs
-docker logs -f mon-app
-
-# Entrer dans un conteneur
-docker exec -it mon-app sh
-
-# Arrêter et nettoyer
-docker stop mon-app
-docker rm mon-app
-```
-
-<!--
-Les commandes du quotidien.
-
-`-d` (detached) : tourne en arrière-plan, sinon tu bloques ton terminal.
-`-p` (publish) : mappe un port hôte vers un port conteneur.
-`--name` : nom lisible pour ton conteneur, sinon Docker en génère un random rigolo.
-`docker exec -it ... sh` : ouvrir un shell dans le conteneur, super utile pour debugger.
-
-`docker ps -a` te montre les conteneurs morts qui traînent. Si tu vois 30 entrées, fais le ménage : `docker container prune`.
--->
-
----
-
-# Volumes et persistance
-
-```bash
-# Bind mount - synchronise un dossier hôte
-docker run -v $(pwd)/data:/app/data mon-image
-
-# Volume nommé - géré par Docker
-docker volume create mes-donnees
-docker run -v mes-donnees:/app/data mon-image
-```
-
-<v-clicks>
-
-- **Bind mount** - pratique en dev (hot-reload du code)
-- **Volume nommé** - recommandé en prod (gestion par Docker)
-
-</v-clicks>
-
-<!--
-Sans volume, l'écriture dans un conteneur disparaît à son arrêt.
-
-Bind mount : tu mappes un dossier local. Pratique en dev pour avoir le hot-reload.
-
-Volume nommé : Docker gère le stockage. C'est la prod-way. Tu peux le sauvegarder, le déplacer, le partager entre conteneurs.
-
-Anti-pattern : stocker des données critiques uniquement dans le conteneur. Si le conteneur crash, données perdues.
--->
-
----
-
-# Réseaux Docker
-
-```bash
-# Créer un réseau
-docker network create mon-reseau
-
-# Lancer 2 conteneurs sur le même réseau
-docker run -d --network mon-reseau --name api mon-api
-docker run -d --network mon-reseau --name db postgres
-
-# api peut joindre db via le hostname "db"
-```
-
-<v-clicks>
-
-- Réseau bridge par défaut (peu utile)
-- Réseau custom = DNS automatique entre conteneurs
-- Compose crée automatiquement un réseau dédié
-
-</v-clicks>
-
-<!--
-Le réseau, c'est ce qui permet à tes conteneurs de se parler.
-
-Le réseau "bridge" par défaut n'a pas de DNS - galère pour faire communiquer 2 conteneurs.
-
-Crée un réseau custom et place tes conteneurs dedans : ils se voient par leur nom.
-
-Bonne nouvelle : avec Docker Compose (qu'on voit en DJ3), tu n'as plus à gérer ça à la main.
--->
-
----
-layout: exercise
-duration: 25 min
-type: solo
----
-
-# TP - Étape 1 : Dockerfile naïf
-
-**Contexte** - repo avec une app Node/TS (API simple), sans Dockerfile.
-
-**Mission** :
-
-1. Écris un `Dockerfile` : base `node:20`, copie le code, install + build TS, lance `node dist/server.js`
-2. Build : `docker build -t mon-api:v1 .`
-3. Run sur le port 3000 et teste l'endpoint
-4. Note la taille : `docker images mon-api`
-
-<!--
-Premier TP : 25 min de boulot, plus 20 min de pause derrière pendant laquelle tu peux finir si besoin. La correction est juste après.
-
-Le but : build + run + ressentir la taille. Pas d'optimisation à ce stade.
-
-Erreurs fréquentes à surveiller dans la salle :
-- Oublier de compiler le TS (pas de step `npm run build`)
-- Mauvais CMD (script qui n'existe pas)
-- COPY . . avant package.json (cache cassé)
-- Oublier d'EXPOSE / mauvais port mapping
-
-Snippets pré-écrits prêts pour ceux qui décrochent - on ne laisse personne bloqué 20 min sur un install.
-
-Note les tailles que tu vois passer dans la salle, on les ressort à la correction.
+Transition : présenter les bonnes pratiques associées (.dockerignore, utilisateur non privilégié, cache, multi-stage).
 -->
 
 ---
 layout: pause
-duration: 20 min
+duration: 10 min
 ---
 
 <!--
-Pause de 20 min. Ceux qui n'ont pas fini le TP peuvent continuer. Reste dispo pour les questions individuelles.
+Durée : 10 min de pause.
 
-Au retour : correction collective du TP, puis on attaque le multi-stage pour diviser la taille par 5 ou 10.
+Répondre aux questions individuelles sur Git ou Docker pendant la pause.
+
+Transition au retour : bonnes pratiques Docker (cache, .dockerignore, utilisateur non privilégié, multi-stage).
 -->
 
 ---
 
-# Correction TP1 - Dockerfile attendu
+# Ordonner les couches intelligemment
 
 ```dockerfile
-FROM node:20
-
-WORKDIR /app
-
-COPY package*.json ./
+# Moins optimal — tout invalidé au moindre changement de code
+COPY . .
 RUN npm ci
 
+# Préférable — le cache npm ci survit aux changements de code
+COPY package*.json ./
+RUN npm ci
 COPY . .
-RUN npm run build
-
-EXPOSE 3000
-CMD ["node", "dist/server.js"]
 ```
 
 <v-clicks>
 
-- Taille typique : **~1.1 Go** 😱
-- Contient compilateur TS, devDependencies, sources, `.git` éventuel...
-- On va tailler dans le gras avec **multi-stage + .dockerignore**
+- Les instructions **les moins susceptibles de changer** en premier
+- Le cache de build accélère radicalement les reconstructions
+- Un changement de code ne doit pas invalider l'installation des dépendances
 
 </v-clicks>
 
 <!--
-Correction collective. Je passe ce Dockerfile à l'écran et on commente.
+Durée : 6 min (dont ~3 min de comparaison chronométrée).
 
-Points à appuyer :
-- Ordre des COPY : package.json AVANT le code source → cache npm ci préservé
-- `npm ci` plutôt que `npm install` → reproductible, plus rapide en CI
-- EXPOSE est documentaire (ne publie pas le port, c'est `-p` qui le fait), mais c'est une bonne pratique
-- CMD en exec form (tableau JSON), pas en shell form, pour bien gérer les signaux
+Ce pattern d'ordre des couches est LE réflexe à ancrer chez les étudiants — il a un impact direct et mesurable sur la vitesse de build en local et en CI.
 
-Demande qui a quelle taille. La majorité tourne autour de 1-1.5 Go. Quelqu'un avec node:20-alpine sera déjà à 400 Mo - c'est un bon teaser pour le multi-stage.
+Exemple concret : un changement d'une ligne dans le code applicatif peut faire passer un rebuild de 2 minutes à 2 secondes, simplement grâce à cet ordre.
 
-Transition : "Vous voyez le problème ? On embarque tout l'arsenal dev en prod. Multi-stage va régler ça."
+Comparaison chronométrée : relancer un build avec l'ordre "moins optimal" puis avec l'ordre "préférable" sur le même changement de code, chronomètre à l'appui, pour rendre visible et mesurable le gain de cache devant la salle.
+
+Transition : présenter .dockerignore et l'utilisateur non privilégié.
 -->
 
 ---
 
-# Multi-stage build - concept
-
-<KeyConcept title="Multi-stage build" icon="🏗️">
-Plusieurs `FROM` dans un même Dockerfile - on construit dans un stage « gros », on copie le résultat dans un stage « léger ».
-</KeyConcept>
-
-<v-clicks>
-
-- **Stage 1 (builder)** - image lourde avec compilateurs, devDependencies
-- **Stage 2 (runtime)** - image minimale, on copie uniquement les artefacts compilés
-- Résultat final = uniquement le **dernier stage**
-
-</v-clicks>
-
-<!--
-L'idée géniale du multi-stage : tu n'as pas besoin de Node + TypeScript + ESLint en prod, tu as juste besoin du JS compilé.
-
-Stage 1 : tu installes tout ce qu'il faut pour compiler
-Stage 2 : tu pars d'une image minimale et tu copies juste les fichiers compilés du stage 1
-
-L'image finale ne contient pas le compilateur, pas les devDependencies, pas le code source TypeScript. Juste l'essentiel.
-
-Gain typique : x5 à x10 en taille.
--->
-
----
-
-# Multi-stage - syntaxe
-
-```dockerfile {all|1-7|9-15|all}
-# --- Stage 1 : builder ---
-FROM node:20 AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# --- Stage 2 : runtime ---
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-RUN npm ci --omit=dev
-CMD ["node", "dist/server.js"]
-```
-
-<!--
-Le pattern à mémoriser. 
-
-Stage 1 nommé `builder` (mot-clé `AS`). Image lourde (`node:20` standard, ~1 Go).
-
-Stage 2 : on repart de zéro (`node:20-alpine`, ~150 Mo), on copie juste le dist du stage builder.
-
-`COPY --from=builder` : la magie. On pioche dans le stage précédent.
-
-Note : on réinstalle juste les deps de prod ici (`--omit=dev`). On peut aussi copier le `node_modules` du builder si on a déjà fait l'élagage là-bas.
--->
-
----
-
-# .dockerignore
+# `.dockerignore` et utilisateur non privilégié
 
 ```text
 node_modules
 .git
 .env
-.env.local
 dist
-coverage
-*.log
-.vscode
-.idea
-README.md
+```
+
+```dockerfile
+# Éviter de tourner en root dans le conteneur
+USER node
 ```
 
 <v-clicks>
 
-- Comme `.gitignore`, mais pour Docker
-- **Évite** de copier des fichiers inutiles dans l'image
-- **Accélère** le build (moins de contexte à envoyer au daemon)
-- **Sécurise** (pas de `.env` dans l'image)
+- `.dockerignore` évite de copier des fichiers inutiles ou sensibles dans l'image
+- Un `.env` copié par erreur peut fuiter des secrets dans les couches de l'image
+- `USER` bascule sur un compte non privilégié — réduit l'impact d'une éventuelle évasion de conteneur
 
 </v-clicks>
 
 <!--
-Souvent oublié, pourtant fondamental.
+Durée : 6 min (dont ~3 min de vérification pratique).
 
-Sans `.dockerignore` :
-- ton `node_modules` local est copié (catastrophe si pas la même archi)
-- ton `.git` est copié (~Mo inutiles)
-- tes `.env` sont copiés (fuite de secrets)
+Deux bonnes pratiques de sécurité et de propreté à traiter ensemble : elles sont souvent oubliées par des débutants, avec un vrai coût en sécurité et en taille d'image.
 
-Avec, tu envoies juste le minimum au daemon Docker. Build plus rapide, image plus saine.
+Exemple concret : un `.env` copié dans l'image reste présent dans les couches même s'il est supprimé plus tard dans le Dockerfile — d'où l'importance de ne jamais le copier du tout.
 
-Règle : tout ce qui n'est pas nécessaire au runtime → dans `.dockerignore`.
--->
+Vérification pratique : construire l'image sans puis avec `.dockerignore`, comparer la taille avec `docker images`, puis lancer `docker exec ... whoami` sur le conteneur en cours pour confirmer que l'utilisateur actif n'est pas `root`.
 
----
-layout: exercise
-duration: 25 min
-type: solo
----
-
-# TP - Étape 2 : optimisation
-
-## Mission
-
-1. **Refactoriser** ton Dockerfile en multi-stage build
-2. **Ajouter** un fichier `.dockerignore` pertinent
-3. **Reconstruire** : `docker build -t mon-api:v2 .`
-4. **Comparer** les tailles entre `v1` et `v2`
-
-## Bonus
-
-5. Passer le stage runtime sur `node:20-alpine`
-6. Ajouter un `USER node` (sécurité non-root)
-7. Comparer la taille finale
-
-<!--
-L'objectif : diviser la taille par 5 minimum. Les meilleurs feront x10.
-
-Ce qui plombe en général :
-- node_modules de dev embarqué
-- Code source TypeScript embarqué
-- Image base trop grosse (debian au lieu d'alpine)
-
-Le bonus USER : sécurité - un conteneur en root, c'est root sur l'hôte si évasion.
-
-Restitution collective dans 25 min : qui a la plus petite image ?
+Transition : introduire le multi-stage build pour réduire drastiquement la taille finale.
 -->
 
 ---
 
-# Restitution - comparatif des tailles
+# Multi-stage build
 
-| Version | Image de base | Stages | `.dockerignore` | Taille |
-|---|---|---|---|---|
-| v1 (naïf) | node:20 | 1 | ❌ | ~1.2 Go |
-| v2 (multi-stage) | node:20 → node:20 | 2 | ✅ | ~350 Mo |
-| v3 (alpine) | node:20 → node:20-alpine | 2 | ✅ | ~180 Mo |
-| v4 (distroless) | node:20 → distroless/nodejs | 2 | ✅ | ~120 Mo |
+```dockerfile {all|1-6|8-12|all}
+# --- Stage 1 : construction ---
+FROM node:20 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
 
-<Tip type="info">
-Distroless (Google) = image sans shell, ultra réduite. Hors scope de ce TP, mais bon à connaître.
-</Tip>
-
-<!--
-Tableau type qu'on va remplir collectivement avec leurs vraies mesures.
-
-L'écart 1,2 Go → 180 Mo, c'est x6,5. C'est énorme :
-- Pull plus rapide en CI/CD (économie de bande passante)
-- Démarrage de conteneur plus rapide
-- Surface d'attaque réduite (moins de binaires = moins de CVE)
-
-Distroless : encore plus radical, pas de shell, pas de package manager. Sécurité maximale, mais debug plus dur.
-
-Conclusion : multi-stage + alpine + dockerignore = combo gagnant pour 95% des cas.
--->
-
----
-
-# Bonnes pratiques d'optimisation
+# --- Stage 2 : exécution ---
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+CMD ["node", "server.js"]
+```
 
 <v-clicks>
 
-- ✅ Multi-stage build pour séparer build et runtime
-- ✅ Image de base **alpine** ou **slim** quand possible
-- ✅ `.dockerignore` strict
-- ✅ Combiner les `RUN` (un seul layer pour `apt update && apt install && rm`)
-- ✅ Épingler les versions (`node:20.10` plutôt que `node:latest`)
-- ✅ User non-root pour la sécurité
-- ❌ Ne **jamais** copier des secrets dans l'image
+- **Stage de construction** — image lourde avec tout l'outillage
+- **Stage d'exécution** — image minimale, ne contient que le nécessaire
+- Résultat final = uniquement le **dernier stage**
 
 </v-clicks>
 
 <!--
-Checklist à garder en tête.
+Durée : 6 min (dont ~2 min de comparaison de tailles).
 
-Combiner les RUN : `RUN apt update && apt install -y curl && rm -rf /var/lib/apt/lists/*` au lieu de 3 RUN séparés. Sinon chaque step crée un layer permanent.
+L'idée clé : on n'a pas besoin des outils de build en production, seulement du résultat compilé/installé. Le multi-stage sépare proprement les deux mondes.
 
-Épingler les versions : `node:latest` aujourd'hui peut être différent demain. Reproductibilité = épingler.
+Exemple concret : gain typique de x5 à x10 en taille d'image finale entre une version naïve et une version multi-stage optimisée avec une base alpine.
 
-Secrets dans l'image : ils restent dans les layers, même si tu les supprimes ensuite. Toujours utiliser des variables d'environnement à runtime ou des secret managers.
--->
+Comparaison rapide : afficher côte à côte la taille de l'image mono-stage construite plus tôt et celle du multi-stage via `docker images`, pour rendre le gain concret et chiffré.
 
----
-layout: recap
-section: Demi-journée 2 - Docker
----
-
-# Ce qu'il faut retenir
-
-- **Conteneur ≠ VM** : kernel partagé, démarrage en secondes
-- **Image vs conteneur** : template figé vs instance vivante
-- **Layers** : ordonner du moins changeant au plus changeant
-- **Multi-stage** : build lourd, runtime léger
-- **.dockerignore** : sécurité + perf de build
-- **Optim** : alpine + multi-stage + USER non-root → image x5-10 plus petite
-
-<!--
-Fin du Jour 1. Bravo, vous avez tenu jusqu'ici.
-
-Consigne pour les 2 semaines :
-- Sur ton projet (alternance, perso, cours), regarde s'il y a un Dockerfile. Si oui, est-il multi-stage ? Y a-t-il un .dockerignore ?
-- Note les pipelines GitHub Actions ou autre que tu rencontres.
-- On en discute en ouverture du Jour 2.
-
-Questions ?
--->
-
----
-layout: section-cover
-section: Session 3
----
-
-# Docker Compose et bases CI/CD
-
-Orchestrer en local, automatiser en distant
-
-<!--
-Bienvenue au Jour 2. On a vu Docker en isolation - un conteneur. Mais une vraie app c'est plusieurs services.
-
-D'où Docker Compose : orchestrer plusieurs conteneurs ensemble.
-
-Et l'après-midi : automatiser tout ça via GitHub Actions.
+Transition : passer à Docker Compose pour orchestrer plusieurs services.
 -->
 
 ---
 
-# Retour Jour 1 - qu'as-tu observé ?
+# Docker Compose — plusieurs services, un fichier
 
-<v-clicks>
-
-- **Sur tes projets** : Dockerfile présent ? multi-stage ?
-- **Pipelines** : automatique ou clic-clic ?
-- **Surprises** ou points de blocage ?
-
-</v-clicks>
-
-<!--
-Tour de table - 5-10 min.
-
-Ce que je veux entendre : "j'ai vu un Dockerfile sans dockerignore", "j'ai trouvé un node_modules dans une image", etc. Bref, ce qu'ils ont identifié comme antipatterns.
-
-Sinon, ce qui les a frustré, ce qu'ils n'ont pas compris.
-
-C'est aussi le moment pour répondre aux questions qui ont mûri pendant 2 semaines.
--->
-
----
-
-# Pourquoi Docker Compose ?
-
-<v-clicks>
-
-- Une vraie app = **plusieurs services** (API + DB + cache + reverse proxy)
-- Lancer 4 `docker run` à la main : pénible, source d'erreurs
-- Compose = **un fichier YAML** qui décrit toute la stack
-- `docker compose up` lance tout. `docker compose down` arrête tout.
-
-</v-clicks>
-
-<Tip type="info">
-Compose est devenu un sous-commande Docker (`docker compose`). L'ancien binaire `docker-compose` est encore courant mais déprécié.
-</Tip>
-
-<!--
-Compose résout un problème simple : décrire une stack multi-conteneurs de façon déclarative.
-
-Sans Compose : 
-docker network create mon-net
-docker run -d --name db --network mon-net postgres
-docker run -d --name api --network mon-net -p 3000:3000 mon-api
-docker run -d --name proxy --network mon-net -p 80:80 nginx
-... à taper à chaque fois.
-
-Avec Compose : un seul fichier, un seul `up`. Reproductible, partagé, versionné.
--->
-
----
-
-# Anatomie d'un docker-compose.yml
-
-```yaml {all|1-1|2-11|13-19|all}
+```yaml {all|1-8|10-16|all}
 services:
   api:
     build: ./api
@@ -1513,197 +1337,542 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgres://user:pass@db:5432/app
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-      POSTGRES_DB: app
     volumes:
       - db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user"]
-      interval: 5s
 
 volumes:
   db-data:
 ```
 
 <style scoped>
-.slidev-code { font-size: 0.66em !important; line-height: 1.3 !important; }
-h1 { margin-bottom: 0.3rem; }
+.slidev-code { font-size: 0.72em !important; line-height: 1.3 !important; }
 </style>
 
 <!--
-Le fichier minimum viable d'une stack moderne.
+Durée : 4 min.
 
-Top-level : `services` (les conteneurs), `volumes` (le stockage persistant), parfois `networks` (mais Compose en crée un par défaut).
+Compose décrit une stack multi-conteneurs de façon déclarative : un seul fichier, une seule commande de démarrage/arrêt.
 
-Chaque service a au minimum : `build` (Dockerfile local) ou `image` (de Docker Hub).
+Exemple concret : sans Compose, il faudrait taper plusieurs commandes `docker run` à la main pour créer un réseau, lancer la base de données puis l'API dans le bon ordre — Compose remplace tout ça par un fichier versionné et partagé.
 
-Le reste : ports, environnement, dépendances, redémarrage automatique.
+Démonstration courte : lancer `docker compose up` sur ce fichier devant la salle et montrer les deux services démarrer ensemble dans les logs.
 
-`depends_on` avec `condition: service_healthy` : attend que le healthcheck du service passe avant de démarrer celui-ci. Sans ça, l'API peut démarrer avant que la DB soit prête.
+Transition : détailler réseau, variables d'environnement et volumes dans Compose.
 -->
 
 ---
 
-# services, volumes, networks
+# Réseau, variables d'environnement, volumes
 
-| Top-level | Rôle |
+<v-clicks>
+
+- **Réseau** — Compose crée un réseau dédié, les services se joignent par leur nom
+- **Variables d'environnement** — `.env` paramètre la stack sans modifier le YAML
+- **Volumes** — persistent les données au-delà du cycle de vie d'un conteneur
+
+</v-clicks>
+
+<Tip type="warning">
+Sans volume, les données écrites dans un conteneur disparaissent à son arrêt.
+</Tip>
+
+<!--
+Durée : 5 min.
+
+Ces trois notions rendent Compose utilisable en pratique : réseau pour la communication inter-services, variables pour la configuration, volumes pour la persistance.
+
+Exemple concret : une base de données sans volume perd toutes ses données au moindre `docker compose down` suivi d'un `up` — piège classique en début d'apprentissage.
+
+Démonstration courte : arrêter la stack avec `docker compose down -v` (suppression du volume) puis la relancer, pour montrer la perte de données en direct et justifier la vigilance sur les volumes.
+
+Transition : introduire la CNCF, avant Kubernetes.
+-->
+
+---
+
+# La CNCF — fondation de l'écosystème cloud-native
+
+<KeyConcept title="CNCF" icon="🏛️">
+Fondation open source qui héberge des projets cloud-native, organise leur gouvernance et contribue à leur maintien dans la durée.
+</KeyConcept>
+
+<v-clicks>
+
+- Héberge de nombreux projets : Kubernetes, Prometheus, OpenTelemetry, et d'autres
+- Statuts de maturité : **sandbox**, **incubating**, **graduated**
+- Ces statuts sont des **signaux de gouvernance**, pas des garanties absolues
+
+</v-clicks>
+
+<!--
+Durée : 8 min (dont ~5 min d'échange sur des projets connus).
+
+Point important à verbaliser clairement : la CNCF est présentée AVANT Kubernetes volontairement, pour éviter de réduire tout l'écosystème cloud-native à un seul outil. Kubernetes n'est qu'un projet hébergé parmi d'autres.
+
+Exemple concret : un projet "graduated" a démontré une gouvernance mature et une large adoption, mais ce statut n'est ni une certification de sécurité ni une garantie d'adéquation à un besoin précis — toujours évaluer au cas par cas.
+
+Échange avec la salle : demander si certains connaissent déjà l'un des projets cités (Kubernetes, Prometheus, OpenTelemetry) et faire décrire en une phrase à quoi il sert, sans entrer dans le détail technique — prépare le terrain pour l'introduction Kubernetes qui suit et pour l'observabilité vue en séance 4.
+
+Transition : introduire Kubernetes comme l'un des projets hébergés par la CNCF.
+-->
+
+---
+
+# Kubernetes — pourquoi un orchestrateur ?
+
+<Tip type="info">
+Docker crée et exécute les conteneurs ; Kubernetes organise leur déploiement, leur réplication et leur supervision à grande échelle.
+</Tip>
+
+<v-clicks>
+
+- Docker gère **un conteneur** sur **une machine**
+- Compose gère **plusieurs conteneurs** sur **une machine**
+- Kubernetes gère **de nombreux conteneurs** répartis sur **plusieurs machines**
+
+</v-clicks>
+
+<!--
+Durée : 4 min.
+
+Progression pédagogique volontaire : Docker (1 machine) → Compose (1 machine, plusieurs services) → Kubernetes (plusieurs machines). Cette montée en échelle rend le "pourquoi" de Kubernetes évident.
+
+Exemple concret de cas d'usage : une application avec plusieurs services qui doit rester disponible malgré une panne de machine, absorber un pic de trafic, ou se mettre à jour sans coupure — Kubernetes répond à ces besoins.
+
+Transition : présenter le vocabulaire minimal de Kubernetes.
+-->
+
+---
+
+# Vocabulaire minimal de Kubernetes
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph TB
+  subgraph Cluster
+    subgraph Node1[Machine 1]
+      P1[Pod]
+    end
+    subgraph Node2[Machine 2]
+      P2[Pod]
+    end
+  end
+  S[Service] --> P1
+  S --> P2
+```
+
+<!--
+Durée : 4 min.
+
+Progression pédagogique volontaire : Docker (1 machine) → Compose (1 machine, plusieurs services) → Kubernetes (plusieurs machines). Cette montée en échelle rend le "pourquoi" de Kubernetes évident.
+
+Exemple concret de cas d'usage : une application avec plusieurs services qui doit rester disponible malgré une panne de machine, absorber un pic de trafic, ou se mettre à jour sans coupure — Kubernetes répond à ces besoins.
+
+Transition : présenter le vocabulaire minimal de Kubernetes.
+-->
+
+---
+
+# Vocabulaire minimal de Kubernetes
+
+| Terme | Sens simple |
 |---|---|
-| `services` | Les conteneurs (image, build, ports, env, deps) |
-| `volumes` | Stockage persistant nommé |
-| `networks` | Réseaux custom (souvent inutile, Compose en crée un) |
-| `configs` / `secrets` | Configuration et secrets (Swarm/Compose v3+) |
+| **Cluster** | Le parc de machines |
+| **Node** | Une machine du parc |
+| **Pod** | Le conteneur qui tourne (unité de base) |
+| **Deployment** | La consigne de réplication et mise à jour |
+| **Service** | La porte d'entrée stable vers l'application |
 
 <!--
-4 sections principales. 95% du temps, tu écris uniquement `services` et `volumes`.
+Durée : 4 min.
 
-Networks : un réseau par défaut est créé pour tous les services du fichier. Ils peuvent se parler par leur nom de service (le DNS est intégré).
+Se limiter strictement à ces 5 mots — c'est le vocabulaire visé par le module, pas plus. Aucune démonstration de `kubectl`, aucun manifeste YAML complexe à ce stade.
 
-Configs/secrets : utiles à grande échelle. Pour ce cours, on s'en passe.
+Exemple concret : pointer chaque terme sur le schéma en le nommant à voix haute, pour ancrer visuellement le vocabulaire plutôt que de réciter une définition académique.
+
+Transition : conclure sur les limites volontaires de cette introduction et faire la synthèse de séance.
+-->
+
+---
+layout: recap
+section: Séance 2 — DevOps, Git, Docker, CNCF, introduction Kubernetes
+---
+
+# Ce qu'il faut retenir
+
+- **DevOps** répond à un besoin de vitesse ET de fiabilité, via cloud, conteneurs, automatisation, CI/CD, observabilité
+- **Responsabilité partagée**, sans intitulé de poste universel
+- **Git en équipe** : branches, PR/MR, revue, commits atomiques, SemVer
+- **Infrastructure as Code** : déclaratif, plan, apply, idempotence ; Terraform et alternatives
+- **Docker** : image, couche, registre, conteneur ; ordre des couches ; multi-stage
+- **Compose** : orchestration locale multi-services
+- **CNCF avant Kubernetes** : gouvernance, statuts de maturité, sans garantie absolue
+- **Kubernetes** : cluster, node, pod, deployment, service — introduction seulement
+
+<!--
+Durée : 2 min.
+
+Rappeler explicitement les limites du module sur Kubernetes : pas d'installation de cluster, pas de manifeste complexe, pas de TP évalué dessus — uniquement du vocabulaire de culture générale.
+
+Transition : lancer le QCM de clôture de la séance 2.
+-->
+
+---
+layout: exercise
+duration: 12 min
+type: solo
+---
+
+# QCM de clôture — Séance 2
+
+<div class="grid grid-cols-2 gap-8 items-center h-full">
+<div>
+
+**Couvre** : DevOps/DORA, Git (branche, PR/MR, commit, SemVer), Infrastructure as Code, Docker (image, couche, registre, bonnes pratiques), Compose, CNCF/Kubernetes (vocabulaire)
+
+<v-clicks>
+
+- 8 à 10 questions, une bonne réponse par question
+- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
+- Score individuel, débrief collectif juste après
+
+</v-clicks>
+
+</div>
+<div class="flex flex-col items-center justify-center gap-4">
+  <div
+    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
+    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
+  >
+    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
+      <span class="block font-bold text-[#c1502e]">QR CODE</span>
+      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
+    </div>
+  </div>
+  <div class="text-center">
+    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
+    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
+  </div>
+</div>
+</div>
+
+<!--
+Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+
+Verbaliser avant de lancer : ce quiz couvre un volume de notions plus large que celui de la séance 1 (DevOps, Git, Infrastructure as Code, Docker, cloud-native) — rappeler que l'objectif reste la vérification individuelle des acquis.
+
+Exemple concret de question possible : "Quelle commande construit une image à partir d'un Dockerfile ?" (réponse attendue : `docker build`) — à adapter selon les questions réellement configurées dans le quiz.
+
+Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 3 — CI/CD avec GitHub Actions et GitLab CI.
+-->
+
+---
+layout: section-cover
+section: Séance 3 — 3h
+---
+
+# CI/CD : GitHub Actions et GitLab CI
+
+Automatiser l'installation, les tests et la fabrication de l'image
+
+<!--
+Durée : 1 min.
+
+Annoncer le fil de la séance : comprendre l'anatomie commune d'un pipeline, puis la décliner sur GitHub Actions et GitLab CI, avant un TP qui construit un pipeline réel.
+
+Exemple concret : rappeler que l'application Node.js et son Dockerfile existent déjà (séance 2) — cette séance ajoute la validation automatique.
+
+Transition : retour sur l'image Docker et les erreurs fréquentes rencontrées.
 -->
 
 ---
 
-# depends_on et healthchecks
-
-```yaml
-api:
-  depends_on:
-    db:
-      condition: service_healthy
-  # ...
-
-db:
-  image: postgres:16-alpine
-  healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U user"]
-    interval: 5s
-    timeout: 3s
-    retries: 5
-```
+# Retour sur l'image Docker
 
 <v-clicks>
 
-- `depends_on` simple = ordre de **démarrage** uniquement
-- + `condition: service_healthy` = attend que **healthcheck passe**
-- Sans healthcheck, l'API peut crash car la DB n'est pas prête
+- Votre Dockerfile fonctionne-t-il en local ?
+- Erreurs fréquentes rencontrées : ordre des couches, port non exposé, cache cassé
+- Aujourd'hui : cette même image sera **construite automatiquement** par un pipeline
 
 </v-clicks>
 
 <!--
-Piège classique : "ça marche pas, l'API ne se connecte pas à la DB".
+Durée : 14 min (dont ~8 min d'échange collectif).
 
-Pourquoi ? Parce que Compose démarre les conteneurs dans l'ordre, mais ne sait pas si la DB **accepte** réellement des connexions.
+Tour de table rapide sur les difficultés rencontrées avec Docker depuis la séance 2. Objectif : lever les blocages résiduels avant d'ajouter une couche d'automatisation par-dessus.
 
-Le healthcheck résout ça : la DB est "saine" quand `pg_isready` répond OK.
+Exemple concret : un port mal exposé qui donne l'impression que "l'API ne répond pas" alors que le conteneur tourne bien — diagnostic classique à rappeler.
 
-Toujours définir un healthcheck pour les services avec dépendances réseau.
+Échange collectif approfondi : demander à chaque binôme de partager en une phrase la principale difficulté rencontrée sur son Dockerfile depuis la dernière séance, les noter au tableau, puis regrouper par catégorie (cache, port, permissions, taille d'image) pour montrer que les mêmes erreurs reviennent d'un groupe à l'autre — rassure et prépare le terrain avant d'ajouter l'automatisation CI par-dessus.
+
+Transition : définir CI, livraison continue et déploiement continu.
 -->
 
 ---
 
-# Variables d'environnement et .env
+# CI, livraison continue, déploiement continu
 
-```yaml
-# docker-compose.yml
-services:
-  api:
-    image: mon-api:${TAG:-latest}
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
-```
+<Tip type="info">
+Les trois sigles se ressemblent mais désignent des niveaux d'automatisation différents.
+</Tip>
 
-```bash
-# .env (à la racine du projet, gitignoré)
-TAG=v1.2.3
-DATABASE_URL=postgres://user:pass@db:5432/app
-LOG_LEVEL=debug
-```
-
-<!--
-Les variables permettent de paramétrer la stack sans modifier le YAML.
-
-Syntaxe `${VAR}` ou `${VAR:-default}` (valeur par défaut si non définie).
-
-`.env` à la racine : Compose le charge automatiquement. À gitignorer obligatoirement.
-
-Pattern : un `.env.example` versionné qui documente les variables, et chaque dev copie en `.env` localement.
--->
-
----
-
-# Compose pour le dev
-
-```yaml
-services:
-  api:
-    build: ./api
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./api/src:/app/src      # hot-reload
-    command: npm run dev          # override CMD
-    environment:
-      NODE_ENV: development
-```
 
 <v-clicks>
 
-- Bind mount du code source → hot-reload sans rebuild
-- Override de `command` pour lancer en mode dev (`nodemon`, `tsx watch`)
-- Variables d'env spécifiques (NODE_ENV=development)
+- **CI (intégration continue)** — intégrer et valider le code souvent, automatiquement
+- **Livraison continue** — le logiciel est prêt à être déployé, activation manuelle
+- **Déploiement continu** — chaque changement validé part en production automatiquement
 
 </v-clicks>
 
 <!--
-Compose ne sert pas qu'à la prod. En dev, c'est encore plus précieux.
+Durée : 20 min (dont ~10 min d'exemples commentés et de quiz oral).
 
-Bind mount du dossier src : tu modifies un fichier sur ton hôte → le conteneur le voit immédiatement → hot-reload.
+Insister sur la nuance entre les deux "CD" : livraison continue (Continuous Delivery, activation humaine) et déploiement continu (Continuous Deployment, entièrement automatique).
 
-Override de command : ton Dockerfile a `CMD ["node", "server.js"]` pour la prod, mais en dev tu veux `npm run dev`. Compose te laisse l'override.
+Exemple concret : une équipe qui a une CI solide mais choisit une livraison continue plutôt qu'un déploiement continu pour garder un contrôle humain sur le moment de la mise en production — choix légitime, pas un signe d'immaturité.
 
-Pratique courante : un `docker-compose.yml` de base + un `docker-compose.override.yml` qui ajoute le bind mount en dev.
+Quiz oral en fil rouge : présenter 4-5 scénarios d'entreprise (startup qui déploie plusieurs fois par jour, banque qui valide manuellement chaque mise en production, éditeur SaaS avec feature flags...) et demander à la salle de classer chacun en CI seule / livraison continue / déploiement continu, en justifiant à l'oral. Ce format transforme la définition théorique en exercice de classification actif, suffisant pour occuper le bloc sans exercice écrit séparé.
+
+Transition : détailler l'anatomie commune d'un pipeline.
 -->
 
 ---
 
-# Multi-environnements avec override
+# Anatomie commune d'un pipeline
 
-```bash
-# Dev (défaut)
-docker compose up
-
-# Prod
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up
-
-# Tests
-docker compose -f docker-compose.yml -f docker-compose.test.yml up
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Événement déclencheur] --> B[Job]
+  B --> C[Étape 1]
+  C --> D[Étape 2]
+  D --> E[Statut : succès ou échec]
 ```
 
 <v-clicks>
 
-- `docker-compose.yml` = base commune
-- `docker-compose.override.yml` = override **automatique** en dev
-- `docker-compose.prod.yml` = override explicite en prod
+- **Événement** — ce qui déclenche le pipeline (push, pull request...)
+- **Job** — un ensemble d'étapes exécutées sur un **runner**
+- **Étape** — une action unitaire (installer, tester, construire...)
+- **Artefact** — un résultat produit, réutilisable par une autre étape
 
 </v-clicks>
 
 <!--
-Pattern multi-environnements le plus simple.
+Durée : 18 min (dont ~10 min d'exercice d'association de vocabulaire).
 
-Compose merge les fichiers dans l'ordre passé en `-f`. Le dernier gagne.
+Ce vocabulaire est commun à GitHub Actions et GitLab CI, seuls les noms précis diffèrent légèrement (job/stage, runner/executor). L'objectif est de comprendre le concept avant la syntaxe.
 
-Exemple : ton `prod.yml` enlève les bind mounts, change la commande, ajoute des replicas.
+Exemple concret : une image Docker construite dans un job peut être un artefact réutilisé dans un job de déploiement suivant — lien direct avec le pipeline cible de la séance.
 
-Limite : ça reste local. Pour de la vraie multi-env (staging, prod cloud), on bascule vers Kubernetes ou des outils dédiés.
+Exercice d'association : distribuer (oralement ou au tableau) une liste mélangée de termes (événement, job, étape, runner, artefact, statut) et de définitions, et demander à des binômes de les associer correctement en 5 minutes, puis corriger ensemble terme par terme en s'appuyant sur le schéma — installe solidement le vocabulaire avant de voir sa déclinaison concrète sur GitHub Actions.
+
+Transition : illustrer avec GitHub Actions.
+-->
+
+---
+
+# GitHub Actions — anatomie d'un workflow
+
+```yaml {all|1|3-5|7-15|all}
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
+```
+
+<!--
+Durée : 12 min (dont ~6 min de démonstration live).
+
+Dérouler : `name` identifie le workflow, `on` définit le déclencheur, `jobs` contient les tâches, `runs-on` choisit le runner, `steps` liste les actions séquentielles.
+
+Exemple concret : `uses:` appelle une action réutilisable du marketplace (`actions/checkout`, `actions/setup-node`), `run:` exécute une commande shell classique — les deux se combinent librement.
+
+Démonstration live : ouvrir l'onglet Actions d'un dépôt GitHub réel (ou du dépôt fil rouge s'il en dispose déjà), déclencher ce workflow sur un commit, et suivre l'exécution en direct job par job jusqu'au statut vert — donne un premier repère visuel concret avant que les étudiants n'écrivent le leur en TP.
+
+Transition : détailler les déclencheurs disponibles.
+-->
+
+---
+
+# Déclencheurs GitHub Actions
+
+| Déclencheur | Quand ? |
+|---|---|
+| `push` | Sur un commit poussé (filtrable par branche) |
+| `pull_request` | À l'ouverture ou la mise à jour d'une pull request |
+| `schedule` | À heure fixe (syntaxe cron) |
+| `workflow_dispatch` | Déclenchement manuel depuis l'interface |
+
+<!--
+Durée : 6 min (dont ~3 min d'échange sur des cas d'usage).
+
+Ces déclencheurs se combinent : `push` + `pull_request` est le pattern standard pour valider à la fois le développement et la revue.
+
+Exemple concret : `workflow_dispatch` est utile pour un déploiement manuel volontaire, sans attendre un push.
+
+Échange : demander à la salle quel déclencheur conviendrait pour chacun de ces cas — "vérifier chaque contribution externe avant fusion", "publier une release tous les lundis matin", "relancer un déploiement après un incident" — et faire justifier le choix à l'oral.
+
+Transition : présenter les actions réutilisables et le cache.
+-->
+
+---
+
+# Actions réutilisables et cache
+
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: 20
+    cache: 'npm'
+```
+
+<v-clicks>
+
+- Le **marketplace** fournit des actions prêtes à l'emploi (checkout, setup-node, docker/*)
+- Épingler une version (`@v4`) plutôt que `@latest` — reproductibilité
+- Le **cache** évite de réinstaller les dépendances à chaque exécution
+
+</v-clicks>
+
+<!--
+Durée : 7 min (dont ~3 min de démonstration de gain de cache).
+
+Le cache est un gain de temps concret et mesurable : sans cache, `npm ci` peut prendre une minute à chaque exécution ; avec cache, quelques secondes.
+
+Exemple concret : la clé de cache est généralement basée sur le hash du fichier de verrouillage (`package-lock.json`) — elle change automatiquement dès que les dépendances changent, évitant un cache obsolète.
+
+Démonstration : montrer, dans l'historique d'exécutions du workflow présenté plus tôt, la différence de durée entre un run à froid (sans cache) et un run suivant (avec cache restauré) — rend le gain tangible plutôt que théorique.
+
+Transition : passer à GitLab CI en miroir.
+-->
+
+---
+
+# GitLab CI — `.gitlab-ci.yml`
+
+```yaml {all|1-4|6-11|all}
+stages:
+  - install
+  - test
+
+install:
+  stage: install
+  script:
+    - npm ci
+
+test:
+  stage: test
+  script:
+    - npm test
+```
+
+<v-clicks>
+
+- **Stages** — les grandes phases du pipeline, exécutées dans l'ordre
+- **Jobs** — chaque bloc nommé (`install`, `test`) est un job rattaché à un stage
+- **Runners** — les machines qui exécutent les jobs
+
+</v-clicks>
+
+<!--
+Durée : 9 min (dont ~4 min de démonstration comparative).
+
+Comparer directement avec GitHub Actions : `stages` ≈ ordre des jobs, `script` ≈ `run`, `runner` ≈ `runs-on`. Le vocabulaire diffère, les concepts sont identiques.
+
+Exemple concret : une équipe qui utilise GitLab pour héberger son code utilisera naturellement GitLab CI, sans avoir besoin d'un outil tiers — l'intégration native est l'argument principal.
+
+Démonstration comparative : ouvrir un projet GitLab avec ce pipeline et montrer la vue "Pipelines" avec ses stages exécutés côte à côte, en la mettant en parallèle visuellement avec la vue GitHub Actions montrée juste avant — souligne les concepts communs malgré des interfaces différentes.
+
+Transition : détailler variables et particularités de GitLab CI.
+-->
+
+---
+
+# GitLab CI — variables et comparaison
+
+| Concept | GitHub Actions | GitLab CI |
+|---|---|---|
+| Fichier | `.github/workflows/*.yml` | `.gitlab-ci.yml` |
+| Regroupement | `jobs` | `stages` + `jobs` |
+| Machine d'exécution | `runs-on` (runner) | `tags` (runner) |
+| Variable secrète | `secrets.NOM` | `Settings > CI/CD > Variables` |
+
+<!--
+Durée : 6 min (dont ~3 min de questions de clarification).
+
+Ce tableau sert de pont mental entre les deux outils : un étudiant qui maîtrise l'un peut lire l'autre sans repartir de zéro.
+
+Exemple concret : les variables protégées dans GitLab (masquées, restreintes à certaines branches) jouent le même rôle que les secrets GitHub — la logique de protection des informations sensibles est universelle en CI/CD.
+
+Ouvrir un temps de questions de clarification avant le TP : demander à la salle si des points de comparaison restent flous entre les deux outils, en particulier sur la déclaration des variables sensibles — clarifie les derniers doutes avant que chacun choisisse son outil pour le TP.
+
+Transition : pause avant le TP pipeline.
+-->
+
+---
+layout: pause
+duration: 10 min
+---
+
+<!--
+Durée : 10 min de pause.
+
+Rester disponible pour clarifier une confusion GitHub Actions / GitLab CI avant le TP.
+
+Transition au retour : présenter le pipeline cible du TP (installation → tests → build → image Docker).
+-->
+
+---
+
+# Le pipeline cible du TP
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Installation] --> B[Tests] --> C[Build applicatif] --> D[Build image Docker]
+```
+
+<v-clicks>
+
+- Chaque étape valide la précédente avant de continuer
+- Le **déploiement public n'est pas obligatoire** — construire l'image est le minimum commun
+- Choix libre : **GitHub Actions ou GitLab CI**, l'autre outil est lu et comparé
+
+</v-clicks>
+
+<!--
+Durée : 20 min (dont ~10 min de préparation d'environnement guidée).
+
+Rappeler explicitement que l'objectif obligatoire s'arrête à la construction de l'image Docker — aucun credential ni configuration de déploiement n'est requis pour valider le TP.
+
+Exemple concret : montrer un exemple de log de pipeline vert qui s'arrête après le build de l'image, pour donner une cible visuelle atteignable par tout le monde.
+
+Préparation guidée avant le TP : laisser chaque étudiant/binôme choisir son outil (GitHub Actions ou GitLab CI), vérifier l'accès au dépôt fil rouge et aux droits d'exécution CI (runners activés côté GitLab, Actions activées côté GitHub), puis dérouler collectivement le repère YAML fourni ligne par ligne pour anticiper les questions avant que le chronomètre du TP ne démarre — évite de perdre du temps de TP sur des blocages d'accès plutôt que de compréhension.
+
+Transition : lancer le TP guidé.
 -->
 
 ---
@@ -1712,906 +1881,647 @@ duration: 30 min
 type: solo
 ---
 
-# TP - Stack complète Compose
+# TP — pipeline installation → tests → build
+
+<div class="grid grid-cols-2 gap-6 items-start">
+<div>
 
 ## Mission
 
-1. **Créer** un `docker-compose.yml` qui orchestre :
-   - Une **API Node** (build local depuis le repo fourni)
-   - Une **base de données PostgreSQL**
-   - Un **reverse proxy nginx** qui expose l'API sur le port 80
-2. **Lancer** la stack : `docker compose up -d`
-3. **Vérifier** que l'API répond en passant par nginx
-4. **Stopper** : `docker compose down`
+1. Choisir **GitHub Actions ou GitLab CI**
+2. Écrire le pipeline : installation des dépendances → tests → build applicatif → build de l'image Docker
+3. Déclencher le pipeline sur un commit
+4. Lire les logs et confirmer un statut vert
 
-## Bonus
-
-5. Ajouter un healthcheck à la DB et un `depends_on` strict
-6. Persister les données de la DB via un volume nommé
-
-<!--
-TP de 30 min. Un repo est fourni avec :
-- /api : le code Node + son Dockerfile
-- /nginx/nginx.conf : la conf de proxy déjà écrite
-- docker-compose.yml à trous (TODO balisés)
-
-Ils n'ont qu'à composer le fichier YAML. Filet : fichier solution dispo, snippets de rattrapage projetés.
-
-Travail en binôme conseillé (10 postes au lieu de 20) pour limiter les points de support.
-
-Erreurs fréquentes :
-- Oublier d'exposer le port nginx (80:80)
-- Mauvais hostname dans la config nginx (api:3000 et pas localhost:3000)
-- Oublier le healthcheck → API crash au premier démarrage
-
-Restitution collective rapide en fin de TP.
--->
-
----
-layout: pause
-duration: 20 min
----
-
-<!--
-Pause. Au retour : CI/CD avec GitHub Actions.
-
-C'est la partie la plus dense de la journée - prends bien la pause.
--->
-
----
-
-# Rappel CI/CD — déjà vu en Tests & Déploiement
-
-<div class="grid grid-cols-2 gap-4 mt-4">
-
+</div>
 <div>
 
-**Les 3 sigles**
-- **CI** — intégrer + valider souvent
-- **CD** (Delivery) — prêt à déployer (clic manuel)
-- **CD** (Deployment) — déploiement auto
+## Repère YAML — GitHub Actions
 
-</div>
-
-<div>
-
-**Anatomie d'un workflow**
-- `name` · `on` · `jobs` · `steps` · `runs-on`
-- Fichier dans `.github/workflows/`
-- `uses:` = action marketplace · `run:` = shell
-
-</div>
-
-</div>
-
-```mermaid
-graph LR
-  A[Push / PR] --> B[Lint] --> C[Tests] --> D[Build] --> E[Push Image] --> F[Deploy]
-  style D fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style E fill:#2563eb,stroke:#1d4ed8,color:#fff
-```
-
-<!--
-RAPPEL ASSUMÉ - ne pas réenseigner. Les élèves ont vu tout ça en Tests & Déploiement (DJ3) : CI vs CD, anatomie YAML, gating.
-
-Dérouler vite (~10 min) : on revalide le vocabulaire, on rappelle le gating (si tests cassent, pas de build), et on annonce le cap : aujourd'hui, la valeur ajoutée c'est Docker dans la CI - build + push d'image vers un registry. C'est ça qui n'était PAS dans le cours Tests.
-
-Si la salle connaît bien : poser 2-3 questions flash et passer directement à la suite (marketplace docker/build-push).
--->
-
----
-
-# Déclencheurs (`on:`) — aide-mémoire
-
-| Trigger | Quand ? |
-|---|---|
-| `push` | Sur push d'un commit (filtrable par branche) |
-| `pull_request` | Sur ouverture/update d'une PR |
-| `schedule` | À heure fixe (cron) |
-| `workflow_dispatch` | Manuel (bouton dans l'UI) |
-| `release` | Sur création d'une release |
-
-```yaml
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 3 * * *'  # tous les jours à 3h
-  workflow_dispatch:
-```
-
-<!--
-Aide-mémoire combiné déclencheurs + jobs. Déjà vu en Tests & Déploiement, donc on ne s'attarde pas.
-
-Déclencheurs : combinables. push+pull_request = pattern CI standard. schedule = nocturne. workflow_dispatch = bouton manuel.
-
-Jobs : parallèles sauf `needs:`. `needs: lint` = ne lance test que si lint a passé (gating). Chaque job = machine fraîche → checkout/npm ci à refaire → le cache (slide suivante) règle la lenteur.
-
-On enchaîne vite sur ce qui est NEUF : marketplace docker/* et cache.
--->
-
----
-
-# Marketplace - actions réutilisables
-
-```yaml
-steps:
-  - uses: actions/checkout@v4              # clone le repo
-
-  - uses: actions/setup-node@v4            # install Node
-    with:
-      node-version: 20
-      cache: 'npm'                         # cache les deps
-
-  - uses: docker/setup-buildx-action@v3    # build Docker avancé
-
-  - uses: docker/build-push-action@v5      # build + push image
-    with:
-      context: .
-      push: true
-      tags: user/app:latest
-```
-
-<Credit source="github.com/marketplace?type=actions" />
-
-<!--
-ICI commence la VRAIE valeur ajoutée DevOps (pas vue en Tests & Déploiement) : Docker dans la CI.
-
-Les 2 actions à retenir aujourd'hui :
-- `docker/setup-buildx-action` : active BuildKit (build moderne, cache de layers).
-- `docker/build-push-action` : build + push d'image en une action. C'est le cœur du TP de cet après-midi.
-
-Reste : actions officielles `actions/` (fiables) ; actions tierces `docker/`, `aws-actions/` (très utilisées, mais c'est du code qui tourne sur ton runner → épingler par version `@v4`/`@<sha>`).
-
-Insister : ce qu'on construit aujourd'hui = un pipeline qui produit et publie une IMAGE. Le cours Tests faisait du gating de tests ; nous, on conteneurise la livraison.
--->
-
----
-
-# Cache des dépendances
-
-```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: 20
-    cache: 'npm'   # auto-cache de node_modules
-
-# OU manuel
-- uses: actions/cache@v4
-  with:
-    path: node_modules
-    key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-```
-
-<v-clicks>
-
-- Sans cache : `npm ci` à chaque run → ~1 min
-- Avec cache : récupération en ~5 secondes
-- Clé basée sur le **hash du lockfile**
-
-</v-clicks>
-
-<!--
-Le cache te fait gagner des minutes par pipeline. Sur une équipe, c'est des heures par semaine.
-
-setup-node a le cache intégré : `cache: 'npm'`. Plus simple.
-
-Pour des cas custom (Docker layers, Maven, etc.), action/cache générique avec une `key` calculée sur le lockfile.
-
-Astuce : la clé doit changer dès que les dépendances changent. Sinon tu travailles avec un cache obsolète.
--->
-
----
-layout: recap
-section: Demi-journée 3 - Compose et CI/CD bases
----
-
-# Ce qu'il faut retenir
-
-- **Compose** = orchestration locale, un YAML, un `up`
-- **services + volumes + (networks)** = squelette du fichier
-- **healthcheck + depends_on** = robustesse au démarrage
-- **CI/CD + GitHub Actions** = rappel (vu en Tests & Déploiement)
-- **La nouveauté DevOps** : `docker/build-push` → produire et publier une image
-- **Cache** des deps + layers = pipeline rapide
-
-<!--
-Synthèse de la DJ3.
-
-On a fait le neuf (Compose) et revu le connu (CI/CD). Le mini-TP "premier workflow" a été retiré : on le fait directement dans le TP pipeline de cet après-midi, qui démarre justement par lint + test.
-
-DJ4 : on construit LE pipeline complet en une fois (lint → test → build → push bonus), puis survol K8s/IaC/observabilité en mode révision QCM, et QCM.
--->
-
----
-layout: section-cover
-section: Session 4
----
-
-# Pipeline CI/CD complet et écosystème
-
-Le grand œuvre + l'écosystème autour
-
-<!--
-Dernière demi-journée.
-
-Programme : UN gros TP guidé pour construire un pipeline complet de zéro (lint → test → build Docker → push bonus), puis un survol culturel de K8s, IaC et observabilité en mode révision, et le QCM.
-
-Le TP est le sommet du cours : on le fait étape par étape ensemble, repo fourni avec fichiers à trous et solution par étape.
--->
-
----
-
-# Brief - TP pipeline final
-
-## Objectif
-
-Construire un workflow GitHub Actions de zéro, à chaque push sur `main` :
-
-1. **Lint** le code
-2. **Test** unitaires
-3. **Build** une image Docker ← **objectif obligatoire** (`push: false`)
-4. 🎁 **Bonus** — **Push** l'image vers ghcr.io
-5. 🎁 **Bonus** — **Deploy** (simulé) - étape de notification
-
-## Repo fourni
-
-App TypeScript + Dockerfile multi-stage déjà écrits + workflow **à trous** + solution par étape. Tu te concentres sur le YAML.
-
-<!--
-LE TP central de la journée. Cible obligatoire ~60 min en TP guidé (jusqu'au build) ; le reste du créneau = bonus + micro-tâches élastiques pour les rapides (voir README du repo). On fait étape par étape, je projette en parallèle, ils suivent en binôme sur leur poste.
-
-C'est ce TP qui absorbe l'ancien "mini-TP" : il DÉMARRE par lint + test, donc tout le monde construit le workflow de base ici. Pas de doublon.
-
-Cible obligatoire = jusqu'à l'étape 3 (build l'image, push: false). Ça marche à coup sûr, sans credentials, sans config de fork. Tout le monde doit y arriver.
-
-Étapes 4 (push ghcr) et 5 (deploy simulé) = BONUS pour ceux qui avancent. Le push réel vers ghcr.io demande des permissions sur le fork (Actions activées + packages: write) → on ne bloque pas la classe dessus.
-
-Filet : fichiers à trous balisés, solution par étape (copier-coller de rattrapage), je projette en live.
--->
-
----
-
-# Étape 1 - squelette
-
-```yaml
-name: CI/CD
-
-on:
-  push:
-    branches: [main]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'npm' }
-      - run: npm ci
-      - run: npm run lint
-```
-
-<!--
-On démarre simple : juste le lint qui tourne sur push main.
-
-`env:` au top-level définit des variables réutilisables dans tous les jobs.
-
-`${{ github.repository }}` est une variable de contexte fournie par GitHub : "owner/repo". Pratique pour nommer l'image.
-
-Test rapide : push, regarde l'onglet Actions, vérifie que lint passe.
--->
-
----
-
-# Étape 2 - ajouter les tests
+<div class="text-xs">
 
 ```yaml
 jobs:
-  lint:
-    # ... (inchangé)
-
-  test:
+  build:
     runs-on: ubuntu-latest
-    needs: lint
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: 'npm' }
       - run: npm ci
       - run: npm test
+      - run: npm run build
+      - uses: docker/setup-buildx-action@v3
+      ......
 ```
 
+</div>
+</div>
+</div>
+
 <!--
-On ajoute un job test, qui dépend de lint.
+Durée : 30 min (temps du TP).
 
-`needs: lint` : test ne démarre que si lint a passé. Gating.
+Circuler dans la salle, aider ceux qui bloquent sur une erreur de syntaxe YAML (indentation) ou de contexte Docker (`.` vs `./api`).
 
-Les jobs sont chacun sur un runner frais - d'où la duplication du checkout / setup-node / npm ci.
+Exemple concret d'erreur fréquente : un `context:` pointant vers le mauvais dossier fait échouer le build Docker avec un message "Dockerfile introuvable" — vérifier le chemin en premier réflexe.
 
-On verra avec le cache que les `npm ci` répétés sont rapides (5 sec).
+Transition : matrices, conditions et parallélisation, en survol.
 -->
 
 ---
 
-# Étape 3 - build Docker
+# Au-delà du pipeline simple — survol
 
-```yaml
-build:
-  runs-on: ubuntu-latest
-  needs: test
-  steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: false          # on BUILD, on ne pousse pas
-        tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-```
-
-<!--
-C'EST LA CIBLE OBLIGATOIRE DU TP. Tout le monde doit arriver ici.
-
-On ajoute le build Docker.
-
-`push: false` : on construit l'image, on ne pousse nulle part. Aucun credential, aucune config de fork nécessaire → ça marche pour les 20 élèves sans friction. C'est le palier "réussi" du TP.
-
-`docker/setup-buildx-action` : active BuildKit, le moteur moderne (multi-arch, cache avancé).
-
-`docker/build-push-action` : action standard pour build + push.
-
-`push: false` à cette étape - on construit, on ne pousse pas encore. On le fera quand on aura les credentials.
-
-`cache-from / cache-to: gha` : cache GitHub Actions. Magique pour les builds Docker répétés.
-
-`${{ github.sha }}` : tag avec le SHA du commit, traçabilité parfaite.
--->
-
----
-
-# Étape 4 - push vers GHCR _(bonus)_
-
-```yaml
-build:
-  runs-on: ubuntu-latest
-  needs: test
-  permissions:
-    contents: read
-    packages: write
-  steps:
-    - uses: actions/checkout@v4
-    - uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: true
-        tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-```
-
-<!--
-BONUS - pour ceux qui ont fini l'étape 3. Ne pas bloquer la classe ici.
-
-Pré-requis sur le fork de l'élève : Actions activées + permissions packages. Si ça coince, ce n'est pas grave : l'objectif obligatoire (build) est déjà atteint.
-
-Maintenant on pousse vers ghcr.io (GitHub Container Registry, gratuit pour les repos publics).
-
-`permissions: packages: write` : nécessaire pour pousser sur le registry du repo.
-
-`docker/login-action` : login dans le registry. On utilise `GITHUB_TOKEN`, un secret automatique généré pour chaque run.
-
-Tags multiples : SHA pour la traçabilité, `latest` pour pointer vers la dernière version.
-
-Après ce push, ton image est visible dans l'onglet Packages du repo.
--->
-
----
-
-# Étape 5 - déploiement (simulé) _(bonus)_
-
-```yaml
-deploy:
-  runs-on: ubuntu-latest
-  needs: build
-  environment: production
-  steps:
-    - run: |
-        echo "Déploiement de ${{ env.IMAGE_NAME }}:${{ github.sha }}"
-        echo "Vers : ${{ vars.DEPLOY_TARGET }}"
-        # Ici : SSH, kubectl apply, terraform apply, etc.
-```
+<Tip type="warning">
+Ces mécanismes restent hors du périmètre évalué en ING1 — vocabulaire de culture générale seulement.
+</Tip>
 
 <v-clicks>
 
-- `environment: production` = approbation manuelle possible
-- Le vrai deploy = SSH + docker compose pull, ou `kubectl apply`, ou Terraform
+- **Matrices** — exécuter le même job sur plusieurs versions/systèmes
+- **Conditions** — n'exécuter une étape que si une condition est vraie
+- **Parallélisation** — des jobs indépendants s'exécutent en même temps
+- **Artefacts** — transmettre un résultat d'un job à un autre
 
 </v-clicks>
 
 <!--
-On ne fait pas le vrai déploiement (c'est le sujet du cours suivant).
+Durée : 13 min (dont ~9 min d'exemples YAML commentés).
 
-`environment: production` : permet de configurer une approbation manuelle, des secrets dédiés, des protections (qui peut déployer).
+Rester très bref sur l'exigence de maîtrise : l'objectif est que les étudiants reconnaissent ces termes s'ils les croisent, sans exiger de maîtrise pratique à ce stade.
 
-Le vrai job deploy varie énormément selon ton infra :
-- VM SSH : `ssh server "docker compose pull && docker compose up -d"`
-- Kubernetes : `kubectl apply -f` ou ArgoCD
-- Cloud managé : `aws ecs update-service`, `gcloud run deploy`...
+Exemple concret : une équipe qui teste sur plusieurs versions de Node.js en parallèle grâce à une matrice, plutôt que d'écrire un job dupliqué par version.
 
-Pour ce cours, on s'arrête à l'étape "image dispo, prête à être déployée".
--->
+Illustrer chacun des 4 concepts par un court extrait YAML projeté (une matrice `strategy: matrix: node-version: [18, 20, 22]`, une condition `if: github.ref == 'refs/heads/main'`, deux jobs indépendants sans dépendance déclarée entre eux pour la parallélisation, un `actions/upload-artifact` pour l'artefact) sans demander de les écrire soi-même — donne une intuition concrète de chaque terme au-delà de sa seule définition, tout en respectant la limite volontaire du module.
 
----
-
-# Secrets et environments
-
-<KeyConcept title="Secret GitHub Actions" icon="🔐">
-Variable chiffrée stockée dans GitHub, injectée dans le pipeline via `${{ secrets.NOM }}`.
-</KeyConcept>
-
-<v-clicks>
-
-- **Secrets de repo** - disponibles partout dans le repo
-- **Secrets d'environment** - limités à un environnement (prod, staging)
-- **GITHUB_TOKEN** - secret automatique, scope lié au repo
-- ❌ Ne **jamais** logger un secret (`echo $SECRET`)
-
-</v-clicks>
-
-<!--
-Deux niveaux de secrets : repo-level et environment-level.
-
-Pour des credentials de prod sensibles : environment-level + protections (ex: seul un repo admin peut déclencher prod).
-
-GITHUB_TOKEN : généré automatiquement à chaque run, durée de vie limitée à ce run. Utilise-le quand tu peux plutôt que de créer des PAT.
-
-Ne jamais `echo $SECRET` dans les logs : GitHub masque les secrets connus, mais pas si tu fais des transformations dessus.
--->
-
----
-
-# Erreurs fréquentes en CI/CD
-
-<v-clicks>
-
-- ❌ **Permissions insuffisantes** → ajouter `permissions:` au job
-- ❌ **Mauvais context Docker** (`.` vs `./api`)
-- ❌ **Cache obsolète** quand le lockfile change (vérifier la clé)
-- ❌ **Tests qui passent en local mais cassent en CI** → variables d'env manquantes
-- ❌ **Pipeline qui ralentit** → trop de `needs` séquentiels, paralléliser
-
-</v-clicks>
-
-<!--
-Les erreurs que tu vas rencontrer la première fois.
-
-Permissions : le `GITHUB_TOKEN` a des perms par défaut limitées. Pour push une image, il faut explicitement `packages: write`.
-
-Mauvais context : si ton Dockerfile est dans `./api`, il faut `context: ./api`.
-
-Tests qui passent en local mais pas en CI : 99% du temps c'est une variable d'env manquante. Ajoute-la dans les secrets.
-
-Pipeline lent : si tu enchaînes lint → test → build → deploy en série, tu cumules les temps. lint et test peuvent souvent être en parallèle.
+Transition : synthèse de séance 3 puis QCM de clôture.
 -->
 
 ---
 layout: recap
-section: TP pipeline complet
+section: Séance 3 — CI/CD, GitHub Actions et GitLab CI
 ---
 
-# Ce que tu sais faire maintenant
+# Ce qu'il faut retenir
 
-- Écrire un workflow YAML avec triggers, jobs, steps
-- Utiliser le marketplace (checkout, setup-node, docker/*)
-- Cacher les dépendances + layers pour un pipeline rapide
-- **Builder une image Docker** dans la CI (et la pousser vers ghcr.io en bonus)
-- Comprendre secrets / `GITHUB_TOKEN` / environments
-- Chaîner les jobs avec `needs:` et gates
+- **CI / livraison continue / déploiement continu** : trois niveaux d'automatisation distincts
+- **Anatomie commune** : événement, job, étape, runner, artefact, statut
+- **GitHub Actions** : `on` / `jobs` / `steps` / `runs-on`, marketplace, cache
+- **GitLab CI** : `stages` / `jobs` / `script`, runners, variables
+- **Pipeline cible** : installation → tests → build applicatif → build image Docker
+- **Checklist pipeline vert** : déclencheur correct, contexte d'étape, versions épinglées, cache actif, logs lisibles
+- **Déploiement public** : bonus documenté, jamais une obligation
 
 <!--
-À ce stade, ils ont un pipeline qui marche. C'est leur fierté de la journée.
+Durée : 2 min.
 
-Le sujet du cours suivant (Tests et Déploiement) reprendra GitHub Actions sous l'angle :
-- gating des tests, rapports JUnit
-- stratégies de déploiement (blue/green, canary)
-- rollback automatique
+Reprendre collectivement, à l'oral, les erreurs les plus fréquentes vues pendant le TP (déclencheur mal filtré, contexte de build incorrect, version d'action non épinglée) en les rattachant à la checklist listée ci-dessus.
 
-Ils sont armés pour suivre.
+Transition : lancer le QCM de clôture de la séance 3.
+-->
 
-Pause, puis survol K8s/IaC/monitoring.
+---
+layout: exercise
+duration: 12 min
+type: solo
+---
+
+# QCM de clôture — Séance 3
+
+<div class="grid grid-cols-2 gap-8 items-center h-full">
+<div>
+
+**Couvre** : CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
+
+<v-clicks>
+
+- 8 à 10 questions, une bonne réponse par question
+- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
+- Score individuel, débrief collectif juste après
+
+</v-clicks>
+
+</div>
+<div class="flex flex-col items-center justify-center gap-4">
+  <div
+    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
+    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
+  >
+    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
+      <span class="block font-bold text-[#c1502e]">QR CODE</span>
+      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
+    </div>
+  </div>
+  <div class="text-center">
+    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
+    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
+  </div>
+</div>
+</div>
+
+<!--
+Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+
+Verbaliser avant de lancer : ce quiz vérifie la lecture d'un pipeline déclaratif (GitHub Actions et GitLab CI), pas la mémorisation exacte de la syntaxe YAML — questions à choix conceptuel plutôt que recopie de code.
+
+Exemple concret de question possible : "Quel mot-clé GitLab CI regroupe les jobs en étapes séquentielles ?" (réponse attendue : `stages`) — à adapter selon les questions réellement configurées dans le quiz.
+
+Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 4 — sécurité, observabilité, déploiement et audit IA.
+-->
+
+---
+layout: section-cover
+section: Séance 4 — 3h
+---
+
+# Sécurité, observabilité, déploiement et audit IA
+
+Sécuriser, expliquer, diagnostiquer, garder un regard critique
+
+<!--
+Durée : 1 min.
+
+Annoncer le fil de la dernière séance : sécuriser la chaîne construite jusqu'ici (TLS, secrets), la rendre observable (logs, métriques, traces), comprendre les stratégies de déploiement, puis clôturer par le TP final avec un audit critique d'une configuration générée par IA.
+
+Exemple concret : rappeler que le pipeline construit en séance 3 fabrique déjà une image — cette séance ajoute ce qui manque pour la rendre digne de confiance en production.
+
+Transition : revue des pipelines et objectifs du livrable final.
+-->
+
+---
+
+# Revue et objectifs du livrable final
+
+<v-clicks>
+
+- Chaque groupe a un pipeline qui installe, teste et construit une image
+- Aujourd'hui : sécuriser, observer, comprendre le déploiement, auditer une config IA
+- Le **livrable final** est attendu en fin de séance
+
+</v-clicks>
+
+<!--
+Durée : 14 min (dont ~8 min d'échange sur l'état des livrables).
+
+Rappeler la checklist du livrable final : dépôt Git identifiable, application lançable, Dockerfile fonctionnel, pipeline vert, secrets absents du dépôt, preuve d'observabilité, audit IA écrit.
+
+Exemple concret : projeter la checklist du livrable pour que les étudiants gardent un objectif visuel clair pendant la séance.
+
+Échange approfondi : faire un tour de table où chaque binôme indique, sur la checklist projetée, où il en est (pipeline vert obtenu ou non, principal point bloquant) — donne à l'instructeur une vision claire des groupes qui auront besoin de plus d'accompagnement pendant les TP de la séance, et rassure les groupes en retard en montrant qu'ils ne sont pas seuls.
+
+Transition : entrer dans TLS/HTTPS.
+-->
+
+---
+
+# TLS/HTTPS — ce que ça garantit
+
+<v-clicks>
+
+- **Chiffrement** — le contenu échangé n'est pas lisible en clair sur le réseau
+- **Intégrité** — le contenu n'a pas été modifié en chemin
+- **Authentification** — le serveur prouve son identité via un certificat
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~5 min de manipulation navigateur).
+
+Ces trois garanties sont souvent confondues. TLS ne garantit pas que le serveur est "de confiance" au sens moral — seulement que son identité est vérifiable et que la communication n'est pas altérée en transit.
+
+Exemple concret : un cadenas dans la barre d'adresse ne signifie pas "ce site est sûr", seulement "la connexion à ce site précis est chiffrée et authentifiée".
+
+Manipulation guidée : demander à chaque étudiant d'ouvrir un site HTTPS connu, de cliquer sur le cadenas puis d'inspecter le certificat affiché (émetteur, dates de validité, nom du sujet) — rend concrets les trois piliers avant de détailler la chaîne de confiance qui les rend possibles.
+
+Transition : détailler le certificat et la chaîne de confiance.
+-->
+
+---
+
+# Certificat et chaîne de confiance
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Autorité racine] --> B[Autorité intermédiaire]
+  B --> C[Certificat du serveur]
+  C --> D[Navigateur vérifie la chaîne]
+```
+
+<v-clicks>
+
+- Une **autorité de certification** signe le certificat du serveur
+- Le navigateur fait confiance à un ensemble d'autorités racines préinstallées
+- **Let's Encrypt** délivre des certificats gratuits et automatisables
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~5 min d'échange et de manipulation).
+
+Let's Encrypt a démocratisé le HTTPS en le rendant gratuit et automatisable (renouvellement via ACME) — avant, un certificat payant était une barrière réelle pour les petits projets.
+
+Exemple concret : un site qui ne renouvelle pas son certificat à temps affiche une alerte de sécurité aux visiteurs — incident courant et évitable avec un renouvellement automatisé.
+
+Échange : demander si quelqu'un a déjà vu un avertissement de certificat expiré ou invalide dans un navigateur, et faire décrire ce qui s'affichait — ancre la notion de chaîne de confiance dans une expérience vécue avant de passer aux secrets applicatifs.
+
+Manipulation guidée complémentaire : sur le même certificat déjà ouvert lors de la slide précédente, faire remonter collectivement la chaîne jusqu'à l'autorité racine affichée dans les détails du navigateur, et faire identifier laquelle des trois autorités (racine, intermédiaire, serveur) a signé laquelle — relie concrètement le schéma à ce qui est réellement affiché à l'écran.
+
+Transition : passer aux secrets et à leur gestion.
+-->
+
+---
+
+# Secrets — ce qu'il ne faut jamais versionner
+
+<v-clicks>
+
+- Jetons d'API, mots de passe, clés privées
+- Un secret commité reste dans l'**historique Git**, même après suppression
+- Utiliser des **variables protégées** du pipeline, jamais un fichier versionné
+
+</v-clicks>
+
+<Tip type="danger">
+Un secret qui a fuité doit être révoqué immédiatement, pas seulement supprimé du code.
+</Tip>
+
+<!--
+Durée : 10 min (dont ~5 min de cas pratique commenté).
+
+Point de sécurité critique : supprimer un secret d'un commit ne le retire pas de l'historique Git — il faut réécrire l'historique (opération lourde) ou, plus simplement, révoquer le secret compromis.
+
+Exemple concret : une clé d'API cloud accidentellement commise dans un dépôt public peut être exploitée en quelques minutes par des robots qui scannent GitHub en continu — la rapidité de révocation est essentielle.
+
+Cas pratique commenté : montrer un extrait de `git log -p` sur un commit qui a introduit puis "supprimé" un secret dans un commit suivant, et faire constater à la salle que la valeur reste lisible dans l'historique — argument le plus convaincant pour ancrer la règle de révocation immédiate.
+
+Transition : détailler .env, rotation et interdiction de versionner.
+-->
+
+---
+
+# `.env`, rotation, bonnes pratiques
+
+```bash
+# .env — jamais commité
+DATABASE_URL=postgres://user:pass@db:5432/app
+API_KEY=xxxxxxxxxxxxxxxx
+```
+
+```text
+# .gitignore
+.env
+```
+
+<v-clicks>
+
+- Un `.env.example` versionné documente les variables **sans valeurs réelles**
+- La **rotation** régulière des secrets limite l'impact d'une fuite non détectée
+- Les gestionnaires de secrets (coffre-fort dédié) évitent la dispersion des jetons
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~5 min de vérification pratique).
+
+Pattern à retenir : `.env` local et ignoré par Git, `.env.example` versionné et documenté avec des valeurs factices.
+
+Exemple concret : demander à la salle de vérifier que leur propre `.env` figure bien dans `.gitignore` — exercice de vérification immédiate et concret.
+
+Vérification pratique guidée : demander à chaque étudiant d'exécuter `git status` sur son dépôt fil rouge après avoir créé un `.env` local, de confirmer qu'il n'apparaît pas comme fichier suivi, puis de créer un `.env.example` correspondant avec des valeurs factices — transforme la bonne pratique en réflexe vérifié individuellement. Faire relire à un voisin le `.env.example` produit pour confirmer qu'aucune valeur réelle ne s'y est glissée par erreur — dernier filet de vérification avant de passer à la sécurité du pipeline.
+
+Transition : sécurité CI/CD au sens large.
+-->
+
+---
+
+# Sécurité CI/CD
+
+<v-clicks>
+
+- **Dépendances** — scanner les vulnérabilités connues avant de construire
+- **Secret scanning** — détecter un credential commis par erreur
+- **Image de base** — préférer une image officielle, à jour, de taille réduite
+- **Permissions minimales** — donner au pipeline seulement les droits nécessaires
+
+</v-clicks>
+
+<!--
+Durée : 10 min (dont ~5 min d'échange sur des exemples réels).
+
+Le principe du moindre privilège s'applique aussi aux pipelines : un job qui n'a pas besoin d'écrire dans un registre ne devrait pas avoir cette permission par défaut.
+
+Exemple concret : un jeton de pipeline avec des permissions d'écriture excessives, s'il fuite, permet à un attaquant d'agir bien au-delà du besoin réel du job — restreindre les permissions limite les dégâts potentiels.
+
+Échange : reprendre chacun des 4 points un par un et demander à la salle un exemple concret vécu ou imaginé pour chacun (dépendance jamais mise à jour, secret repéré par erreur, image `latest` en production...) — installe le vocabulaire de sécurité CI/CD avant l'exercice d'audit express qui suit. Demander en complément quel point, parmi les 4, leur semble le plus risqué sur leur propre pipeline fil rouge et pourquoi — fait le lien direct avec le livrable évalué en fin de séance.
+
+Transition : audit rapide sur un exemple de pipeline fourni (activité).
+-->
+
+---
+
+# Audit express — repérer les failles
+
+<v-clicks>
+
+- Une image de base non versionnée (`latest`) au lieu d'une version épinglée
+- Une variable d'environnement contenant un mot de passe en clair dans le YAML
+- Un job avec des permissions d'écriture non justifiées
+- Une dépendance jamais mise à jour depuis des mois
+
+</v-clicks>
+
+<!--
+Durée : 10 min (temps d'exercice collectif de repérage).
+
+Faire identifier collectivement, sur un exemple projeté, deux ou trois de ces anti-patterns. Cet exercice prépare directement l'audit IA de fin de séance.
+
+Exemple concret : projeter un extrait de pipeline volontairement imparfait et demander à la salle de lever la main dès qu'un problème est repéré — rythme dynamique avant la pause.
+
+Déroulé : laisser 3-4 minutes de lecture individuelle silencieuse de l'extrait projeté avant d'ouvrir la correction collective point par point — donne à chacun le temps de repérer par lui-même avant la mise en commun, plutôt que de laisser les plus rapides répondre pour tout le monde. Projeter ensuite un second extrait, variante avec un anti-pattern différent des quatre déjà vus, et le faire corriger uniquement à main levée sans relecture silencieuse — vérifie que la méthode s'applique aussi à un cas nouveau avant la pause.
+
+Transition : pause.
 -->
 
 ---
 layout: pause
-duration: 20 min
+duration: 10 min
 ---
 
 <!--
-Dernière pause du cours. Au retour : survol culturel EN MODE RÉVISION QCM (~40 min), puis le QCM (~60 min).
+Durée : 10 min de pause.
 
-Objectif des slides restantes : donner/réviser le vocabulaire K8s, IaC, observabilité, DevSecOps - juste ce qui tombe au QCM. Format interactif : on pose des questions à la salle, on fait lire les manifestes/tableaux, on ne déroule PAS un monologue. C'est de la révision active avant l'épreuve.
+Rester disponible pour les questions sur TLS ou les secrets.
 
-ATTENTION TIMING : garder 60 min pleines pour le QCM en fin de journée. Si on déborde, couper dans les stacks d'observabilité et le comparatif IaC, pas dans le vocabulaire K8s de base.
+Transition au retour : déploiement et versionnage, observabilité.
 -->
 
 ---
 
-# Kubernetes, c'est quoi ?
+# Déploiement et versionnage
 
 <v-clicks>
 
-- Docker = **1 conteneur** sur **1 machine**
-- Compose = **plusieurs conteneurs** sur **1 machine**
-- Kubernetes = **plein de conteneurs** répartis sur **plusieurs machines**
+- **Environnements** — développement, test, production, chacun isolé
+- **Release** — une version figée, prête à être déployée
+- **Rollback** — revenir à la version précédente en cas de problème
 
 </v-clicks>
 
-<KeyConcept title="L'image à retenir" icon="🎻">
-Kubernetes est un <strong>chef d'orchestre</strong> : tu lui donnes tes conteneurs et une consigne (« garde mon app en marche »), il s'occupe de les lancer, les surveiller et les répartir sur un parc de machines.
-</KeyConcept>
-
-<Tip type="info">
-Pour la majorité des projets, Docker Compose suffit largement. K8s, c'est quand on grossit beaucoup.
-</Tip>
-
 <!--
-RÉVISION / DÉCOUVERTE - public qui n'a jamais entendu parler de K8s. On reste très simple, imagé.
+Durée : 6 min.
 
-Le fil rouge : on monte en échelle. 1 conteneur (Docker) → plusieurs sur 1 machine (Compose) → plusieurs sur plusieurs machines (Kubernetes).
+Poser la notion d'environnement comme un principe de sécurité et de qualité : ne jamais tester en production ce qui n'a pas été validé ailleurs.
 
-L'analogie du chef d'orchestre : tu ne diriges plus chaque musicien à la main, tu donnes la partition et le chef coordonne. Idem K8s : tu décris ce que tu veux, il s'arrange.
+Exemple concret : un incident en production doit pouvoir être résolu en quelques minutes par un rollback, sans attendre un correctif de code en urgence — le rollback est un filet de sécurité, pas un aveu d'échec.
 
-Message clé : ils n'ont PAS besoin de K8s tout de suite. C'est de la culture générale. Compose suffit pour leurs projets. K8s arrive quand une boîte a beaucoup de trafic, plusieurs équipes, du multi-machines.
+Question à la salle : demander pourquoi un environnement de test isolé de la production est aussi une question de gestion de projet (coût d'un incident client vs coût d'un environnement supplémentaire) — lien direct avec le profil management.
+
+Transition : détailler les stratégies de déploiement.
 -->
 
 ---
 
-# Comment ça marche, en gros
+# Stratégies de déploiement
 
-```mermaid
+| Stratégie | Principe | Risque en cas d'erreur |
+|---|---|---|
+| **Recreate** | Arrêt total puis redémarrage sur la nouvelle version | Coupure de service |
+| **Rolling** | Remplacement progressif des instances | Coexistence temporaire de deux versions |
+| **Blue/green** | Deux environnements complets, bascule instantanée | Rollback quasi immédiat |
+| **Canary** | Nouvelle version testée sur une petite portion du trafic | Impact limité si problème détecté |
+
+<!--
+Durée : 9 min (dont ~4 min d'exercice de classement).
+
+Ce tableau est un support de mémorisation. Insister sur canary : c'est la stratégie qui limite le mieux le risque, au prix d'une complexité de mise en œuvre plus élevée.
+
+Exemple concret : une nouvelle fonctionnalité risquée déployée d'abord sur 5% du trafic (canary) permet de détecter un problème avant qu'il touche l'ensemble des utilisateurs.
+
+Exercice de classement : donner 3 scénarios (mise à jour de sécurité urgente sans risque de régression, changement risqué sur le paiement, refonte totale d'architecture) et demander à la salle quelle stratégie choisir pour chacun, en justifiant le compromis risque/complexité — vérifie la compréhension avant de passer à l'observabilité.
+
+Transition : observabilité — logs, métriques, traces.
+-->
+
+---
+
+# Observabilité — les trois piliers
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph TB
-  subgraph Cluster["Cluster = le parc de machines"]
-    subgraph Node1[Machine 1]
-      P1[Pod] --- P2[Pod]
-    end
-    subgraph Node2[Machine 2]
-      P3[Pod] --- P4[Pod]
-    end
-  end
-  S[Service<br/>la porte d'entrée] --> P1
-  S --> P3
-  style S fill:#16a34a,stroke:#15803d,color:#fff
-```
-
----
-
-# Comment ça marche, en gros
-
-<div class="text-sm">
-
-| Mot | En langage simple |
-|---|---|
-| **Cluster** | le parc de machines |
-| **Node** | une machine du parc |
-| **Pod** | ton conteneur qui tourne (la plus petite unité) |
-| **Service** | la porte d'entrée vers ton app |
-| **Namespace** | des « dossiers » pour ranger/isoler |
-
-</div>
-
-<!--
-On garde le schéma (le visuel aide les novices) mais on parle en français simple, pas en jargon.
-
-Les mots, expliqués comme à un débutant :
-- Cluster = le parc de machines mises en commun.
-- Node = une de ces machines.
-- Pod = l'endroit où tourne ton conteneur (la brique de base).
-- Service = l'adresse stable par laquelle on joint ton app, même si les pods bougent.
-- Namespace = des dossiers pour séparer (prod/test, équipes). Dans la fiche → peut tomber au QCM.
-
-Ne pas réciter une définition académique : montrer le schéma, pointer chaque mot dessus. 5 mots suffisent pour suivre une conversation K8s.
--->
-
----
-
-# Ce que Kubernetes t'apporte
-
-<div class="grid grid-cols-2 gap-6">
-
-<div>
-
-<v-clicks>
-
-- 🔁 **Auto-réparation** — un conteneur plante ? il le relance tout seul
-- 📈 **Montée en charge** — plus de trafic ? il ajoute des copies
-- 🚀 **Mise à jour sans coupure** — déploiement progressif
-- ⚖️ **Répartition de charge** entre les copies
-
-</v-clicks>
-
-</div>
-
-<div>
-
-<v-clicks>
-
-**Quand basculer ?**
-
-
-✅ **Reste sur Compose** si 1-3 serveurs, petite équipe, trafic stable
-
-🟣 **Passe à K8s** si plusieurs machines, gros trafic à absorber, beaucoup de services
-</v-clicks>
-</div>
-
-</div>
-
-<Tip type="info">
-On décrit tout ça dans des fichiers texte (les « manifestes » YAML) et on pilote avec un outil en ligne de commande, <code>kubectl</code>.
-</Tip>
-
-<!--
-LE message de la séquence K8s : ce que ça APPORTE concrètement. C'est ça qui parle à des débutants, pas la syntaxe.
-
-- Auto-réparation : le pod meurt, K8s en recrée un. Tu dors la nuit.
-- Montée en charge : pic de trafic (Black Friday), K8s ajoute des copies, puis les retire après.
-- Mise à jour sans coupure (rolling update) : il remplace les anciennes versions progressivement, sans éteindre le service.
-- Répartition de charge : le trafic est distribué entre les copies.
-
-C'est exactement ce qu'on devrait faire À LA MAIN avec Compose + scripts. K8s l'automatise.
-
-Quand basculer : pas de techno-fétichisme. Compose pour leurs projets/PME/startup. K8s = gros trafic, multi-machines, plusieurs équipes.
-
-Le Tip "manifestes + kubectl" : juste pour qu'ils reconnaissent les mots s'ils les croisent. On NE fait PAS de démo kubectl - hors scope, niveau vocabulaire (cf. fiche).
--->
-
----
-
-# Infrastructure as Code (IaC)
-
-<KeyConcept title="IaC" icon="📐">
-Décrire son infrastructure (serveurs, réseaux, bases) dans du code versionné, plutôt qu'en cliquant dans une console.
-</KeyConcept>
-
-<div class="grid grid-cols-2 gap-4 mt-3 text-sm">
-
-<div>
-
-**Pourquoi ?** Le clic-clic en console = pas reproductible, pas d'historique, pas de review.
-- ✅ Reproductibilité · Versioning
-- ✅ Code review (PR) · Automatisation
-
-</div>
-
-<div>
-
-| Outil | Cible |
-|---|---|
-| **Terraform** | Provisionne le cloud (déclaratif, standard) |
-| **Ansible** | Configure des serveurs (SSH, sans agent) |
-| CloudFormation / Pulumi | AWS natif / code TS-Python |
-
-</div>
-
-</div>
-
-<Tip type="info">
-Souvent ensemble : Terraform crée la VM, Ansible la configure. Pour ce cours : vocabulaire seulement.
-</Tip>
-
-<!--
-2 slides fusionnées. Mode survol, on ne s'attarde pas.
-
-Concept clé QCM : l'infra-as-code = infra décrite en code versionné (vs clic dans la console). Bénéfices = reproductibilité, versioning, review, automatisation.
-
-Outils : Terraform (provisionne du cloud), Ansible (configure des serveurs existants), souvent les deux ensemble. CloudFormation = AWS natif, Pulumi = en vrai langage.
-
-Disclaimer assumé : on ne fait pas d'IaC en profondeur ici. Si une mission y touche, voir un référent.
--->
-
----
-
-# Observabilité - les 3 piliers
-
-```mermaid
-graph TB
-  A[Application] --> B[Logs<br/>« Que s'est-il passé ? »]
-  A --> C[Métriques<br/>« Combien ? À quelle vitesse ? »]
-  A --> D[Traces<br/>« Quel chemin a pris la requête ? »]
-  style B fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style C fill:#16a34a,stroke:#15803d,color:#fff
-  style D fill:#7c3aed,stroke:#6d28d9,color:#fff
+  A[Application] --> B["Logs — que s'est-il passé ?"]
+  A --> C["Métriques — combien, à quelle vitesse ?"]
+  A --> D["Traces — quel chemin a pris la requête ?"]
 ```
 
 <v-clicks>
 
-- **Logs** - événements horodatés, riches en contexte
-- **Métriques** - chiffres agrégés (CPU, latence, taux d'erreur)
-- **Traces** - parcours d'une requête à travers les services
+- **Logs** — événements horodatés, riches en contexte
+- **Métriques** — valeurs agrégées dans le temps (latence, taux d'erreur...)
+- **Traces** — parcours d'une requête à travers plusieurs composants
 
 </v-clicks>
 
 <!--
-LES 3 PILIERS = question QCM quasi-certaine. Faire répéter à la salle.
+Durée : 10 min (dont ~5 min d'exemples de logs commentés).
 
-Les 3 piliers de l'observabilité (terminologie standard).
+Ces trois piliers sont complémentaires : les logs racontent un événement précis, les métriques donnent une tendance chiffrée, les traces suivent un parcours de bout en bout.
 
-Logs : "user X a tenté de se logger à 10h32, échec, mauvais mot de passe".
+Exemple concret : un pic de latence détecté par une métrique peut être expliqué en détail par une trace, puis confirmé par les logs du composant en cause — les trois piliers se complètent dans un diagnostic réel.
 
-Métriques : "taux d'erreur 2% sur les 5 dernières minutes". Légères, agrégeables, alertables.
+Exemples commentés : projeter une ligne de log applicatif réelle, une métrique de latence sous forme de graphique simple et un schéma de trace à deux-trois sauts, et demander à la salle d'associer chaque exemple au bon pilier avant de l'expliquer — rend les trois notions concrètes avant de voir la chaîne d'outils qui les produit.
 
-Traces : "la requête /api/order a passé 50 ms dans le service auth, 200 ms dans le service paiement, 30 ms en DB". Indispensable en microservices.
-
-Les 3 sont complémentaires. Une stack obs moderne combine les trois.
+Transition : présenter la chaîne OpenTelemetry → Prometheus → Grafana → Alertmanager.
 -->
 
 ---
 
-# Stacks d'observabilité + alerting
+<h1 style="font-size: 1.875rem">La chaîne OpenTelemetry → Prometheus → Grafana → Alertmanager</h1>
 
-<div class="grid grid-cols-2 gap-4 text-sm">
+<Tip type="info">
+OpenTelemetry et Prometheus sont des exemples de projets de l'écosystème cloud-native vu en séance 2.
+</Tip>
 
-<div>
+<div class="[&_.mermaid]:my-2">
 
-**Stacks courantes**
-| Stack | Forte sur |
-|---|---|
-| **ELK** | Logs |
-| **Prometheus + Grafana** | Métriques (K8s-native) |
-| Jaeger / Tempo | Traces |
-| Datadog / Sentry | Tout-en-un / erreurs |
-
-</div>
-
-<div>
-
-**Alerting — bonnes pratiques**
-- 🎯 Alerter sur les **symptômes** (taux d'erreur, latence), pas les causes
-- 🔕 Chaque alerte doit être **actionnable**
-- 📞 Astreinte (nuit) = critique seulement
-- 📧 Email/Slack = info
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Application instrumentée] --> B[OpenTelemetry<br/>collecte]
+  B --> C[Prometheus<br/>stockage métriques]
+  C --> D[Grafana<br/>tableaux de bord]
+  C --> E[Alertmanager<br/>notifications]
+```
 
 </div>
 
+<v-clicks>
+
+- **OpenTelemetry** — instrumente et collecte logs, métriques et traces
+- **Prometheus** — collecte et stocke les métriques
+- **Grafana** — représente les métriques dans des tableaux de bord
+- **Alertmanager** — regroupe, déduplique et achemine les alertes
+
+</v-clicks>
+
+<div class="-mt-3">
+
 </div>
+
+<!--
+Durée : 10 min (dont ~5 min d'échange sur des alternatives).
+
+Cette chaîne est un exemple concret et cohérent, pas la seule combinaison possible. L'important est de comprendre le rôle de chaque brique, pas de mémoriser une stack unique et figée.
+
+Exemple concret : une alerte Alertmanager peut notifier une équipe par email ou messagerie dès qu'un taux d'erreur dépasse un seuil défini dans Prometheus — boucle complète de bout en bout.
+
+Échange : demander si certains connaissent des alternatives à l'une de ces briques (Datadog, ELK/Loki pour les logs, PagerDuty pour l'alerting...) et rappeler que le rôle compte plus que le nom exact de l'outil — utile pour le futur chef de projet qui devra dialoguer avec des équipes utilisant des stacks différentes. Projeter en complément une courte capture d'un tableau de bord Grafana simple (une seule métrique de latence dans le temps) pour rendre concret le passage de la métrique brute au tableau de bord évoqué plus haut.
+
+Transition : feature flags.
+-->
+
+---
+
+# Feature flags — activer sans redéployer
+
+<Tip type="info">
+Un flag oublié activé pour tout le monde reste une dette technique — prévoir son retrait après stabilisation.
+</Tip>
+
+<v-clicks>
+
+- Un **feature flag** active ou désactive une fonctionnalité à l'exécution
+- Permet de déployer du code inactif, puis de l'activer progressivement
+- Complète les stratégies de déploiement (notamment canary)
+
+</v-clicks>
+
+<!--
+Durée : 18 min (dont ~13 min d'étude de cas et de discussion commentées).
+
+Les feature flags découplent le déploiement (mettre le code en place) de la mise en visibilité (l'activer pour les utilisateurs) — nuance importante pour le profil management du master.
+
+Exemple concret : une fonctionnalité déployée en production mais désactivée par flag peut être activée uniquement pour l'équipe interne avant l'ouverture à tous les utilisateurs.
+
+Étude de cas commentée : reprendre le scénario canary vu juste avant et montrer comment un feature flag le complète concrètement — déployer le code partout, mais n'activer la fonctionnalité que pour 5% des utilisateurs choisis par le flag, sans avoir à gérer deux versions d'infrastructure séparées comme pour un canary classique. Faire réagir la salle sur le risque symétrique : un flag oublié activé devient une dette de sécurité et de lisibilité, pas seulement une dette technique anodine.
+
+Discussion approfondie : prolonger l'échange avec des exemples vécus ou imaginés de feature flags oubliés en production, faire formuler à la salle le lien entre dette technique et dette de sécurité, puis demander à un binôme volontaire si son propre pipeline fil rouge pourrait bénéficier d'un flag sur une fonctionnalité en cours — ancre la notion dans le TP noté qui suit la séance.
+
+Transition : demander une configuration à une IA, puis l'auditer avec une grille dédiée.
+-->
+
+---
+
+# Grille d'audit d'une configuration générée par IA
 
 <Tip type="warning">
-Une alerte jamais actionnée doit être supprimée. La fatigue d'alerte tue les vraies urgences.
+Toute suggestion d'IA est une proposition à vérifier, jamais une vérité à copier-coller.
 </Tip>
 
+<v-clicks>
+
+- Point de départ : demander à une IA un **Dockerfile** ou un **workflow** de pipeline — jamais utilisé tel quel, toujours **à vérifier**
+- **Reproductibilité** — versions épinglées, comportement stable dans le temps
+- **Permissions** — droits minimaux, pas d'excès par défaut
+- **Exposition réseau** — ports et accès strictement nécessaires
+- **Secrets** — aucun credential en clair dans la configuration
+- **Provenance** — image de base connue et maintenue
+- **Cohérence** — la proposition correspond réellement au besoin exprimé
+
+</v-clicks>
+
 <!--
-2 slides fusionnées, survol rapide.
+Durée : 17 min (dont ~4 min d'échange et ~7 min de démonstration en direct).
 
-Stacks : Prometheus+Grafana = LA stack métriques moderne (open source, K8s). ELK = logs historique. Le reste à connaître de nom.
+Message central : l'objectif n'est pas d'évaluer la capacité de l'IA à produire du YAML, mais la capacité de l'étudiant à repérer ce qui ne va pas dans la proposition.
 
-Alerting : symptôme vs cause (alerter sur "5% de 500", pas "CPU 80%"). Fatigue d'alerte = anti-pattern SRE. Astreinte réservée à ce qui doit être réglé la nuit.
+Exemple concret : une configuration générée par IA qui utilise une image `latest` non épinglée, ou un utilisateur root par défaut — deux erreurs fréquentes et faciles à repérer une fois la checklist connue.
 
-On ne s'attarde pas - c'est du vocabulaire.
+Échange : demander qui a déjà utilisé une IA générative pour écrire du code d'infrastructure (Dockerfile, workflow CI), et si la proposition a été utilisée telle quelle ou vérifiée — pose la question de posture professionnelle avant de dérouler la grille d'audit formelle.
+
+Cette grille sert directement de base à la partie audit du TP final noté. La faire copier ou l'associer au support fourni pour le TP.
+
+Démonstration en direct : demander à un binôme volontaire de soumettre en direct une demande à une IA générative, projeter la demande et sa réponse, puis parcourir les 6 critères de la grille un par un sur cette réponse concrète avant que chaque binôme ne fasse de même pour le TP noté — moment fort de la séance.
+
+Second passage guidé : projeter une deuxième réponse d'IA générative, contrastée et contenant un anti-pattern différent de la première (par exemple un secret en clair plutôt qu'une image non épinglée), et faire dérouler les 6 critères uniquement par la salle, sans intervention de l'instructeur sauf blocage — vérifie que la méthode est assimilée avant que chaque binôme ne l'applique seul sur sa propre configuration pendant le TP noté.
+
+Transition : finalisation du dépôt et restitution en binômes.
+-->
+
+---
+layout: exercise
+duration: 15 min
+type: group
+---
+
+# TP noté — finalisation du dépôt
+
+## Livrable attendu
+
+- Dépôt Git identifiable, historique compréhensible
+- Application lançable localement, Dockerfile fonctionnel
+- Pipeline GitHub Actions **ou** GitLab CI vert
+- Secrets absents du dépôt, configuration sensible documentée
+- Courte preuve d'observabilité (logs analysés, endpoint ou métrique choisie)
+- Audit écrit d'une configuration générée par IA, avec corrections justifiées
+
+<!--
+Durée : 15 min (temps de finalisation en binômes).
+
+Rappeler que l'URL publique n'est qu'un bonus documenté si un hébergement pédagogique est disponible — jamais une obligation bloquante pour la note.
+
+Circuler dans les binômes, en priorité ceux encore en difficulté sur l'observabilité ou l'audit IA — ce sont les deux points les plus récents du déroulé et ceux où l'accompagnement individuel apporte le plus.
+
+Transition : bilan et limites du module.
 -->
 
 ---
 
-# DevSecOps en pratique
+# Bilan et limites du module
 
 <v-clicks>
 
-- 🤖 **Dependabot** - alertes + PR automatiques sur dépendances vulnérables
-- 🔍 **Snyk / Trivy** - scan de vulnérabilités dans le code et les images Docker
-- 🔐 **Secret scanning** - détection de credentials commitées
-- 📝 **Signed commits** - auth des commits via GPG/SSH
+- Kubernetes reste une **introduction** : pas d'installation de cluster, pas de manifeste évalué
+- L'Infrastructure as Code (Terraform, Ansible...) n'a pas été traitée en profondeur ici
+- Ce module pose des **fondations**, pas une expertise complète sur chaque sujet
 
 </v-clicks>
 
-<Tip type="info">
-GitHub propose Dependabot, secret scanning et code scanning gratuits sur les repos publics.
-</Tip>
-
 <!--
-Les outils sécu de base, gratuits, intégrés à GitHub.
+Durée : 8 min (dont ~5 min de discussion bilan).
 
-Dependabot : ouvre des PR auto quand une de tes deps a une CVE. Tu mergues, c'est patché.
+Assumer clairement les limites du module plutôt que de laisser croire à une couverture exhaustive — cohérence pédagogique avec le niveau ING1 visé.
 
-Snyk / Trivy : scan plus poussé. Trivy gratuit, à intégrer dans le pipeline.
+Exemple concret : un futur stage ou une future mission approfondira naturellement un ou deux de ces sujets — le module donne le vocabulaire pour ne pas partir de zéro.
 
-Secret scanning : si quelqu'un commit une clé AWS, GitHub la détecte et tu peux configurer une révocation auto.
+Discussion bilan : reprendre collectivement l'observabilité (choix de métrique) et l'audit d'une configuration générée par IA vus juste avant — faire verbaliser par deux ou trois étudiants un point qui leur semblait encore flou, avant la synthèse finale.
 
-Signed commits : prouve que c'est bien toi qui as commit. Anti-spoofing. À configurer si tu travailles sur du code sensible.
+Transition : synthèse globale du module.
 -->
 
 ---
 layout: recap
-section: Synthèse globale des 2 jours
+section: Synthèse globale du module
 ---
 
-# Récap des 2 jours
+# Ce qu'il faut retenir sur les 4 séances
 
-- **Culture DevOps** - CALMS, 3 voies, métriques DORA
-- **Git en équipe** - branching, PR, hooks, SemVer
-- **Docker** - Dockerfile, multi-stage, optim image
-- **Compose** - orchestration locale multi-services
-- **GitHub Actions** - pipeline lint → test → build → push → deploy
-- **Écosystème** - K8s, IaC, observabilité (vocabulaire)
-
-<!--
-Synthèse globale.
-
-Tu as parcouru un large territoire. Personne ne devient expert en 2 jours, mais tu as les fondations pour creuser n'importe lequel de ces sujets.
-
-Mon conseil : ne te disperse pas. Choisis 1 sujet qui t'attire (ex: Docker), creuse-le pendant un mois, puis bascule sur le suivant.
--->
-
----
-
-# Lien avec le cours « Tests et Déploiement »
-
-<v-clicks>
-
-- En **Tests & Déploiement**, vous aviez vu : CI/CD, gating, JUnit, stratégies (blue/green, canary, rollback)
-- **Ici en DevOps**, on a ajouté la couche qui manquait : **conteneuriser** la livraison — build + push d'**image Docker** dans la CI
-- Les deux se complètent : Tests = *fiabiliser et déployer* · DevOps = *empaqueter et publier*
-- Vous avez maintenant la chaîne complète : du code testé à l'image publiée
-
-</v-clicks>
+- **Réseaux et cloud** : couches, IP/DNS, IaaS/PaaS/SaaS/serverless, haute disponibilité
+- **DevOps, Git, Docker** : culture, collaboration, Infrastructure as Code, conteneurisation, CNCF avant Kubernetes
+- **CI/CD** : anatomie commune, GitHub Actions, GitLab CI, pipeline installation → build
+- **Sécurité et observabilité** : TLS, secrets, stratégies de déploiement, logs/métriques/traces
+- **Audit IA** : vérifier une proposition, jamais la copier sans regard critique
 
 <!--
-Les deux cours se recoupent volontairement sur GitHub Actions, mais sous des angles différents.
+Durée : 2 min.
 
-Cours Tests = comment rendre le pipeline fiable et déployer en sécurité (gating, stratégies).
-Cours DevOps = comment conteneuriser et publier (Docker dans la CI, registry).
+Dernière synthèse avant les questions ouvertes. Rappeler le fil rouge parcouru : une application simple, versionnée, conteneurisée, validée par un pipeline, sécurisée et supervisée.
 
-C'est pour ça qu'on a traité CI/CD en rappel aujourd'hui : vous l'aviez déjà vu. La vraie nouveauté DevOps, c'est l'image Docker dans le pipeline.
--->
-
----
-
-# Ressources pour aller plus loin
-
-- 📕 **The Phoenix Project** - Gene Kim (roman DevOps)
-- 📕 **Accelerate** - Forsgren, Humble, Kim (métriques DORA)
-- 🌐 **Docker docs** - https://docs.docker.com
-- 🌐 **GitHub Actions docs** - https://docs.github.com/actions
-- 🌐 **12-Factor App** - https://12factor.net
-- 📺 **Conférences DevOpsDays** - chaîne YouTube officielle
-- 🎓 **Pro Git** (gratuit, en français) - https://git-scm.com/book
-
-<!--
-Liste à garder.
-
-Mon conseil de lecture absolu : Phoenix Project si tu n'as jamais lu, Accelerate si tu veux la rigueur des données.
-
-Pour Docker / GitHub Actions : la doc officielle est excellente. Pas besoin de chercher ailleurs au début.
-
-12-factor : 12 principes pour faire des apps cloud-native. À lire en 30 min, ça change la vision.
--->
-
----
-
-# Évaluation - QCM
-
-<!--
-DERNIÈRE SLIDE AVANT LE QCM. On enchaîne directement sur l'épreuve (~60 min).
-
-Le survol écosystème qu'on vient de faire était la révision : K8s (pod/node/service/deployment/namespace), 3 piliers obs, IaC, DevSecOps.
-
-QCM : compréhension de concepts + lecture de YAML/Dockerfile. Ceux qui ont suivi n'ont rien à craindre.
-
-TP noté : presque ce qu'on a fait au TP pipeline, sur une autre app. Modalités précises annoncées à part.
-
-Distribuer le QCM maintenant. Le "Merci" vient après l'épreuve.
+Transition : ouvrir sur les questions finales.
 -->
 
 ---
@@ -2623,12 +2533,9 @@ layout: end
 Des questions ?
 
 <!--
-Mot de fin.
+Durée : 10-15 min de questions ouvertes.
 
-10-15 min de questions ouvertes. Si pas de questions, je propose un retour rapide :
-- Qu'est-ce que tu retiens le plus ?
-- Qu'est-ce qui t'a paru le plus dur ?
-- Qu'est-ce que tu vas essayer cette semaine ?
+Proposer, si la salle est silencieuse, un tour rapide : "qu'avez-vous trouvé le plus utile ?", "qu'est-ce qui reste flou ?".
 
-Bonne continuation pour la suite du cycle, et à très bientôt en cours Tests et Déploiement.
+Rappeler que le vocabulaire vu ici (réseau, cloud, Docker, CI/CD, sécurité, observabilité) se retrouve dans n'importe quel poste technique ou de gestion de projet IT — bonne base pour la suite du cycle.
 -->

@@ -3,33 +3,36 @@
    ======================================== */
 
 :root {
-  --g4-primary: #2563eb;
-  --g4-primary-light: #60a5fa;
-  --g4-primary-dark: #1d4ed8;
-  --g4-accent: #7c3aed;
+  --g4-primary: #c1502e;
+  --g4-primary-light: #e08a63;
+  --g4-primary-dark: #8f3a1f;
+  --g4-accent: #b45309;
   --g4-surface: #ffffff;
-  --g4-surface-soft: #f8fafc;
-  --g4-text: #1e293b;
-  --g4-text-muted: #64748b;
-  --g4-border: #e2e8f0;
+  --g4-surface-soft: #f7f1ea;
+  --g4-text: #2b2620;
+  --g4-text-muted: #7a6f63;
+  --g4-border: #e7ddd3;
   --g4-radius: 12px;
 }
 
 .dark {
-  --g4-primary: #60a5fa;
-  --g4-primary-light: #93c5fd;
-  --g4-primary-dark: #3b82f6;
-  --g4-accent: #a78bfa;
-  --g4-surface: #1e293b;
-  --g4-surface-soft: #0f172a;
-  --g4-text: #f1f5f9;
-  --g4-text-muted: #94a3b8;
-  --g4-border: #334155;
+  --g4-primary: #e08a63;
+  --g4-primary-light: #f2b393;
+  --g4-primary-dark: #c1502e;
+  --g4-accent: #f59e0b;
+  --g4-surface: #211c18;
+  --g4-surface-soft: #181513;
+  --g4-text: #f0ebe5;
+  --g4-text-muted: #a89e93;
+  --g4-border: #3d362f;
 }
 
 /* --- Slide base --- */
+/* Bottom/top padding is 0.25rem larger than the historical 2rem so no content
+   ever sits flush against the slide edges (feedback #9). Kept in sync with
+   layouts/exercise.vue's `-mt-9` bleed, which must cancel exactly this value. */
 .slidev-layout {
-  padding: 2rem 3.5rem;
+  padding: 2.25rem 3.5rem;
 }
 
 /* --- Headings --- */
@@ -142,11 +145,25 @@
 }
 
 /* --- Mermaid diagrams --- */
-.mermaid {
+.slidev-layout .mermaid {
   display: flex;
   justify-content: center;
   margin: 1rem 0;
 }
+
+/* Mermaid renders each diagram's SVG inside a closed ShadowRoot hosted on
+   `.mermaid` (verified live via Playwright: `svg.getRootNode() instanceof
+   ShadowRoot`). Page-level stylesheets — even with `!important` and correct
+   ancestor selectors — cannot cross that shadow boundary, so CSS overrides
+   here are structurally unable to repaint node/edge colors (confirmed by
+   inspecting computed styles: the lavender/blue defaults kept applying no
+   matter what selector was written). The only mechanism that actually
+   reaches Mermaid's renderer is the per-diagram inline option syntax
+   (```mermaid {theme: 'base', themeVariables: {...}}```), applied directly
+   on every diagram fence in slides.md with the anthracite/terracotta/ambre
+   palette (feedback reviewer #5). This block is kept CSS-only for the host
+   `.mermaid` div layout (flex centering, margin), which lives in the light
+   DOM and is unaffected by the shadow boundary. */
 
 /* --- Slide transitions --- */
 .slidev-page {

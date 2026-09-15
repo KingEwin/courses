@@ -51,11 +51,3 @@ courses/
 | `npx slidev build` | Construire la version statique |
 | `npx slidev export` | Exporter en PDF |
 | `npx slidev --remote` | Activer l'accès distant |
-
-## Guide pour les agents IA
-
-Voir [AGENTS.md](./AGENTS.md) pour les instructions complètes de génération de cours.
-
-## Cours disponibles
-
-*Aucun cours créé pour l'instant. Utiliser `_template/` comme point de départ.*

@@ -4,8 +4,8 @@ defineProps({
 })
 
 const config = {
-  info: { icon: 'ℹ️', border: 'border-[#2563eb] dark:border-[#60a5fa]', bg: 'bg-[#2563eb]/5 dark:bg-[#60a5fa]/10' },
-  warning: { icon: '⚠️', border: 'border-[#d97706] dark:border-[#fbbf24]', bg: 'bg-[#d97706]/5 dark:bg-[#fbbf24]/10' },
+  info: { icon: 'ℹ️', border: 'border-[#c1502e] dark:border-[#e08a63]', bg: 'bg-[#c1502e]/5 dark:bg-[#e08a63]/10' },
+  warning: { icon: '⚠️', border: 'border-[#b45309] dark:border-[#f59e0b]', bg: 'bg-[#b45309]/5 dark:bg-[#f59e0b]/10' },
   danger: { icon: '🚨', border: 'border-[#dc2626] dark:border-[#f87171]', bg: 'bg-[#dc2626]/5 dark:bg-[#f87171]/10' },
   success: { icon: '✅', border: 'border-[#059669] dark:border-[#34d399]', bg: 'bg-[#059669]/5 dark:bg-[#34d399]/10' },
 }

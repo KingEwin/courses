@@ -1,196 +1,211 @@
-# Fiche cours — DevOps
+# Fiche cours — Cloud, Réseaux et DevOps
 
 ## Informations générales
 
-- **Intitulé** : DevOps
-- **Volume horaire** : 14h (4 demi-journées de 3h30, pause de 20 min incluse)
-- **Format** : 2 journées en présentiel, espacées de 2 semaines
-- **Découpage** : 4 demi-journées de 3h30
-- **Public** : Ingénieur 1 — Bac+3 (1re année du cycle ingénieur G4)
-- **Prérequis** : OS B2, Git maîtrisé, Linux ligne de commande
-- **Outils** : Docker, Docker Compose, Git/GitHub, GitHub Actions, Linux
-- **Instructeur** : Yoann (expérience terrain DevOps et conteneurisation)
+- **Intitulé** : Cloud, Réseaux et DevOps
+- **Volume horaire** : 12h (4 séances de 3h)
+- **Format** : 4 séances en présentiel
+- **Découpage** : 4 × 3h, pause de 10 min incluse dans chaque séance
+- **Public** : Ingénieur 1 (ING1) — 1ʳᵉ année du cycle ingénieur G4
+- **Prérequis** : Linux/Bash niveau B2, notions de développement web et HTTP, capacité à cloner un dépôt et lire un fichier YAML — aucune expérience cloud préalable requise
+- **Outils** : Docker, Docker Compose, Git/GitHub ou GitLab, GitHub Actions, GitLab CI
+- **Instructeur** : Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes)
 
 ## Objectifs pédagogiques
 
 À l'issue de ce cours, l'étudiant sera capable de :
 
-1. **Expliquer** la culture DevOps, le mouvement CALMS, les trois voies et les métriques DORA
-2. **Appliquer** une stratégie de branching Git en équipe (PR, code review, hooks, SemVer, rebase)
-3. **Conteneuriser** une application avec Docker en écrivant un `Dockerfile` optimisé (multi-stage, `.dockerignore`)
-4. **Orchestrer** une stack applicative locale avec Docker Compose (services, volumes, réseaux, `.env`)
-5. **Construire** un pipeline CI/CD complet avec GitHub Actions (lint → test → build → push image → deploy)
-6. **Identifier** les rôles et le vocabulaire de Kubernetes, de l'Infrastructure as Code et de l'observabilité (niveau culturel)
-7. **Recommander** des bonnes pratiques de sécurité dans le pipeline (DevSecOps : secrets, dependency scanning)
+1. **Expliquer** l'adressage IP, le sous-réseau, le DNS, la passerelle et le routage
+2. **Distinguer** IaaS, PaaS, SaaS et serverless, puis **justifier** un choix simple
+3. **Comparer** machine virtuelle et conteneur, **construire** une image Docker, **utiliser** Compose et **situer** Kubernetes comme orchestrateur
+4. **Décrire** les mécanismes de haute disponibilité : redondance, répartition de charge, health checks, reprise et réplication orchestrée
+5. **Expliquer** les principes de l'Infrastructure as Code (déclaratif, plan, apply, idempotence) et situer Terraform parmi ses alternatives
+6. **Utiliser** Git dans un flux de travail collaboratif : branches, commits, revue et versionnage
+7. **Construire** un pipeline GitHub Actions ou GitLab CI qui installe, teste, construit puis fabrique l'image Docker
+8. **Identifier** les risques courants liés aux secrets, aux dépendances, à TLS et aux images
+9. **Lire** des logs et **choisir** quelques métriques utiles pour superviser un service
+10. **Auditer** une configuration Docker ou CI générée par une IA et **justifier** les corrections
 
-## Articulation avec le cours « Tests et Déploiement »
+## Cadre et fil rouge
 
-Ce cours est **prérequis** du cours Tests et Déploiement (ING1). Pour éviter les redondances :
+Ce module relie les fondamentaux réseau, les modèles d'hébergement cloud, la conteneurisation et l'automatisation. L'étudiant suit un fil rouge unique : une application web Node.js simple, versionnée avec Git, exécutée avec Docker, puis vérifiée par un pipeline CI.
 
-- **DevOps couvre** : bases de GitHub Actions (workflows, jobs, déclencheurs, runners, marketplace), build et push d'image Docker, déploiement basique
-- **Tests reprend** : gating sur les tests, rapports JUnit, parallélisation des tests, stratégies de déploiement avancées (blue/green, canary, feature flags, rollback)
+Le déploiement public est présenté comme une possibilité et non comme une dépendance bloquante. Le livrable peut être validé avec un pipeline vert et une URL publique lorsque l'environnement et le temps le permettent ; une démonstration locale documentée constitue le repli pédagogique.
 
 ## Plan détaillé
 
 ---
 
-### Jour 1 — Culture, collaboration et conteneurisation
+### Séance 1 — Réseaux, cloud et haute disponibilité (3h)
 
-#### Demi-journée 1 — Culture DevOps + Git avancé (3h30)
+**Objectifs :** comprendre le trajet d'une requête web, choisir un modèle d'hébergement et expliquer pourquoi une architecture redondante résiste mieux aux pannes.
 
-**Bloc 1 — Culture et principes DevOps (90 min)**
+| Temps | Contenu et activité | Modalité |
+|---:|---|---|
+| 00:00–00:10 | Accueil, présentation de l'instructeur, plan global des 4 séances, fil rouge et critères du TP final | Échange |
+| 00:10–00:35 | Modèle en couches, encapsulation, HTTP/TCP/IP et rôle des ports | Cours + schéma |
+| 00:35–01:00 | IPv4/IPv6, adresse privée/publique, masque et lecture simple du CIDR | Cours + exercices |
+| 01:00–01:20 | DNS : résolutions, enregistrements A, AAAA, CNAME et MX | Démonstration |
+| 01:20–01:35 | Routage, passerelle par défaut et diagnostic : `ping`, `traceroute`, `nslookup`/`dig` | Démonstration |
+| 01:35–01:45 | Pause | — |
+| 01:45–02:05 | Cloud : élasticité, mutualisation, paiement à l'usage et responsabilité partagée | Cours |
+| 02:05–02:27 | IaaS, PaaS, SaaS et serverless ; comparaison avec un hébergement classique | Étude de cas |
+| 02:27–02:38 | AWS, Azure et GCP : mêmes familles de services, noms et interfaces différents | Cours |
+| 02:38–02:48 | Haute disponibilité : zones, instances multiples, load balancer, health check | Cours + schéma |
+| 02:48–03:00 | QCM de clôture (Kahoot ou équivalent) : réseau, cloud, haute disponibilité | Quiz |
 
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 5 min | Ouverture — tour rapide : "DevOps, ça veut dire quoi pour toi ?" | Icebreaker |
-| 15 min | Origine du DevOps — silos Dev vs Ops, mouvement CALMS (Culture, Automation, Lean, Measurement, Sharing) | Cours magistral |
-| 15 min | Les trois voies DevOps — flux, feedback, apprentissage continu. Cycle de vie : Plan → Code → Build → Test → Release → Deploy → Operate → Monitor | Cours magistral |
-| 15 min | DevSecOps — pourquoi intégrer la sécurité dès le pipeline. Shift-left sécurité | Cours magistral |
-| 20 min | Métriques DORA — deployment frequency, lead time, MTTR, change failure rate. Lecture de l'État DevOps | Cours + discussion |
-| 10 min | Synthèse bloc 1 + transition vers Git | Échange |
-
-**Pause (20 min)**
-
-**Bloc 2 — Git avancé et collaboration (100 min)**
-
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 15 min | Branching strategies — Git Flow, GitHub Flow, Trunk Based Development. Avantages/inconvénients | Cours magistral |
-| 25 min | Pull Requests / Merge Requests — workflow de revue de code, checklist de PR, tailles de PR, conventions de commits | Cours + démo |
-| 15 min | Hooks Git — pre-commit, pre-push. Husky + lint-staged en pratique | Cours + démo |
-| 15 min | Tags, releases et versioning sémantique (SemVer) — MAJOR.MINOR.PATCH, breaking changes | Cours magistral |
-| 15 min | Merge vs rebase — concepts et impacts sur l'historique. Illustration via outil UI (GitKraken / GitHub Desktop / VS Code Git) | Cours + visuel |
-| 10 min | Cherry-pick et "undo" — quand récupérer un commit isolé, comment annuler proprement (revert vs reset). Vu côté concept, pas marathon CLI | Cours magistral |
-| 5 min | Récap DJ1 + teaser Docker | Synthèse |
+**Exemples publics à présenter avec prudence :** architectures cloud publiquement décrites par Netflix (AWS), Microsoft (Azure), Google (GCP), ainsi que des retours d'expérience clients publiés par les fournisseurs. Ce sont des exemples documentés publiquement, pas des modèles exclusifs ni des prescriptions universelles ; dater et sourcer chaque cas cité.
 
 ---
 
-#### Demi-journée 2 — Docker et optimisation d'images (3h30)
+### Séance 2 — DevOps, Git, Docker et écosystème cloud-native (3h)
 
-**Bloc 1 — Docker fondamentaux (90 min)**
+**Objectifs :** relier collaboration et automatisation, versionner proprement le fil rouge et produire une image exécutable.
 
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 10 min | Pourquoi conteneuriser ? Comparatif VM vs conteneur. Le problème "ça marche sur ma machine" | Cours magistral |
-| 15 min | Architecture Docker — daemon, client, registre, image vs conteneur, layers | Cours + schéma |
-| 25 min | Dockerfile — instructions FROM, RUN, COPY, ENV, EXPOSE, CMD, WORKDIR, USER. Bonnes pratiques d'ordre des couches | Cours + démo live |
-| 15 min | Gestion des conteneurs — `run`, `ps`, `logs`, `exec`, `stop`, `rm`. Cycle de vie et flags utiles (`-d`, `-p`, `--rm`) | Démo live |
-| 15 min | Volumes et réseaux Docker — bind mount vs volume nommé, bridge network, communication inter-conteneurs | Cours magistral |
-| 10 min | Synthèse + présentation du TP optimisation | Synthèse |
+| Temps | Contenu et activité | Modalité |
+|---:|---|---|
+| 00:00–00:15 | Retour réseau/cloud et rappel du scénario applicatif | Échange |
+| 00:15–00:33 | DevOps : histoire, silos Dev/Ops, culture, responsabilité partagée, flux/feedback et métriques DORA | Cours |
+| 00:33–00:53 | Git : dépôt, commit, branche, merge request/pull request et revue | Démonstration |
+| 00:53–01:05 | Branches, commits atomiques, SemVer et historique lisible | Cours + exercice |
+| 01:05–01:15 | Infrastructure as Code : le problème résolu, déclaratif/plan/apply/idempotence, Terraform et écosystème | Cours + schéma |
+| 01:15–01:33 | VM versus conteneur ; image, couche, registre, conteneur et isolation | Cours + schéma |
+| 01:33–01:43 | Pause | — |
+| 01:43–02:08 | Dockerfile : contexte, image de base, dépendances, commande de démarrage et port | Démonstration |
+| 02:08–02:28 | Bonnes pratiques : `.dockerignore`, utilisateur non privilégié, cache et multi-stage | Cours + comparaison |
+| 02:28–02:36 | Docker Compose : services, réseau, variables d'environnement et volumes | Démonstration |
+| 02:36–02:44 | CNCF : fondation open source cloud-native, gouvernance et maintien des projets ; statuts sandbox, incubating, graduated comme signaux de maturité sans garantie absolue | Cours + schéma |
+| 02:44–02:48 | Kubernetes : pourquoi un orchestrateur, lien avec Docker, cluster/node/pod/deployment/service ; limites du module | Cours + quiz oral |
+| 02:48–03:00 | QCM de clôture (Kahoot ou équivalent) : DevOps, Git, Infrastructure as Code, Docker, cloud-native | Quiz |
 
-**Pause (20 min)**
+**TP guidé :** partir de l'application Node.js fournie, créer une image, lancer le service, vérifier un endpoint HTTP, puis comparer une image naïve et une image améliorée.
 
-**Bloc 2 — TP construction et optimisation d'image (100 min)**
+**Introduction progressive à Kubernetes :** partir du problème de plusieurs conteneurs ou machines, puis présenter l'orchestrateur comme la couche qui déploie, réplique et supervise des conteneurs à grande échelle. Docker crée et exécute les conteneurs ; Kubernetes organise leur déploiement et leur fonctionnement. Cas d'usage retenus : application multi-services, haute disponibilité, montée en charge, mises à jour. Vocabulaire limité à **cluster**, **node**, **pod**, **deployment**, **service**. Hors scope : installation d'un cluster, manifestes complexes, TP Kubernetes évalué.
 
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 10 min | Brief TP — application Node/TS à conteneuriser. Image de référence à battre en taille | Présentation |
-| 30 min | TP étape 1 — écrire un Dockerfile fonctionnel naïf. Build + run | TP guidé |
-| 15 min | Multi-stage builds — concept, syntaxe `FROM ... AS builder`, copie sélective entre stages | Cours + démo |
-| 25 min | TP étape 2 — refactoriser en multi-stage + ajouter `.dockerignore`. Comparer la taille | TP guidé |
-| 10 min | Restitution collective — qui a la plus petite image ? Discussion des techniques | Échange |
-| 10 min | Récap DJ2 + consigne d'observation pour les 2 semaines (regarder les pipelines de leurs projets) | Synthèse |
-
----
-
-### Jour 2 — Orchestration locale et CI/CD (2 semaines plus tard)
-
-#### Demi-journée 3 — Docker Compose et bases CI/CD (3h30)
-
-**Bloc 1 — Docker Compose (90 min)**
-
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 10 min | Retour Jour 1 — observations sur les projets, questions accumulées | Échange ouvert |
-| 15 min | Pourquoi Compose ? Limites du `docker run` à la main. Cas d'usage (dev local, intégration, démo) | Cours magistral |
-| 15 min | Anatomie de `docker-compose.yml` — services, volumes, networks, `depends_on`, `healthcheck` | Cours + exemple |
-| 10 min | Variables d'environnement — `.env`, override de fichiers, profils Compose | Cours magistral |
-| 10 min | Compose pour le dev — hot-reload, montage du code source, exposition de ports de debug | Cours + démo |
-| 25 min | TP — stack `app + base de données + reverse proxy` (nginx ou traefik) en Compose | TP guidé |
-| 5 min | Synthèse bloc 1 | Synthèse |
-
-**Pause (20 min)**
-
-**Bloc 2 — Concepts CI/CD et bases GitHub Actions (100 min)**
-
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 15 min | CI vs CD — intégration continue, livraison continue, déploiement continu. Pyramide DevOps | Cours magistral |
-| 15 min | GitHub Actions — anatomie d'un workflow YAML : `name`, `on`, `jobs`, `steps`, `runs-on` | Cours + démo |
-| 15 min | Déclencheurs — `push`, `pull_request`, `schedule`, `workflow_dispatch`. Filtres de branches | Cours magistral |
-| 15 min | Marketplace — `actions/checkout`, `actions/setup-node`, `docker/build-push-action`. Quand publier sa propre action | Cours + exemple |
-| 25 min | Mini-TP — écrire un premier workflow `lint + test` sur un repo fourni | TP guidé |
-| 10 min | Synthèse bloc 2 | Synthèse |
-| 5 min | Transition DJ4 — teaser TP pipeline complet | Échange |
+**Introduction cloud-native :** la CNCF est présentée **avant** Kubernetes comme une fondation open source qui accueille des projets cloud-native, organise leur gouvernance et contribue à leur maintien. Les statuts **sandbox**, **incubating** et **graduated** sont des signaux de maturité et de gouvernance, pas des garanties absolues de sécurité, de qualité ou d'adéquation à un besoin. Cette mise en contexte évite de réduire l'écosystème cloud-native à un seul orchestrateur.
 
 ---
 
-#### Demi-journée 4 — Pipeline CI/CD complet et écosystème (3h30)
+### Séance 3 — CI/CD : GitHub Actions et GitLab CI (3h)
 
-**Bloc 1 — TP pipeline GitHub Actions complet (90 min)**
+**Objectifs :** lire un pipeline déclaratif et construire une chaîne reproductible de validation et de fabrication.
 
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 10 min | Brief TP final — pipeline `lint → test → build Docker` (obligatoire) + push/deploy en bonus | Présentation |
-| 60 min | TP guidé — étape par étape jusqu'au build (cible obligatoire ~60 min) ; bonus (push GHCR, deploy simulé) + micro-tâches d'observation pour les rapides | TP guidé |
-| 15 min | Secrets / `GITHUB_TOKEN` + restitution + erreurs fréquentes | Cours + échange |
-| 5 min | Synthèse bloc 1 | Synthèse |
+| Temps | Contenu et activité | Modalité |
+|---:|---|---|
+| 00:00–00:15 | Retour sur l'image Docker et diagnostic d'erreurs fréquentes | Échange |
+| 00:15–00:35 | CI, livraison continue et déploiement continu ; bénéfices et limites | Cours |
+| 00:35–00:55 | Anatomie commune : événement, job, étape, runner, artefact et statut | Cours + schéma |
+| 00:55–01:20 | GitHub Actions : workflow YAML, déclencheurs, actions réutilisables et cache | Démonstration |
+| 01:20–01:35 | GitLab CI : `.gitlab-ci.yml`, stages, jobs, runners et variables | Démonstration comparative |
+| 01:35–01:45 | Pause | — |
+| 01:45–02:05 | Pipeline cible : installation → tests → build applicatif → build image Docker | Cours |
+| 02:05–02:35 | TP : construire le pipeline choisi (GitHub Actions **ou** GitLab CI), déclencher sur commit, lire les logs | TP guidé |
+| 02:35–02:50 | Matrices, conditions, parallélisation et artefacts ; ce qui reste hors scope ING1 | Cours |
+| 02:50–03:00 | QCM de clôture (Kahoot ou équivalent) : CI/CD, anatomie de pipeline, GitHub Actions, GitLab CI | Quiz |
 
-**Pause (20 min)**
-
-**Bloc 2 — Survol de l'écosystème + clôture (100 min)**
-
-| Durée | Contenu | Méthode |
-|-------|---------|---------|
-| 20 min | Kubernetes (survol culturel) — cluster, node, pod, service, deployment. À quoi ça sert vraiment, quand basculer | Cours magistral |
-| 15 min | Infrastructure as Code (notions) — pourquoi l'IaC. Survol Terraform vs Ansible vs CloudFormation. Pas de TP | Cours magistral |
-| 20 min | Monitoring et observabilité — 3 piliers (logs, métriques, traces). Prometheus + Grafana, ELK. Alerting | Cours magistral |
-| 10 min | DevSecOps en pratique — Dependabot, Snyk, secret scanning, signed commits | Cours magistral |
-| 15 min | Synthèse globale des 2 jours — vocabulaire à maîtriser, lien avec le cours Tests et Déploiement à venir | Synthèse |
-| 15 min | Modalités du QCM + ressources pour aller plus loin | Échange |
-| 5 min | Mot de fin / questions ouvertes | Échange |
+**Choix pédagogique :** chaque groupe implémente **GitHub Actions ou GitLab CI** afin de tenir le temps. L'autre outil est lu et comparé, sans exiger une double implémentation. Le déploiement public n'est pas obligatoire dans le pipeline de séance ; le build de l'image est l'étape minimale commune.
 
 ---
+
+### Séance 4 — Sécurité, observabilité, déploiement et audit IA (3h)
+
+**Objectifs :** sécuriser et expliquer le résultat, lire des logs et choisir une métrique utile pour superviser un service, et exercer un jugement critique sur une configuration générée par IA.
+
+| Temps | Contenu et activité | Modalité |
+|---:|---|---|
+| 00:00–00:15 | Revue des pipelines et objectifs du livrable final | Échange |
+| 00:15–00:35 | TLS/HTTPS : chiffrement, intégrité, authentification, certificat, chaîne de confiance et Let's Encrypt | Cours |
+| 00:35–00:55 | Secrets : variables protégées, jetons, `.env`, rotation et interdiction de versionner un secret | Cas pratique |
+| 00:55–01:15 | Sécurité CI/CD : dépendances, secret scanning, image de base, permissions minimales ; audit express sur un pipeline fourni | Cours + audit |
+| 01:15–01:30 | Déploiement et versionnage : environnements, release, rollback, recreate, rolling, blue/green et canary | Cours |
+| 01:30–01:40 | Pause | — |
+| 01:40–02:00 | Observabilité : distinguer logs, métriques et traces ; chaîne OpenTelemetry → Prometheus → Grafana → Alertmanager | Cours + démonstration |
+| 02:00–02:18 | Feature flags : activer sans redéployer, complément du canary, dette technique et de sécurité | Cours + étude de cas |
+| 02:18–02:35 | Grille d'audit d'une configuration générée par IA (reproductibilité, permissions, exposition réseau, secrets, provenance, cohérence), avec démonstration en direct sur une proposition réelle | Cours + démonstration |
+| 02:35–02:50 | Finalisation du dépôt, preuves, restitution en binômes | TP noté |
+| 02:50–03:00 | Bilan, limites du module et synthèse globale des 4 séances | Synthèse |
+
+**Audit IA attendu :** l'étudiant ne note pas la capacité de l'IA à produire du YAML. Il vérifie la reproductibilité, les versions, les permissions, l'exposition réseau, les secrets, la provenance de l'image, le cache et la cohérence avec le besoin. Toute suggestion est traitée comme une proposition à vérifier.
+
+**Cadrage de l'observabilité :** OpenTelemetry fournit l'instrumentation et la collecte des traces, métriques et logs ; Prometheus collecte et stocke les métriques ; Grafana les représente dans des tableaux de bord ; Alertmanager regroupe, déduplique et achemine les notifications issues des règles d'alerte. Les logs décrivent des événements, les métriques mesurent des valeurs agrégées dans le temps, les traces suivent le parcours d'une requête entre composants. Le traitement reste conceptuel : pas de déploiement de stack complète, pas de PromQL avancé, pas d'installation de ces outils en séance. OpenTelemetry et Prometheus sont référencés comme exemples de projets de l'écosystème cloud-native vu en séance 2, sans reprendre l'explication de la CNCF.
+
+## Fil rouge et livrable TP
+
+### Scénario
+
+Une application web Node.js minimale expose une page et un endpoint de contrôle. Le dépôt contient le code, les tests, le Dockerfile et le fichier de pipeline choisi. Le travail privilégie la compréhension des relations entre code, image, pipeline et service ; il ne demande pas d'implémenter une architecture distribuée complète.
+
+### Livrable final
+
+- dépôt Git identifiable et historique compréhensible ;
+- application lançable localement ;
+- Dockerfile fonctionnel et, si possible, optimisé ;
+- pipeline GitHub Actions **ou** GitLab CI vert ;
+- étapes visibles : installation des dépendances, tests, build applicatif et construction de l'image Docker ;
+- secrets absents du dépôt et configuration sensible documentée ;
+- courte preuve d'observabilité : logs analysés, endpoint de santé ou métrique choisie ;
+- audit écrit d'une configuration générée par IA, avec corrections justifiées ;
+- URL publique fonctionnelle si un hébergement pédagogique est disponible, sinon preuve locale reproductible et explication de la limite.
 
 ## Évaluation
 
-- **Type 1** : TP noté — pipeline CI/CD complet pour une application web
-  - Étapes attendues : tests, build Docker, push registry, déploiement automatique
-  - Évalué sur : fonctionnement du pipeline, qualité du `Dockerfile`, structure du workflow YAML
-- **Type 2** : QCM final — Docker, Git, CI/CD, Kubernetes, vocabulaire DevOps
-- **Périmètre** : l'ensemble des 2 journées
+### TP pipeline CI/CD et application (évaluation principale)
+
+| Critère | Pondération |
+|---|---:|
+| Application et exécution reproductible | 20 % |
+| Dockerfile, image et bonnes pratiques | 20 % |
+| Pipeline : installation, tests, build, image | 30 % |
+| Sécurité : secrets, permissions, dépendances, TLS expliqué | 15 % |
+| Logs/monitoring et diagnostic | 10 % |
+| Audit IA et qualité de la documentation | 5 % |
+
+**Critère référentiel :** conteneuriser et automatiser la validation d'une application via un pipeline CI/CD. **Indicateur observable :** pipeline vert et URL publique fonctionnelle lorsque le déploiement en ligne est retenu ; à défaut, exécution locale documentée comme aménagement pédagogique. Le déploiement public n'est jamais une obligation bloquante.
+
+### Évaluations formatives
+
+- quiz courts sur réseau, cloud, Docker et CI/CD ;
+- correction collective des schémas d'architecture ;
+- lecture collective de journaux de pipeline ;
+- revue croisée de l'audit IA.
 
 ## Supports pédagogiques
 
-### À préparer
-
 | Support | Description |
 |---------|-------------|
-| Slides Slidev | Présentation pour les 4 demi-journées (`slides.md`) |
-| Repo TP Docker | App Node/TS minimale à conteneuriser (DJ2) |
-| Repo TP Compose | App + DB + reverse proxy à composer (DJ3) |
-| Repo TP CI/CD | Repo avec un `Dockerfile` valide, à automatiser via GitHub Actions (DJ4) |
-| QCM final | 25-30 questions couvrant culture, Git, Docker, Compose, CI/CD, K8s/IaC/monitoring |
+| Slides Slidev | Présentation pour les 4 séances (`slides.md`) |
+| Repo TP fil rouge | Application Node.js minimale, réutilisée séances 2 à 4 |
+| Repo TP CI/CD | Squelette de pipeline GitHub Actions et GitLab CI à compléter (séance 3) |
+| Repo TP final | Dépôt à compléter avec Dockerfile, pipeline, preuves et audit IA (séance 4) |
 
-### Ressources recommandées
+## Ressources recommandées
 
-- **Doc officielle Docker** — https://docs.docker.com
-- **Doc officielle GitHub Actions** — https://docs.github.com/actions
-- **Livre** : "The Phoenix Project" — Gene Kim (roman DevOps fondateur)
-- **Livre** : "Accelerate" — Forsgren, Humble, Kim (métriques DORA)
-- **Web** : Pro Git Book — https://git-scm.com/book (gratuit, référence)
-- **Web** : 12-Factor App — https://12factor.net
-- **Web** : Docker Best Practices — https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-- **Web** : Kubernetes Basics — https://kubernetes.io/docs/tutorials/kubernetes-basics/
+- Documentation officielle Docker — https://docs.docker.com
+- Documentation officielle Git — https://git-scm.com/book
+- Documentation officielle GitHub Actions — https://docs.github.com/actions
+- Documentation officielle GitLab CI — https://docs.gitlab.com/ee/ci/
+- Documentation AWS, Azure, Google Cloud (pages produits et architectures de référence)
+- MDN — HTTP et TLS — https://developer.mozilla.org
+- Rapports DORA / State of DevOps — https://dora.dev
+- Documentation OWASP — https://owasp.org
+- CNCF Cloud Native Landscape — https://landscape.cncf.io
+- Kubernetes Basics — https://kubernetes.io/docs/tutorials/kubernetes-basics/
 
 ## Points d'attention pour l'instructeur
 
-- **Public ING1 technique** : la plupart n'ont jamais utilisé Docker en autonomie. Démos systématiques avant de lâcher en TP
-- **Niveau Linux/Git hétérogène** : les prérequis sont posés, mais en pratique certains élèves auront des trous. Prévoir 5-10 min de rappel rapide en début de DJ1 si besoin
-- **L'an passé a marché** : la séquence "présentation DevOps + Git + Docker + TP image multi-stage" a fonctionné — la garder comme colonne vertébrale du Jour 1
-- **IaC volontairement minoré** : tu n'es pas à l'aise sur Terraform/Ansible. On en fait un survol culturel court, pas de démo pratique. C'est cohérent avec un public ING1
-- **Git côté concepts plus que CLI** : tu utilises Git majoritairement via des outils UI (VS Code, GitHub Desktop, GitKraken). Le bloc Git insiste sur les concepts (merge vs rebase, semver, hooks) plutôt que sur des démos lourdes en ligne de commande. Si un élève demande la commande exacte, redirige vers la doc Pro Git
-- **Kubernetes = vocabulaire** : à ce niveau, l'objectif est qu'ils sachent ce qu'est un Pod, savoir qu'`kubectl` existe, et reconnaître un manifeste. Pas plus
-- **Articulation cours Tests** : prévenir les élèves dès la DJ1 que GitHub Actions sera réapprofondi dans le cours Tests. Évite la frustration "on a déjà vu ça"
-- **2 semaines de pause** : donner une consigne d'observation sur leurs projets entre J1 et J2 (regarder les pipelines existants, identifier ce qui est versionné/automatisé vs cliqué à la main). Relancer en ouverture du J2
-- **Rythme TP** : 4 TP guidés sur 2 jours, c'est dense. Préparer des fallbacks (snippets pré-écrits) pour les élèves qui décrochent — éviter qu'ils décrochent toute la session sur un bug d'install
+- **Public ING1 sans expérience cloud** : les prérequis réseau/Linux sont posés, mais l'expérience cloud est nulle par hypothèse. Démarrer chaque nouveau concept par un exemple concret avant la formalisation.
+- **Infrastructure as Code = repères conceptuels, pas de TP** : déclaratif/plan/apply/idempotence et l'écosystème Terraform restent une mise en contexte de 12 minutes ; aucun fichier IaC fonctionnel, aucune installation ni commande Terraform en séance.
+- **CNCF avant Kubernetes** : toujours présenter la fondation, sa gouvernance et ses statuts de maturité avant d'introduire l'orchestrateur, pour éviter de réduire le cloud-native à un seul outil.
+- **Kubernetes = introduction, pas TP** : vocabulaire limité à cluster/node/pod/deployment/service. Aucune installation de cluster, aucun manifeste complexe, aucune évaluation dessus.
+- **Prudence sur les exemples d'entreprises** : ne jamais présenter une relation entreprise/hyperscaler comme exclusive ; dater et sourcer chaque cas public cité (Netflix/AWS, Microsoft/Azure, Google/GCP, etc.).
+- **Aucun déploiement public obligatoire** : le pipeline vert et l'image construite suffisent à valider ; le déploiement en ligne est un bonus documenté, jamais un blocage de note.
+- **GitHub Actions et GitLab CI en miroir** : chaque groupe choisit un outil pour l'implémentation, l'autre est lu et comparé collectivement — pas de double implémentation exigée.
+- **Observabilité conceptuelle** : logs, métriques, traces et la chaîne OpenTelemetry/Prometheus/Grafana/Alertmanager restent expliqués sur schéma et exemples commentés ; pas de déploiement de stack Prometheus/Grafana complète en séance.
+- **Audit IA = esprit critique, pas prouesse IA** : la grille de correction porte sur la capacité de l'étudiant à repérer les failles d'une configuration générée, pas sur la qualité de la génération elle-même.
+- **Rythme dense en séance 3 et 4** : prévoir des snippets de rattrapage pour les groupes qui bloquent sur une erreur de pipeline, afin de ne pas perdre 20 minutes sur un incident isolé.
+
+## Direction visuelle
+
+- Palette slides : anthracite, terracotta et ambre, sans dominante bleue ; les couleurs vives (vert succès, rouge alerte, ambre avertissement) restent réservées aux états.
+- Schémas Mermaid progressifs pour les flux réseau, cloud, Infrastructure as Code, Git, Docker, CI/CD et observabilité, dans l'esprit du support historique.
+- Icônes ou pictogrammes toujours accompagnés d'un libellé texte ; aucun repère visuel seul.

@@ -7,7 +7,7 @@ defineProps({
 <template>
   <div class="slidev-layout flex items-center h-full relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] dark:(from-[#1e40af] to-[#1e3a8a])" />
+    <div class="absolute inset-0 bg-gradient-to-r from-[#2b2620] to-[#6b2f1c] dark:(from-[#181513] to-[#4a2317])" />
     <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
     <div class="absolute bottom-0 left-1/3 w-72 h-72 bg-white/3 rounded-full translate-y-1/2" />
 

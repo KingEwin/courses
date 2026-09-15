@@ -16,7 +16,7 @@ const progress = computed(() => ((currentPage.value - 1) / (total.value - 1)) * 
     class="absolute top-0 left-0 right-0 z-10"
   >
     <div
-      class="h-0.5 bg-gradient-to-r from-[#2563eb] to-[#7c3aed] transition-all duration-300"
+      class="h-0.5 bg-gradient-to-r from-[#c1502e] to-[#b45309] transition-all duration-300"
       :style="{ width: `${progress}%` }"
     />
   </div>
