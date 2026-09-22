@@ -42,19 +42,36 @@ Le déploiement public est présenté comme une possibilité et non comme une d�
 
 | Temps | Contenu et activité | Modalité |
 |---:|---|---|
-| 00:00–00:10 | Accueil, présentation de l'instructeur, plan global des 4 séances, fil rouge et critères du TP final | Échange |
-| 00:10–00:35 | Modèle en couches, encapsulation, HTTP/TCP/IP et rôle des ports | Cours + schéma |
-| 00:35–01:00 | IPv4/IPv6, adresse privée/publique, masque et lecture simple du CIDR | Cours + exercices |
-| 01:00–01:20 | DNS : résolutions, enregistrements A, AAAA, CNAME et MX | Démonstration |
-| 01:20–01:35 | Routage, passerelle par défaut et diagnostic : `ping`, `traceroute`, `nslookup`/`dig` | Démonstration |
-| 01:35–01:45 | Pause | — |
-| 01:45–02:05 | Cloud : élasticité, mutualisation, paiement à l'usage et responsabilité partagée | Cours |
-| 02:05–02:27 | IaaS, PaaS, SaaS et serverless ; comparaison avec un hébergement classique | Étude de cas |
-| 02:27–02:38 | AWS, Azure et GCP : mêmes familles de services, noms et interfaces différents | Cours |
-| 02:38–02:48 | Haute disponibilité : zones, instances multiples, load balancer, health check | Cours + schéma |
-| 02:48–03:00 | QCM de clôture (Kahoot ou équivalent) : réseau, cloud, haute disponibilité | Quiz |
+| 00:00–00:11 | Accueil, présentation de l'instructeur, plan global des 4 séances, fil rouge et critères du TP final | Échange |
+| 00:11–00:12 | Introduction séance 1 : fil réseau → cloud → haute disponibilité | Échange |
+| 00:12–00:21 | Modèle en couches : TCP/IP (4 couches) et OSI (7 couches), correspondance OSI→TCP/IP | Cours + schéma |
+| 00:21–00:25 | OSI : les 7 couches en détail | Cours |
+| 00:25–00:28 | Correspondance OSI ↔ TCP/IP | Cours |
+| 00:28–00:37 | Encapsulation et rôle des ports | Cours + schéma |
+| 00:37–00:46 | IPv4 : structure d'une adresse, adresse privée/publique | Cours + exercices |
+| 00:46–00:54 | Lire un CIDR simplement | Cours + exercices |
+| 00:54–00:58 | IPv6 : pourquoi et à quoi ça ressemble | Cours |
+| 00:58–01:08 | DNS : résolution d'un nom en adresse | Démonstration |
+| 01:08–01:14 | Enregistrements DNS courants (A, AAAA, CNAME, MX) | Cours |
+| 01:14–01:19 | Routage et passerelle par défaut | Cours |
+| 01:19–01:27 | Manipulation guidée 1 — `ping`, `traceroute`/`tracert` : nom vs IP, limites de l'ICMP | TP guidé |
+| 01:27–01:33 | Parcours concret : de l'URL à la réponse HTTPS (schéma compact) | Cours + schéma |
+| 01:33–01:41 | Manipulation guidée 2 — `nslookup`, `curl -I` : adresse résolue et statut HTTP | TP guidé |
+| 01:41–01:51 | Pause | — |
+| 01:51–01:58 | Cloud : élasticité, mutualisation, paiement à l'usage, responsabilité partagée | Cours |
+| 01:58–02:04 | IaaS, PaaS, SaaS et serverless | Cours |
+| 02:04–02:10 | Étude de cas : quel modèle choisir ? | Étude de cas |
+| 02:10–02:16 | AWS, Azure, GCP : calcul, stockage, BDD, serverless, réseau, conteneurs | Cours |
+| 02:16–02:20 | Identité et organisation cloud : comptes/IAM (AWS, Azure, GCP) | Cours |
+| 02:20–02:23 | Choisir un fournisseur cloud : critères de décision | Cours |
+| 02:23–02:30 | SecNumCloud : qualification ANSSI d'une offre, pas d'un fournisseur | Cours + comparaison |
+| 02:30–02:39 | Haute disponibilité : zones, instances multiples, load balancer, health check | Cours + schéma |
+| 02:39–02:42 | Synthèse de la séance 1 | Synthèse |
+| 02:42–03:00 | QCM de clôture (Kahoot ou équivalent, 20 questions) : réseau, manipulations réseau, cloud, AWS/Azure/GCP, SecNumCloud, haute disponibilité | Quiz |
 
 **Exemples publics à présenter avec prudence :** architectures cloud publiquement décrites par Netflix (AWS), Microsoft (Azure), Google (GCP), ainsi que des retours d'expérience clients publiés par les fournisseurs. Ce sont des exemples documentés publiquement, pas des modèles exclusifs ni des prescriptions universelles ; dater et sourcer chaque cas cité.
+
+**SecNumCloud :** qualification délivrée par l'ANSSI à une offre cloud précise (pas à une entreprise dans son ensemble) ; à présenter en comparaison nuancée avec un cloud public hyperscaler, sans conseil juridique définitif et en renvoyant vers la liste ANSSI en vigueur.
 
 ---
 
@@ -66,17 +83,17 @@ Le déploiement public est présenté comme une possibilité et non comme une d�
 |---:|---|---|
 | 00:00–00:15 | Retour réseau/cloud et rappel du scénario applicatif | Échange |
 | 00:15–00:33 | DevOps : histoire, silos Dev/Ops, culture, responsabilité partagée, flux/feedback et métriques DORA | Cours |
-| 00:33–00:53 | Git : dépôt, commit, branche, merge request/pull request et revue | Démonstration |
-| 00:53–01:05 | Branches, commits atomiques, SemVer et historique lisible | Cours + exercice |
-| 01:05–01:15 | Infrastructure as Code : le problème résolu, déclaratif/plan/apply/idempotence, Terraform et écosystème | Cours + schéma |
-| 01:15–01:33 | VM versus conteneur ; image, couche, registre, conteneur et isolation | Cours + schéma |
-| 01:33–01:43 | Pause | — |
-| 01:43–02:08 | Dockerfile : contexte, image de base, dépendances, commande de démarrage et port | Démonstration |
-| 02:08–02:28 | Bonnes pratiques : `.dockerignore`, utilisateur non privilégié, cache et multi-stage | Cours + comparaison |
-| 02:28–02:36 | Docker Compose : services, réseau, variables d'environnement et volumes | Démonstration |
-| 02:36–02:44 | CNCF : fondation open source cloud-native, gouvernance et maintien des projets ; statuts sandbox, incubating, graduated comme signaux de maturité sans garantie absolue | Cours + schéma |
-| 02:44–02:48 | Kubernetes : pourquoi un orchestrateur, lien avec Docker, cluster/node/pod/deployment/service ; limites du module | Cours + quiz oral |
-| 02:48–03:00 | QCM de clôture (Kahoot ou équivalent) : DevOps, Git, Infrastructure as Code, Docker, cloud-native | Quiz |
+| 00:33–00:51 | Git : dépôt, commit, branche, merge request/pull request et revue | Démonstration |
+| 00:51–01:03 | Branches, commits atomiques, SemVer et historique lisible | Cours + exercice |
+| 01:03–01:13 | Infrastructure as Code : le problème résolu, déclaratif/plan/apply/idempotence, Terraform et écosystème | Cours + schéma |
+| 01:13–01:31 | VM versus conteneur ; image, couche, registre, conteneur et isolation | Cours + schéma |
+| 01:31–01:41 | Pause | — |
+| 01:41–02:04 | Dockerfile : contexte, image de base, dépendances, commande de démarrage et port | Démonstration |
+| 02:04–02:22 | Bonnes pratiques : `.dockerignore`, utilisateur non privilégié, cache et multi-stage | Cours + comparaison |
+| 02:22–02:30 | Docker Compose : services, réseau, variables d'environnement et volumes | Démonstration |
+| 02:30–02:38 | CNCF : fondation open source cloud-native, gouvernance et maintien des projets ; statuts sandbox, incubating, graduated comme signaux de maturité sans garantie absolue | Cours + schéma |
+| 02:38–02:42 | Kubernetes : pourquoi un orchestrateur, lien avec Docker, cluster/node/pod/deployment/service ; limites du module | Cours + quiz oral |
+| 02:42–03:00 | QCM de clôture (Kahoot ou équivalent, 20 questions) : DevOps, Git, Infrastructure as Code, Docker, cloud-native | Quiz |
 
 **TP guidé :** partir de l'application Node.js fournie, créer une image, lancer le service, vérifier un endpoint HTTP, puis comparer une image naïve et une image améliorée.
 
@@ -93,15 +110,15 @@ Le déploiement public est présenté comme une possibilité et non comme une d�
 | Temps | Contenu et activité | Modalité |
 |---:|---|---|
 | 00:00–00:15 | Retour sur l'image Docker et diagnostic d'erreurs fréquentes | Échange |
-| 00:15–00:35 | CI, livraison continue et déploiement continu ; bénéfices et limites | Cours |
-| 00:35–00:55 | Anatomie commune : événement, job, étape, runner, artefact et statut | Cours + schéma |
-| 00:55–01:20 | GitHub Actions : workflow YAML, déclencheurs, actions réutilisables et cache | Démonstration |
-| 01:20–01:35 | GitLab CI : `.gitlab-ci.yml`, stages, jobs, runners et variables | Démonstration comparative |
-| 01:35–01:45 | Pause | — |
-| 01:45–02:05 | Pipeline cible : installation → tests → build applicatif → build image Docker | Cours |
-| 02:05–02:35 | TP : construire le pipeline choisi (GitHub Actions **ou** GitLab CI), déclencher sur commit, lire les logs | TP guidé |
-| 02:35–02:50 | Matrices, conditions, parallélisation et artefacts ; ce qui reste hors scope ING1 | Cours |
-| 02:50–03:00 | QCM de clôture (Kahoot ou équivalent) : CI/CD, anatomie de pipeline, GitHub Actions, GitLab CI | Quiz |
+| 00:15–00:33 | CI, livraison continue et déploiement continu ; bénéfices et limites | Cours |
+| 00:33–00:51 | Anatomie commune : événement, job, étape, runner, artefact et statut | Cours + schéma |
+| 00:51–01:14 | GitHub Actions : workflow YAML, déclencheurs, actions réutilisables et cache | Démonstration |
+| 01:14–01:29 | GitLab CI : `.gitlab-ci.yml`, stages, jobs, runners et variables | Démonstration comparative |
+| 01:29–01:39 | Pause | — |
+| 01:39–01:59 | Pipeline cible : installation → tests → build applicatif → build image Docker | Cours |
+| 01:59–02:29 | TP : construire le pipeline choisi (GitHub Actions **ou** GitLab CI), déclencher sur commit, lire les logs | TP guidé |
+| 02:29–02:42 | Matrices, conditions, parallélisation et artefacts ; ce qui reste hors scope ING1 | Cours |
+| 02:42–03:00 | QCM de clôture (Kahoot ou équivalent, 20 questions) : CI/CD, anatomie de pipeline, GitHub Actions, GitLab CI | Quiz |
 
 **Choix pédagogique :** chaque groupe implémente **GitHub Actions ou GitLab CI** afin de tenir le temps. L'autre outil est lu et comparé, sans exiger une double implémentation. Le déploiement public n'est pas obligatoire dans le pipeline de séance ; le build de l'image est l'étape minimale commune.
 
@@ -113,17 +130,18 @@ Le déploiement public est présenté comme une possibilité et non comme une d�
 
 | Temps | Contenu et activité | Modalité |
 |---:|---|---|
-| 00:00–00:15 | Revue des pipelines et objectifs du livrable final | Échange |
-| 00:15–00:35 | TLS/HTTPS : chiffrement, intégrité, authentification, certificat, chaîne de confiance et Let's Encrypt | Cours |
-| 00:35–00:55 | Secrets : variables protégées, jetons, `.env`, rotation et interdiction de versionner un secret | Cas pratique |
-| 00:55–01:15 | Sécurité CI/CD : dépendances, secret scanning, image de base, permissions minimales ; audit express sur un pipeline fourni | Cours + audit |
-| 01:15–01:30 | Déploiement et versionnage : environnements, release, rollback, recreate, rolling, blue/green et canary | Cours |
-| 01:30–01:40 | Pause | — |
-| 01:40–02:00 | Observabilité : distinguer logs, métriques et traces ; chaîne OpenTelemetry → Prometheus → Grafana → Alertmanager | Cours + démonstration |
-| 02:00–02:18 | Feature flags : activer sans redéployer, complément du canary, dette technique et de sécurité | Cours + étude de cas |
-| 02:18–02:35 | Grille d'audit d'une configuration générée par IA (reproductibilité, permissions, exposition réseau, secrets, provenance, cohérence), avec démonstration en direct sur une proposition réelle | Cours + démonstration |
-| 02:35–02:50 | Finalisation du dépôt, preuves, restitution en binômes | TP noté |
-| 02:50–03:00 | Bilan, limites du module et synthèse globale des 4 séances | Synthèse |
+| 00:00–00:13 | Revue des pipelines et objectifs du livrable final | Échange |
+| 00:13–00:31 | TLS/HTTPS : chiffrement, intégrité, authentification, certificat, chaîne de confiance et Let's Encrypt | Cours |
+| 00:31–00:49 | Secrets : variables protégées, jetons, `.env`, rotation et interdiction de versionner un secret | Cas pratique |
+| 00:49–01:07 | Sécurité CI/CD : dépendances, secret scanning, image de base, permissions minimales ; audit express sur un pipeline fourni | Cours + audit |
+| 01:07–01:20 | Déploiement et versionnage : environnements, release, rollback, recreate, rolling, blue/green et canary | Cours |
+| 01:20–01:30 | Pause | — |
+| 01:30–01:48 | Observabilité : distinguer logs, métriques et traces ; chaîne OpenTelemetry → Prometheus → Grafana → Alertmanager | Cours + démonstration |
+| 01:48–02:04 | Feature flags : activer sans redéployer, complément du canary, dette technique et de sécurité | Cours + étude de cas |
+| 02:04–02:19 | Grille d'audit d'une configuration générée par IA (reproductibilité, permissions, exposition réseau, secrets, provenance, cohérence), avec démonstration en direct sur une proposition réelle | Cours + démonstration |
+| 02:19–02:34 | Finalisation du dépôt, preuves, restitution en binômes | TP noté |
+| 02:34–02:52 | QCM de clôture (Kahoot ou équivalent, 20 questions) : TLS, secrets, sécurité CI/CD, déploiement, observabilité, feature flags, audit IA | Quiz |
+| 02:52–03:00 | Bilan, limites du module et synthèse globale des 4 séances | Synthèse |
 
 **Audit IA attendu :** l'étudiant ne note pas la capacité de l'IA à produire du YAML. Il vérifie la reproductibilité, les versions, les permissions, l'exposition réseau, les secrets, la provenance de l'image, le cache et la cohérence avec le besoin. Toute suggestion est traitée comme une proposition à vérifier.
 

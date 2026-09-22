@@ -15,7 +15,7 @@ drawings:
 layout: course-cover
 subtitle: Des fondamentaux réseau aux pipelines automatisés
 session: 4 séances de 3h — 12h
-instructor: Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes)
+instructor: Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes...)
 ---
 
 # Cloud, Réseaux et DevOps
@@ -36,14 +36,11 @@ Transition : passer au plan global des 4 séances.
 
 # Qui suis-je ?
 
-<v-clicks>
 
-- **Clément DAOU** — Ingénieur Cloud-DevOps
-- Expérience terrain : **AWS**, **Azure**, **Kubernetes**
-- Conception d'architectures cloud et automatisation de pipelines CI/CD
-- Exploitation et supervision de services en production
+- **Clément DAOU** — Ingénieur DevOps & architecte cloud
+- Techno : **AWS**, **Azure**, **Kubernetes**
+- Conception d'architectures cloud natives et automatisation de pipelines CI/CD
 
-</v-clicks>
 
 <!--
 Durée : 2 min.
@@ -61,8 +58,6 @@ Transition : présenter le plan global des 4 séances.
 
 # Plan global du module
 
-<v-clicks>
-
 - **Séance 1** — Réseaux, cloud et haute disponibilité
   <span class="text-sm opacity-70">Couches réseau, IP/DNS, IaaS/PaaS/SaaS/serverless, AWS/Azure/GCP, HA</span>
 - **Séance 2** — DevOps, Git, Docker et écosystème cloud-native
@@ -71,8 +66,6 @@ Transition : présenter le plan global des 4 séances.
   <span class="text-sm opacity-70">Anatomie d'un pipeline, workflows YAML, TP pipeline installation → tests → build</span>
 - **Séance 4** — Sécurité, observabilité, déploiement et audit IA
   <span class="text-sm opacity-70">TLS, secrets, stratégies de déploiement, logs/métriques/traces, audit IA, TP final</span>
-
-</v-clicks>
 
 <!--
 Durée : 3 min.
@@ -88,12 +81,10 @@ Transition : détailler les objectifs pédagogiques précis du module.
 
 ---
 
-# Objectifs pédagogiques
-
-<v-clicks>
+# Objectifs
 
 - Expliquer l'adressage IP, le DNS, la passerelle et le routage
-- Distinguer IaaS, PaaS, SaaS et serverless, puis justifier un choix
+- Distinguer IaaS, PaaS, SaaS et serverless
 - Comparer VM et conteneur, construire une image Docker, situer Kubernetes
 - Décrire les mécanismes de haute disponibilité
 - Expliquer les principes de l'Infrastructure as Code (déclaratif, plan, apply) et situer Terraform
@@ -102,8 +93,6 @@ Transition : détailler les objectifs pédagogiques précis du module.
 - Identifier les risques secrets, dépendances, TLS et images
 - Lire des logs et choisir des métriques utiles
 - Auditer une configuration Docker/CI générée par une IA
-
-</v-clicks>
 
 <!--
 Durée : 3 min.
@@ -136,7 +125,7 @@ Transition : démarrer par le modèle en couches.
 
 ---
 
-# Le modèle en couches
+# Le modèle en couches : TCP/IP et OSI
 
 ```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
@@ -147,22 +136,71 @@ graph LR
 
 <v-clicks>
 
-- Chaque couche résout **un problème précis**
-- Une couche ne connaît que sa voisine directe
-- **Encapsulation** : chaque couche ajoute son en-tête
+- **TCP/IP** (4 couches) : le modèle réellement utilisé sur Internet, celui vu tout au long de ce cours
+- **OSI** (7 couches) : un modèle de référence plus détaillé, surtout utile pour situer un vocabulaire réseau (souvent cité en entreprise ou en certification)
+- Une couche ne connaît que sa voisine directe ; **encapsulation** : chaque couche ajoute son en-tête
 
 </v-clicks>
 
 <!--
-Durée : 12 min (dont ~5 min d'échange avec la salle).
+Durée : 9 min (dont ~3 min d'échange avec la salle).
 
-Simplifier le modèle OSI/TCP-IP en 4 couches pratiques plutôt que les 7 couches OSI complètes — suffisant au niveau ING1.
+Présenter TCP/IP comme le modèle pratique utilisé pour le reste du cours, et OSI comme un modèle de référence à savoir situer sans en faire un objet de certification — pas de calcul ni de distinction fine entre présentation/session à retenir par cœur.
 
 Exemple concret : une lettre postée dans une enveloppe, elle-même dans un sac postal, lui-même dans un camion. Chaque couche ajoute son propre "emballage" sans se soucier du contenu des couches internes.
 
 Point à verbaliser : HTTP ne sait pas comment les bits circulent sur le câble, et l'inverse est vrai aussi — c'est la force de l'abstraction en couches.
 
-Faire réagir la salle avant de conclure : demander à deux ou trois étudiants de retrouver, pour un protocole de leur choix (SSH, DNS, HTTPS...), la couche à laquelle il appartient — ce temps d'échange consolide la compréhension avant de passer au schéma d'encapsulation.
+Transition : voir la correspondance précise entre les deux modèles dans un tableau.
+-->
+
+---
+
+# Le modèle OSI : les 7 couches
+
+<v-clicks>
+
+- 7. Application — HTTP, DNS
+- 6. Présentation — TLS, chiffrement
+- 5. Session — Ouverture/fermeture de connexion
+- 4. Transport — TCP, UDP
+- 3. Réseau — IP
+- 2. Liaison — Ethernet, Wi-Fi
+- 1. Physique — Câble, signal radio
+
+</v-clicks>
+
+<!--
+Durée : 4 min.
+
+Présenter les 7 couches OSI dans l'ordre, en rappelant qu'il s'agit d'un modèle de référence à savoir situer (souvent cité en entreprise ou en certification), pas d'un objet de calcul ou de mémorisation exhaustive.
+
+Exemple concret : SSH, DNS ou HTTPS se rangent tous dans la couche 7 "Application" au sens OSI, alors qu'ils sont très différents dans leur usage.
+
+Transition : voir maintenant comment ces 7 couches se regroupent dans les 4 couches du modèle TCP/IP.
+-->
+
+---
+
+# Correspondance OSI ↔ TCP/IP
+
+| TCP/IP (4 couches) | OSI regroupées | Exemple |
+|---|---|---|
+| Application | 7. Application, 6. Présentation, 5. Session | HTTP, DNS, TLS |
+| Transport | 4. Transport | TCP, UDP |
+| Réseau | 3. Réseau | IP |
+| Liaison / Physique | 2. Liaison, 1. Physique | Ethernet, Wi-Fi |
+
+<Tip type="info">
+Les 3 couches hautes d'OSI (application, présentation, session) sont regroupées en une seule couche "Application" côté TCP/IP — c'est pourquoi TLS ou l'ouverture d'une session s'y rangent.
+</Tip>
+
+<!--
+Durée : 3 min (dont ~3 min d'échange).
+
+Le tableau OSI→TCP/IP sert uniquement à comprendre pourquoi TLS ou une session se rangent dans la couche "Application" côté TCP/IP — pas de distinction fine à mémoriser par cœur entre présentation et session.
+
+Faire réagir la salle avant de conclure : demander à deux ou trois étudiants de retrouver, pour un protocole de leur choix (SSH, DNS, HTTPS...), la couche TCP/IP à laquelle il appartient — ce temps d'échange consolide la compréhension avant de passer au schéma d'encapsulation.
 
 Transition : détailler l'encapsulation avec un schéma de paquet.
 -->
@@ -187,13 +225,13 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 13 min (dont ~6 min de manipulation guidée).
+Durée : 9 min (dont ~3 min de manipulation guidée).
 
 Le port complète l'adresse IP : l'IP dirige vers la bonne machine, le port dirige vers la bonne application sur cette machine (80/443 pour le web, 22 pour SSH, 5432 pour PostgreSQL).
 
 Exemple concret : un immeuble (l'adresse IP) contient plusieurs appartements (les ports) ; le facteur (le réseau) doit connaître les deux pour livrer au bon destinataire.
 
-Manipulation guidée : demander à chaque étudiant d'ouvrir un terminal et de lister les ports en écoute sur son poste (`netstat -tulpn` sous Linux, `netstat -ano` sous Windows), puis de retrouver à quelle application chaque port correspond — ancre concrètement la notion avant de passer à l'adressage IP.
+Manipulation guidée express : demander à chaque étudiant d'ouvrir un terminal et de lister les ports en écoute sur son poste (`netstat -tulpn` sous Linux, `netstat -ano` sous Windows), puis de retrouver à quelle application chaque port correspond — les manipulations guidées 1 et 2, plus détaillées, arrivent après le routage.
 
 Transition : passer à l'adressage IPv4/IPv6.
 -->
@@ -217,7 +255,7 @@ Transition : passer à l'adressage IPv4/IPv6.
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~4 min d'exercices de lecture d'adresses).
+Durée : 9 min (dont ~4 min d'exercices de lecture d'adresses).
 
 Rappeler que les adresses privées ne sont pas routables sur Internet : elles servent en interne (LAN, VPC cloud), une passerelle NAT fait le pont vers l'extérieur.
 
@@ -244,7 +282,7 @@ Plus le préfixe est petit, plus le réseau est grand : `/8` couvre bien plus d'
 </Tip>
 
 <!--
-Durée : 10 min (dont ~5 min d'exercices de lecture de CIDR).
+Durée : 8 min (dont ~4 min d'exercices de lecture de CIDR).
 
 Objectif : que l'étudiant sache lire "192.168.1.0/24" comme "256 adresses possibles dans ce réseau", sans exiger de calcul binaire complexe.
 
@@ -268,7 +306,7 @@ Transition : passer à IPv6 en contraste rapide.
 </v-clicks>
 
 <!--
-Durée : 5 min.
+Durée : 4 min.
 
 Rester bref : IPv6 n'est pas le cœur du cours, mais l'étudiant doit savoir le reconnaître et comprendre pourquoi il existe.
 
@@ -299,7 +337,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 12 min (dont ~7 min de démonstration live).
+Durée : 10 min (dont ~6 min de démonstration live).
 
 Insister sur l'analogie annuaire téléphonique : on cherche un nom, on obtient un numéro (ici une adresse IP).
 
@@ -322,7 +360,7 @@ Transition : détailler les types d'enregistrements DNS les plus courants.
 | `MX` | Serveur de messagerie | `exemple.com → mail.exemple.com` |
 
 <!--
-Durée : 8 min (dont ~4 min d'échange sur des cas vécus).
+Durée : 6 min (dont ~3 min d'échange sur des cas vécus).
 
 Ces 4 types couvrent la majorité des cas rencontrés en entreprise. Insister sur `CNAME` : très utilisé pour pointer un sous-domaine vers un service géré (CDN, plateforme cloud) sans exposer d'adresse IP brute.
 
@@ -350,41 +388,146 @@ Le routage ne garantit pas un chemin unique : plusieurs routes peuvent exister, 
 </Tip>
 
 <!--
-Durée : 7 min (dont ~3 min d'échange).
+Durée : 5 min (dont ~2 min d'échange).
 
 Rester conceptuel : pas besoin de détailler les protocoles de routage (BGP, OSPF) à ce niveau, juste le principe de saut en saut.
 
-Exemple concret : `traceroute`/`tracert` révèle visuellement ces sauts intermédiaires — sert de transition parfaite vers les outils de diagnostic.
+Exemple concret : `traceroute`/`tracert` révèle visuellement ces sauts intermédiaires — sert de transition parfaite vers la manipulation guidée qui suit.
 
-Échange avec la salle : demander combien de sauts ils imaginent entre leur poste et un site connu, noter les estimations au tableau, puis les confronter au résultat réel lors de la démonstration `traceroute` qui suit.
+Échange rapide avec la salle : demander combien de sauts ils imaginent entre leur poste et un site connu, noter 2-3 estimations au tableau, sans plus développer — la confrontation au résultat réel se fait dans la manipulation guidée `traceroute` qui suit immédiatement.
 
-Transition : présenter les commandes de diagnostic réseau du quotidien.
+Transition : passer à la première manipulation guidée, autour de `ping` et `traceroute`.
 -->
 
 ---
 
-# Diagnostic réseau — outils du quotidien
+# Manipulation guidée 1 — ping et traceroute/tracert
+
+<div class="grid grid-cols-2 gap-6">
+<div>
+
+**macOS / Linux**
 
 ```bash
-# Vérifier qu'un hôte répond
-ping exemple.com
-
-# Voir le chemin emprunté par les paquets
-traceroute exemple.com   # tracert sous Windows
-
-# Interroger le DNS directement
-nslookup exemple.com
-dig exemple.com
+ping example.com
+ping 8.8.8.8
+traceroute example.com
 ```
+
+</div>
+<div>
+
+**Windows (PowerShell)**
+
+```powershell
+ping example.com
+ping 8.8.8.8
+tracert example.com
+```
+
+</div>
+</div>
+
+<v-clicks>
+
+- Cible par **nom** (`example.com`) : passe par le DNS puis teste l'ICMP
+- Cible par **IP** (`8.8.8.8`) : isole le réseau, sans dépendre du DNS
+- `traceroute`/`tracert` affiche les sauts intermédiaires, un routeur par ligne
+
+</v-clicks>
+
+<Tip type="warning">
+Une ligne `* * *` dans `traceroute` signifie souvent un routeur qui ne répond pas à l'ICMP (silencieux), pas forcément une coupure réseau. Un pare-feu ou un Wi-Fi de campus peut aussi filtrer l'ICMP : ne jamais conclure à une absence d'Internet à partir d'un seul `ping` qui échoue.
+</Tip>
 
 <!--
 Durée : 8 min (dont ~5 min de manipulation guidée en terminal).
 
-Ces commandes suffisent à diagnostiquer 80 % des incidents réseau simples : "le site ne répond pas" (ping), "où ça bloque" (traceroute), "le nom ne résout pas correctement" (nslookup/dig).
+Verbaliser la différence entre les deux cibles : `ping example.com` combine résolution DNS et test ICMP (deux causes d'échec possibles) alors que `ping 8.8.8.8` teste uniquement l'atteignabilité réseau, sans DNS.
 
-Exemple concret : un `ping` qui échoue mais un `nslookup` qui fonctionne indique souvent un pare-feu qui bloque le protocole ICMP, pas un vrai problème réseau — nuance utile à transmettre.
+Exemple concret : un `ping` qui échoue vers un nom mais réussit vers l'IP correspondante pointe vers un problème DNS, pas un problème réseau — nuance importante à faire vivre à voix haute.
 
-Manipulation guidée : demander à chaque étudiant d'exécuter les quatre commandes sur son propre poste contre un domaine de son choix, puis de comparer les résultats avec son voisin — transforme la démonstration en pratique individuelle avant la pause.
+Manipulation guidée : demander à chaque étudiant d'exécuter les trois commandes de sa colonne (macOS/Linux ou Windows) contre `example.com` et `8.8.8.8`, de repérer une ligne `* * *` dans son `traceroute`/`tracert` si elle apparaît, puis de comparer le nombre de sauts avec son voisin.
+
+Transition : passer à la manipulation guidée sur la résolution DNS et la réponse HTTPS.
+-->
+
+---
+
+# Parcours concret : de l'URL à la réponse HTTPS
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A["URL"] --> B["DNS"]
+  B --> C["IP"]
+  C --> D["TCP:443"]
+  D --> E["TLS/HTTP"]
+  E --> F["Réponse"]
+```
+
+<v-clicks>
+
+- Le navigateur interroge le **DNS** puis ouvre une **connexion TCP** vers `IP:443`
+- **TLS** sécurise le canal, une requête **HTTP** part ensuite ; le serveur répond et la page s'affiche
+
+</v-clicks>
+
+<!--
+Durée : 6 min.
+
+Objectif de cette slide : relier en une seule fois tout ce qui vient d'être vu séparément (couches, ports, IP, DNS, routage) sur un schéma compact unique, déjà annoncé en ouverture de séance.
+
+Reprendre la question posée en tout début de séance ("que se passe-t-il avant que la page s'affiche ?") et confronter les réponses notées au tableau avec les 6 étapes de ce schéma. Point à verbaliser : le port 443 est la convention HTTPS ; TLS s'intercale entre la connexion TCP et la requête HTTP.
+
+Transition : passer à la manipulation guidée qui vérifie concrètement ce parcours.
+-->
+
+---
+
+# Manipulation guidée 2 — Du nom de domaine à la réponse HTTPS
+
+<div class="grid grid-cols-2 gap-6">
+<div>
+
+**macOS / Linux**
+
+```bash
+nslookup example.com
+curl -I https://example.com
+```
+
+</div>
+<div>
+
+**Windows (PowerShell)**
+
+```powershell
+nslookup example.com
+curl.exe -I https://example.com
+```
+
+</div>
+</div>
+
+<v-clicks>
+
+- `nslookup` retourne l'**adresse IP** résolue par le DNS
+- `curl -I` interroge le serveur en HTTPS (port 443) et affiche le **statut HTTP** de la réponse
+
+</v-clicks>
+
+<Tip type="info">
+`curl` teste la couche applicative HTTPS, pas une preuve ICMP : un `curl` qui réussit ne dit rien du comportement d'un `ping` sur la même cible, et inversement.
+</Tip>
+
+<!--
+Durée : 8 min (dont ~5 min de manipulation guidée en terminal).
+
+Faire le lien explicite avec le schéma qui précède : `nslookup` illustre l'étape DNS→IP, `curl -I` illustre les étapes TCP:443→TLS/HTTP→réponse.
+
+Exemple concret : le code retourné par `curl -I` (`200`, `301`, `404`...) est le premier signal concret d'un incident applicatif, à distinguer d'un incident réseau bas niveau vu avec `ping`/`traceroute`.
+
+Manipulation guidée : demander à chaque étudiant d'exécuter les deux commandes de sa colonne contre `example.com`, de noter l'adresse IP retournée par `nslookup` et le statut HTTP retourné par `curl -I`, puis de comparer avec son voisin.
 
 Transition : refermer le bloc réseau, ouvrir le cloud après la pause.
 -->
@@ -436,7 +579,7 @@ Le paiement à l'usage cache des coûts faciles à manquer : transfert sortant (
 </KeyConcept>
 
 <!--
-Durée : 15 min (dont ~7 min d'échange avec la salle sur des cas vécus).
+Durée : 7 min.
 
 Le modèle de responsabilité partagée est un point d'examen classique et une vraie source d'incidents en entreprise (buckets de stockage mal configurés, ouverts publiquement par erreur du client, pas du fournisseur).
 
@@ -445,8 +588,6 @@ Point à bien détailler : on-premise, le client porte 100 % de la responsabilit
 Exemple concret : citer sans jugement de valeur qu'un compte cloud mal configuré (accès trop ouverts) reste la faute du client, même si l'hébergeur est un grand acteur reconnu — la responsabilité partagée n'est pas négociable.
 
 Développer les pièges de facturation avec un cas concret : une machine de test qu'on oublie d'éteindre le week-end, ou un transfert de données volumineux vers un autre cloud qui déclenche des frais d'egress inattendus en fin de mois. Insister sur le réflexe budget/alerte comme geste de gestion de projet, pas seulement technique — lien direct avec le profil management du master.
-
-Temps d'échange dédié : demander à la salle si quelqu'un a déjà vu ou vécu une facture cloud plus élevée que prévu (stage, projet perso, entreprise) et faire raconter le cas ; enchaîner sur un tour de table rapide des trois promesses pour vérifier la compréhension avant de continuer.
 
 Transition : détailler les modèles de service cloud (IaaS, PaaS, SaaS, serverless).
 -->
@@ -473,13 +614,11 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~4 min d'exemples filés).
+Durée : 6 min (dont ~1 min d'exemple filé).
 
 Chaque modèle déplace le curseur de responsabilité : plus on monte vers le SaaS, moins le client gère d'infrastructure, mais moins il a de contrôle fin.
 
 Exemple concret : IaaS = louer un appartement vide (vous meublez tout) ; PaaS = un appartement meublé (vous apportez vos affaires) ; SaaS = un hôtel (tout est fourni, service inclus) ; serverless = payer une chambre uniquement pendant la nuit où vous dormez.
-
-Développer chaque analogie avec un exemple de service réel (VM chez un hébergeur pour IaaS, plateforme de déploiement d'application pour PaaS, suite bureautique en ligne pour SaaS, fonction déclenchée par un événement pour serverless) pour ancrer le vocabulaire avant l'étude de cas.
 
 Transition : comparer ces modèles à un hébergement classique via une étude de cas.
 -->
@@ -500,13 +639,13 @@ Aucun modèle n'est universellement supérieur : le choix dépend du contexte, d
 </Tip>
 
 <!--
-Durée : 12 min (temps d'étude de cas en petits groupes puis mise en commun).
+Durée : 6 min (temps d'étude de cas en petits groupes puis mise en commun rapide).
 
 Faire réagir la salle : donner un cas (ex. "startup de 3 développeurs qui lance un MVP") et demander quel modèle ils choisiraient, puis confronter les réponses.
 
 Exemple concret : une PME qui migre sa messagerie vers un SaaS (type Microsoft 365 ou Google Workspace) gagne en simplicité mais perd en personnalisation fine — bon exemple pour le profil management du master (arbitrage coût/contrôle).
 
-Déroulé pratique : former des binômes, distribuer 2-3 minutes pour trancher sur le cas proposé et justifier le choix à l'oral, puis passer à un second cas contrasté (ex. "grand compte avec exigences de conformité strictes") pour montrer que la réponse change selon le contexte. Prévoir 5 min de mise en commun collective à la fin.
+Déroulé pratique : former des binômes, distribuer 1-2 minutes pour trancher sur le cas proposé et justifier le choix à l'oral, puis passer à un second cas contrasté (ex. "grand compte avec exigences de conformité strictes"). Prévoir 2 min de mise en commun collective à la fin.
 
 Transition : voir comment AWS, Azure et GCP incarnent ces modèles.
 -->
@@ -520,14 +659,115 @@ Transition : voir comment AWS, Azure et GCP incarnent ces modèles.
 | Machine virtuelle | EC2 | Virtual Machines | Compute Engine |
 | Stockage objet | S3 | Blob Storage | Cloud Storage |
 | Base de données managée | RDS | Azure SQL | Cloud SQL |
-| Fonctions serverless | Lambda | Functions | Cloud Functions |
+| Serverless (fonctions) | Lambda | Azure Functions | Cloud Functions |
+| Réseau virtuel | VPC | VNet | VPC |
+| Conteneurs orchestrés | ECS / EKS | AKS | GKE |
 
 <!--
 Durée : 6 min (dont ~2 min d'échange sur les exemples publics).
 
-Message clé : ce ne sont pas des familles de services fondamentalement différentes — ce sont des implémentations différentes des mêmes concepts (calcul, stockage, base de données, fonctions).
+Message clé : ce ne sont pas des familles de services fondamentalement différentes — ce sont des implémentations différentes des mêmes concepts (calcul, stockage, base de données, fonctions, réseau, conteneurs).
 
 Exemple concret à formuler avec prudence : des architectures cloud sont documentées publiquement par des entreprises comme Netflix (AWS), ou par Microsoft et Google pour leurs propres services Azure et GCP — ce sont des cas publics datés, pas des relations exclusives ni des modèles universels à copier tel quel.
+
+Transition : ces trois acteurs ne sont pas les seuls — voir comment s'organisent identité et gouvernance chez un fournisseur cloud.
+-->
+
+---
+
+# Identité et organisation chez un fournisseur cloud
+
+<v-clicks>
+
+- AWS, Azure et GCP sont trois acteurs majeurs, **non exclusifs** : d'autres existent (ex. OVHcloud, Scaleway)
+- Un **compte/organisation** regroupe les ressources et les utilisateurs d'un client
+- La gestion des identités et des droits (**IAM**) contrôle qui peut faire quoi
+
+</v-clicks>
+
+| Fournisseur | Organisation | Identités et droits |
+|---|---|---|
+| AWS | AWS Organizations | IAM |
+| Azure | Management Groups | Microsoft Entra ID |
+| GCP | Organization | Cloud IAM |
+
+<!--
+Durée : 4 min.
+
+Point à verbaliser : cette organisation par comptes et IAM est la brique technique qui porte concrètement le modèle de responsabilité partagée vu plus tôt — le client configure ses droits d'accès, le fournisseur ne le fait pas à sa place.
+
+Exemple concret : un accès trop ouvert dans l'IAM d'un compte (droit "tout" donné par erreur) est une cause fréquente d'incident de sécurité cloud, quel que soit le fournisseur.
+
+Transition : avec ces briques communes, quels critères orientent un vrai choix de fournisseur ?
+-->
+
+---
+
+# Choisir un fournisseur cloud : les critères qui comptent
+
+<v-clicks>
+
+- **Compétences** de l'équipe déjà en place sur un fournisseur
+- **Écosystème** : services managés disponibles, intégrations existantes
+- **Conformité et souveraineté** : réglementation du secteur, localisation des données
+- **Coûts**, y compris les frais de sortie de données (**egress**)
+
+</v-clicks>
+
+<Tip type="warning">
+Aucun fournisseur n'est universellement meilleur : le bon choix dépend du contexte, jamais d'une préférence de principe.
+</Tip>
+
+<!--
+Durée : 3 min.
+
+Rester bref : cette slide est une synthèse de critères de décision managériale, pas une nouvelle notion technique — elle prépare directement la nuance SecNumCloud qui suit.
+
+Exemple concret : une entreprise déjà formée sur AWS ne migre pas vers Azure pour un gain marginal ; le coût de montée en compétence dépasse souvent le bénéfice.
+
+Transition : un cas particulier de conformité et de souveraineté mérite un focus dédié — SecNumCloud.
+-->
+
+---
+
+# SecNumCloud : qualification ANSSI, pas un fournisseur
+
+<v-clicks>
+
+- **SecNumCloud** qualifie une **offre cloud précise** selon un référentiel de l'ANSSI, ce n'est pas un label d'entreprise
+- Un même fournisseur peut proposer des offres qualifiées et d'autres non qualifiées
+- Cloud public hyperscaler : écosystème large, élasticité forte
+- Offre SecNumCloud : exigences renforcées de sécurité et de souveraineté juridique/opérationnelle des données
+
+</v-clicks>
+
+<Comparison left="Cloud public hyperscaler" right="Offre SecNumCloud" leftColor="orange" rightColor="green">
+  <template #left>
+
+  - Catalogue de services très large
+  - Élasticité et innovation rapide
+  - Cadre juridique parfois hors UE
+
+  </template>
+  <template #right>
+
+  - Catalogue de services plus restreint
+  - Exigences de sécurité et d'hébergement renforcées
+  - Cadre juridique et opérationnel maîtrisé
+
+  </template>
+</Comparison>
+
+<!--
+Durée : 7 min.
+
+Point à corriger explicitement s'il est mal compris : SecNumCloud n'est pas un attribut que "toute entreprise française" possède automatiquement ; c'est une qualification obtenue offre par offre, après audit, selon un référentiel publié par l'ANSSI.
+
+Cas typiques où la question se pose concrètement : données de santé ou données sensibles d'un secteur régulé, marchés du secteur public — sans prétendre que SecNumCloud serait une obligation générale ou automatique dans ces cas.
+
+Exemple concret : présenter la comparaison comme un arbitrage, pas un jugement de valeur — un hyperscaler reste pertinent pour l'écosystème et l'élasticité, une offre SecNumCloud reste pertinente quand la souveraineté et la sécurité renforcée priment sur le catalogue de services.
+
+Insister à voix haute : la liste des offres qualifiées évolue, ce cours ne peut pas servir de référence figée ; renvoyer systématiquement vers le site de l'ANSSI pour l'état en vigueur, et vers un service juridique/conformité pour toute décision réelle.
 
 Transition : passer à la haute disponibilité, dernier bloc de la séance 1.
 -->
@@ -555,13 +795,13 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 15 min (dont ~7 min d'échange approfondi sur les mécanismes).
+Durée : 9 min (dont ~1 min d'échange).
 
 Relier au vocabulaire du cloud vu juste avant : ces mécanismes existent chez tous les fournisseurs, sous des noms différents (Auto Scaling Group, Availability Set, Managed Instance Group...).
 
 Exemple concret : si une seule instance tombe, le load balancer cesse de lui envoyer du trafic dès que son health check échoue — l'utilisateur ne voit rien passer.
 
-Approfondir avec la salle : reprendre chaque mécanisme (zones, instances, load balancer, health check) et demander un scénario de panne concret où il intervient — le temps supplémentaire, libéré par le passage du QCM en clôture de séance, sert à consolider ce bloc plutôt qu'à un exercice écrit isolé.
+Reprendre rapidement chaque mécanisme (zones, instances, load balancer, health check) avec un scénario de panne concret associé — le temps supplémentaire, libéré par le passage du QCM en clôture de séance, reste disponible pour approfondir à l'oral si le rythme le permet.
 
 Transition : synthèse de la séance 1.
 -->
@@ -576,7 +816,7 @@ section: Séance 1 — Réseaux, cloud et haute disponibilité
 - **Couches réseau** : application, transport, réseau, liaison — encapsulation à l'émission
 - **IPv4/IPv6, CIDR** : adresse + masque définissent la taille d'un réseau
 - **DNS** : `A`/`AAAA`/`CNAME`/`MX` traduisent des noms en ressources
-- **Routage** : passerelle par défaut, sauts successifs, diagnostic via ping/traceroute/dig
+- **Routage** : passerelle par défaut, sauts successifs, diagnostic via ping/traceroute/nslookup
 - **Cloud** : élasticité, mutualisation, paiement à l'usage, responsabilité partagée
 - **IaaS/PaaS/SaaS/serverless** : le curseur de contrôle vs simplicité
 - **Haute disponibilité** : zones, instances multiples, load balancer, health check
@@ -591,7 +831,7 @@ Transition : lancer le QCM de clôture de la séance 1.
 
 ---
 layout: exercise
-duration: 12 min
+duration: 18 min
 type: solo
 ---
 
@@ -600,15 +840,11 @@ type: solo
 <div class="grid grid-cols-2 gap-8 items-center h-full">
 <div>
 
-**Couvre** : couches réseau, IP/DNS, routage, cloud (IaaS/PaaS/SaaS/serverless), AWS/Azure/GCP, haute disponibilité
+**Couvre** : couches TCP/IP et OSI, parcours URL → DNS → TCP → serveur, IP/DNS, routage, cloud (IaaS/PaaS/SaaS/serverless), AWS/Azure/GCP, haute disponibilité
 
-<v-clicks>
+- 20 questions (section Séance 1)
+- Certaines questions à **réponses multiples**, indiqué sur chaque question
 
-- 8 à 10 questions, une bonne réponse par question
-- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
-- Score individuel, débrief collectif juste après
-
-</v-clicks>
 
 </div>
 <div class="flex flex-col items-center justify-center gap-4">
@@ -632,15 +868,15 @@ type: solo
 </div>
 
 <!--
-Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 1 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
 
-Verbaliser avant de lancer : objectif individuel de vérification des acquis, pas une compétition à forte pression ; laisser large sur le temps par question pour absorber une connexion réseau lente en salle.
+Verbaliser avant de lancer : objectif individuel de vérification des acquis, pas une compétition à forte pression ; signaler explicitement les questions à réponses multiples (plusieurs cases à cocher) pour éviter toute confusion sur le mode de réponse ; laisser large sur le temps par question pour absorber une connexion réseau lente en salle.
 
-Exemple concret de question possible : "Quel type d'enregistrement DNS pointe vers une adresse IPv4 ?" (réponse attendue : A) — à adapter selon les questions réellement configurées dans le quiz.
+Exemple concret de question possible : "Quel type d'enregistrement DNS pointe vers une adresse IPv4 ?" (réponse attendue : A) — les 20 questions réelles sont dans `qcm-kahoot.md`.
 
-Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 2 — DevOps, Git, Docker et écosystème cloud-native.
+Transition : débriefer collectivement les 2-3 questions les plus ratées, puis annoncer la séance 2 — DevOps, Git, Docker et écosystème cloud-native.
 -->
 
 ---
@@ -910,7 +1146,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 9 min (dont ~5 min de démonstration live).
+Durée : 8 min (dont ~4 min de démonstration live).
 
 Insister sur "atomique" : un commit doit correspondre à un changement logique cohérent, pas à un mélange de plusieurs sujets non liés.
 
@@ -1128,7 +1364,7 @@ Transition : Infrastructure as Code posée, retour à Docker avec la comparaison
 </Comparison>
 
 <!--
-Durée : 8 min (dont ~5 min de discussion comparée).
+Durée : 7 min (dont ~4 min de discussion comparée).
 
 Le point à faire comprendre : un conteneur n'embarque pas un système d'exploitation complet, il partage le noyau de la machine hôte — c'est ce qui explique sa légèreté.
 
@@ -1160,7 +1396,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 8 min (dont ~5 min de manipulation guidée).
+Durée : 7 min (dont ~4 min de manipulation guidée).
 
 Analogie utile : image = classe en programmation orientée objet, conteneur = instance de cette classe. Une image ne change pas, un conteneur a un état d'exécution propre.
 
@@ -1190,7 +1426,7 @@ CMD ["node", "server.js"]
 ```
 
 <!--
-Durée : 14 min (démonstration live complète).
+Durée : 12 min (démonstration live complète).
 
 Dérouler chaque instruction : image de base, répertoire de travail, copie ciblée des fichiers de dépendances avant le reste du code (pour préserver le cache), exposition documentaire du port, commande de démarrage.
 
@@ -1411,7 +1647,7 @@ Fondation open source qui héberge des projets cloud-native, organise leur gouve
 </v-clicks>
 
 <!--
-Durée : 8 min (dont ~5 min d'échange sur des projets connus).
+Durée : 7 min (dont ~4 min d'échange sur des projets connus).
 
 Point important à verbaliser clairement : la CNCF est présentée AVANT Kubernetes volontairement, pour éviter de réduire tout l'écosystème cloud-native à un seul outil. Kubernetes n'est qu'un projet hébergé parmi d'autres.
 
@@ -1524,7 +1760,7 @@ Transition : lancer le QCM de clôture de la séance 2.
 
 ---
 layout: exercise
-duration: 12 min
+duration: 18 min
 type: solo
 ---
 
@@ -1535,13 +1771,10 @@ type: solo
 
 **Couvre** : DevOps/DORA, Git (branche, PR/MR, commit, SemVer), Infrastructure as Code, Docker (image, couche, registre, bonnes pratiques), Compose, CNCF/Kubernetes (vocabulaire)
 
-<v-clicks>
+- 20 questions (section Séance 2)
+- Certaines questions à **réponses multiples**, indiqué sur chaque question
 
-- 8 à 10 questions, une bonne réponse par question
-- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
-- Score individuel, débrief collectif juste après
 
-</v-clicks>
 
 </div>
 <div class="flex flex-col items-center justify-center gap-4">
@@ -1565,11 +1798,11 @@ type: solo
 </div>
 
 <!--
-Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 2 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
 
-Verbaliser avant de lancer : ce quiz couvre un volume de notions plus large que celui de la séance 1 (DevOps, Git, Infrastructure as Code, Docker, cloud-native) — rappeler que l'objectif reste la vérification individuelle des acquis.
+Verbaliser avant de lancer : ce quiz couvre un volume de notions plus large que celui de la séance 1 (DevOps, Git, Infrastructure as Code, Docker, cloud-native) — signaler explicitement les questions à réponses multiples avant de démarrer.
 
 Exemple concret de question possible : "Quelle commande construit une image à partir d'un Dockerfile ?" (réponse attendue : `docker build`) — à adapter selon les questions réellement configurées dans le quiz.
 
@@ -1637,7 +1870,7 @@ Les trois sigles se ressemblent mais désignent des niveaux d'automatisation dif
 </v-clicks>
 
 <!--
-Durée : 20 min (dont ~10 min d'exemples commentés et de quiz oral).
+Durée : 18 min (dont ~9 min d'exemples commentés et de quiz oral).
 
 Insister sur la nuance entre les deux "CD" : livraison continue (Continuous Delivery, activation humaine) et déploiement continu (Continuous Deployment, entièrement automatique).
 
@@ -1670,7 +1903,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 18 min (dont ~10 min d'exercice d'association de vocabulaire).
+Durée : 16 min (dont ~9 min d'exercice d'association de vocabulaire).
 
 Ce vocabulaire est commun à GitHub Actions et GitLab CI, seuls les noms précis diffèrent légèrement (job/stage, runner/executor). L'objectif est de comprendre le concept avant la syntaxe.
 
@@ -1705,7 +1938,7 @@ jobs:
 ```
 
 <!--
-Durée : 12 min (dont ~6 min de démonstration live).
+Durée : 11 min (dont ~5 min de démonstration live).
 
 Dérouler : `name` identifie le workflow, `on` définit le déclencheur, `jobs` contient les tâches, `runs-on` choisit le runner, `steps` liste les actions séquentielles.
 
@@ -1864,7 +2097,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 20 min (dont ~10 min de préparation d'environnement guidée).
+Durée : 19 min (dont ~9 min de préparation d'environnement guidée).
 
 Rappeler explicitement que l'objectif obligatoire s'arrête à la construction de l'image Docker — aucun credential ni configuration de déploiement n'est requis pour valider le TP.
 
@@ -1983,7 +2216,7 @@ Transition : lancer le QCM de clôture de la séance 3.
 
 ---
 layout: exercise
-duration: 12 min
+duration: 18 min
 type: solo
 ---
 
@@ -1994,13 +2227,12 @@ type: solo
 
 **Couvre** : CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
 
-<v-clicks>
 
-- 8 à 10 questions, une bonne réponse par question
-- Quiz projeté via Kahoot (ou équivalent) — connexion depuis smartphone/ordinateur
-- Score individuel, débrief collectif juste après
+- 20 questions(section Séance 3)
+- Certaines questions à **réponses multiples**, indiqué sur chaque question
 
-</v-clicks>
+
+
 
 </div>
 <div class="flex flex-col items-center justify-center gap-4">
@@ -2024,15 +2256,15 @@ type: solo
 </div>
 
 <!--
-Durée : 12 min (lancement 2 min, jeu 8 min, débrief 2 min).
+Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 3 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
 
-Verbaliser avant de lancer : ce quiz vérifie la lecture d'un pipeline déclaratif (GitHub Actions et GitLab CI), pas la mémorisation exacte de la syntaxe YAML — questions à choix conceptuel plutôt que recopie de code.
+Verbaliser avant de lancer : ce quiz vérifie la lecture d'un pipeline déclaratif (GitHub Actions et GitLab CI), pas la mémorisation exacte de la syntaxe YAML — questions à choix conceptuel plutôt que recopie de code ; signaler explicitement les questions à réponses multiples.
 
-Exemple concret de question possible : "Quel mot-clé GitLab CI regroupe les jobs en étapes séquentielles ?" (réponse attendue : `stages`) — à adapter selon les questions réellement configurées dans le quiz.
+Exemple concret de question possible : "Quel mot-clé GitLab CI regroupe les jobs en étapes séquentielles ?" (réponse attendue : `stages`) — les 20 questions réelles sont dans `qcm-kahoot.md`.
 
-Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 4 — sécurité, observabilité, déploiement et audit IA.
+Transition : débriefer collectivement les 2-3 questions les plus ratées, puis annoncer la séance 4 — sécurité, observabilité, déploiement et audit IA.
 -->
 
 ---
@@ -2067,7 +2299,7 @@ Transition : revue des pipelines et objectifs du livrable final.
 </v-clicks>
 
 <!--
-Durée : 14 min (dont ~8 min d'échange sur l'état des livrables).
+Durée : 13 min (dont ~7 min d'échange sur l'état des livrables).
 
 Rappeler la checklist du livrable final : dépôt Git identifiable, application lançable, Dockerfile fonctionnel, pipeline vert, secrets absents du dépôt, preuve d'observabilité, audit IA écrit.
 
@@ -2091,7 +2323,7 @@ Transition : entrer dans TLS/HTTPS.
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min de manipulation navigateur).
+Durée : 9 min (dont ~4 min de manipulation navigateur).
 
 Ces trois garanties sont souvent confondues. TLS ne garantit pas que le serveur est "de confiance" au sens moral — seulement que son identité est vérifiable et que la communication n'est pas altérée en transit.
 
@@ -2122,7 +2354,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min d'échange et de manipulation).
+Durée : 9 min (dont ~4 min d'échange et de manipulation).
 
 Let's Encrypt a démocratisé le HTTPS en le rendant gratuit et automatisable (renouvellement via ACME) — avant, un certificat payant était une barrière réelle pour les petits projets.
 
@@ -2152,7 +2384,7 @@ Un secret qui a fuité doit être révoqué immédiatement, pas seulement suppri
 </Tip>
 
 <!--
-Durée : 10 min (dont ~5 min de cas pratique commenté).
+Durée : 9 min (dont ~4 min de cas pratique commenté).
 
 Point de sécurité critique : supprimer un secret d'un commit ne le retire pas de l'historique Git — il faut réécrire l'historique (opération lourde) ou, plus simplement, révoquer le secret compromis.
 
@@ -2187,7 +2419,7 @@ API_KEY=xxxxxxxxxxxxxxxx
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min de vérification pratique).
+Durée : 9 min (dont ~4 min de vérification pratique).
 
 Pattern à retenir : `.env` local et ignoré par Git, `.env.example` versionné et documenté avec des valeurs factices.
 
@@ -2212,7 +2444,7 @@ Transition : sécurité CI/CD au sens large.
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min d'échange sur des exemples réels).
+Durée : 9 min (dont ~4 min d'échange sur des exemples réels).
 
 Le principe du moindre privilège s'applique aussi aux pipelines : un job qui n'a pas besoin d'écrire dans un registre ne devrait pas avoir cette permission par défaut.
 
@@ -2237,7 +2469,7 @@ Transition : audit rapide sur un exemple de pipeline fourni (activité).
 </v-clicks>
 
 <!--
-Durée : 10 min (temps d'exercice collectif de repérage).
+Durée : 9 min (temps d'exercice collectif de repérage).
 
 Faire identifier collectivement, sur un exemple projeté, deux ou trois de ces anti-patterns. Cet exercice prépare directement l'audit IA de fin de séance.
 
@@ -2274,7 +2506,7 @@ Transition au retour : déploiement et versionnage, observabilité.
 </v-clicks>
 
 <!--
-Durée : 6 min.
+Durée : 5 min.
 
 Poser la notion d'environnement comme un principe de sécurité et de qualité : ne jamais tester en production ce qui n'a pas été validé ailleurs.
 
@@ -2297,7 +2529,7 @@ Transition : détailler les stratégies de déploiement.
 | **Canary** | Nouvelle version testée sur une petite portion du trafic | Impact limité si problème détecté |
 
 <!--
-Durée : 9 min (dont ~4 min d'exercice de classement).
+Durée : 8 min (dont ~4 min d'exercice de classement).
 
 Ce tableau est un support de mémorisation. Insister sur canary : c'est la stratégie qui limite le mieux le risque, au prix d'une complexité de mise en œuvre plus élevée.
 
@@ -2328,7 +2560,7 @@ graph TB
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min d'exemples de logs commentés).
+Durée : 9 min (dont ~4 min d'exemples de logs commentés).
 
 Ces trois piliers sont complémentaires : les logs racontent un événement précis, les métriques donnent une tendance chiffrée, les traces suivent un parcours de bout en bout.
 
@@ -2373,7 +2605,7 @@ graph LR
 </div>
 
 <!--
-Durée : 10 min (dont ~5 min d'échange sur des alternatives).
+Durée : 9 min (dont ~4 min d'échange sur des alternatives).
 
 Cette chaîne est un exemple concret et cohérent, pas la seule combinaison possible. L'important est de comprendre le rôle de chaque brique, pas de mémoriser une stack unique et figée.
 
@@ -2401,7 +2633,7 @@ Un flag oublié activé pour tout le monde reste une dette technique — prévoi
 </v-clicks>
 
 <!--
-Durée : 18 min (dont ~13 min d'étude de cas et de discussion commentées).
+Durée : 16 min (dont ~11 min d'étude de cas et de discussion commentées).
 
 Les feature flags découplent le déploiement (mettre le code en place) de la mise en visibilité (l'activer pour les utilisateurs) — nuance importante pour le profil management du master.
 
@@ -2435,7 +2667,7 @@ Toute suggestion d'IA est une proposition à vérifier, jamais une vérité à c
 </v-clicks>
 
 <!--
-Durée : 17 min (dont ~4 min d'échange et ~7 min de démonstration en direct).
+Durée : 15 min (dont ~3 min d'échange et ~7 min de démonstration en direct).
 
 Message central : l'objectif n'est pas d'évaluer la capacité de l'IA à produire du YAML, mais la capacité de l'étudiant à repérer ce qui ne va pas dans la proposition.
 
@@ -2476,7 +2708,58 @@ Rappeler que l'URL publique n'est qu'un bonus documenté si un hébergement péd
 
 Circuler dans les binômes, en priorité ceux encore en difficulté sur l'observabilité ou l'audit IA — ce sont les deux points les plus récents du déroulé et ceux où l'accompagnement individuel apporte le plus.
 
-Transition : bilan et limites du module.
+Transition : lancer le QCM de clôture de la séance 4, dernier quiz du module.
+-->
+
+---
+layout: exercise
+duration: 18 min
+type: solo
+---
+
+# QCM de clôture — Séance 4
+
+<div class="grid grid-cols-2 gap-8 items-center h-full">
+<div>
+
+**Couvre** : TLS/HTTPS, secrets, sécurité CI/CD, stratégies de déploiement, observabilité (logs/métriques/traces), feature flags, audit IA, TP final
+
+- 20 questions (section Séance 4)
+- Certaines questions à **réponses multiples**, indiqué sur chaque question
+
+
+
+</div>
+<div class="flex flex-col items-center justify-center gap-4">
+  <div
+    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
+    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
+  >
+    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
+    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
+      <span class="block font-bold text-[#c1502e]">QR CODE</span>
+      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
+    </div>
+  </div>
+  <div class="text-center">
+    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
+    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
+  </div>
+</div>
+</div>
+
+<!--
+Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
+
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 4 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+
+Verbaliser avant de lancer : dernier quiz des 4 séances, il couvre la sécurité, l'observabilité, le déploiement et l'audit IA vus aujourd'hui, juste après le TP noté — signaler explicitement les questions à réponses multiples.
+
+Exemple concret de question possible : "Quel port standard correspond à HTTPS ?" (réponse attendue : 443) — les 20 questions réelles sont dans `qcm-kahoot.md`.
+
+Transition : débriefer collectivement les 2-3 questions les plus ratées, puis enchaîner sur le bilan et les limites du module.
 -->
 
 ---
@@ -2492,7 +2775,7 @@ Transition : bilan et limites du module.
 </v-clicks>
 
 <!--
-Durée : 8 min (dont ~5 min de discussion bilan).
+Durée : 5 min (dont ~3 min de discussion bilan).
 
 Assumer clairement les limites du module plutôt que de laisser croire à une couverture exhaustive — cohérence pédagogique avec le niveau ING1 visé.
 
