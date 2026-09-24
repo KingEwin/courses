@@ -21,17 +21,17 @@ concurrency:
   group: deploy-course-network-devops
   cancel-in-progress: false
 
-env:
-  REMOTE_BASE: /root/opt/docker/apps/slidev
-  PROJECT_NAME: course-network-devops
-  RELEASE: ${{ github.sha }}
-  SSH_HOST: ${{ vars.VPS_HOST }}
-  SSH_USER: ${{ vars.VPS_USER }}
-  SSH_PORT: ${{ vars.VPS_SSH_PORT || '22' }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: vps
+    env:
+      REMOTE_BASE: /root/opt/docker/apps/slidev
+      PROJECT_NAME: course-network-devops
+      RELEASE: ${{ github.sha }}
+      SSH_HOST: ${{ vars.VPS_HOST }}
+      SSH_USER: ${{ vars.VPS_USER }}
+      SSH_PORT: ${{ vars.VPS_SSH_PORT || '22' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
