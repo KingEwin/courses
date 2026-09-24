@@ -1,0 +1,32 @@
+services:
+  course-network-devops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COURSE_DIR: "ING1 - 2026-2027 - Devops"
+    image: course-network-devops:latest
+    container_name: course-network-devops
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    networks:
+      - traefik-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.course-network-devops.rule=Host(`course-network-devops.hoststack.tech`)
+      - traefik.http.routers.course-network-devops.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
+      - traefik.http.routers.course-network-devops.tls=true
+      - traefik.http.routers.course-network-devops.tls.certresolver=letsencrypt
+      - traefik.http.services.course-network-devops.loadbalancer.server.port=8080
+
+networks:
+  traefik-proxy:
+    external: true

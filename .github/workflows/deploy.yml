@@ -1,0 +1,110 @@
+name: Deploy course-network-devops
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "nginx.conf"
+      - "compose.yaml"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy.yml"
+      - "ING1 - 2026-2027 - Devops/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-course-network-devops
+  cancel-in-progress: false
+
+env:
+  REMOTE_BASE: /root/opt/docker/apps/slidev
+  PROJECT_NAME: course-network-devops
+  RELEASE: ${{ github.sha }}
+  SSH_HOST: ${{ secrets.VPS_HOST }}
+  SSH_USER: ${{ secrets.VPS_USER }}
+  SSH_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH client
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          printf '%s\n' "${{ secrets.VPS_SSH_KNOWN_HOSTS }}" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          {
+            echo "SSH_CMD=ssh -p $SSH_PORT -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+          } >> "$GITHUB_ENV"
+
+      - name: Create remote release directory
+        run: |
+          set -euo pipefail
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_BASE" "$RELEASE" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          remote_base="$1"
+          release="$2"
+          mkdir -p "$remote_base/releases/$release"
+          REMOTE_SCRIPT
+
+      - name: Rsync deployment sources to release directory
+        run: |
+          set -euo pipefail
+          rsync -az \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            -e "$SSH_CMD" \
+            Dockerfile .dockerignore nginx.conf compose.yaml package.json package-lock.json "ING1 - 2026-2027 - Devops" \
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE/"
+
+      - name: Switch current release, build and start
+        run: |
+          set -euo pipefail
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_BASE" "$RELEASE" "$PROJECT_NAME" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          remote_base="$1"
+          release="$2"
+          project="$3"
+
+          ln -sfn "$remote_base/releases/$release" "$remote_base/current"
+          cd "$remote_base"
+
+          docker compose -f current/compose.yaml --project-name "$project" build --pull
+          docker compose -f current/compose.yaml --project-name "$project" up -d --remove-orphans
+          REMOTE_SCRIPT
+
+      - name: Verify remote health
+        run: |
+          set -euo pipefail
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s -- "$PROJECT_NAME" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          project="$1"
+
+          attempt=0
+          until [ "$attempt" -ge 10 ]; do
+            status="$(docker inspect --format '{{.State.Health.Status}}' "$project" 2>/dev/null || echo unknown)"
+            if [ "$status" = "healthy" ]; then
+              echo "Deployment healthy: $project"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            sleep 3
+          done
+
+          echo "Container did not report a healthy state after deploy" >&2
+          docker inspect --format '{{json .State}}' "$project" >&2 || true
+          exit 1
+          REMOTE_SCRIPT

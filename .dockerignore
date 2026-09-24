@@ -1,0 +1,15 @@
+.git
+.github
+.idea
+.vscode
+**/node_modules
+**/dist
+**/.slidev
+_template
+*.local
+*.log
+.DS_Store
+**/*.pdf
+**/instructor-solutions
+**/exports
+**/.playwright-mcp
