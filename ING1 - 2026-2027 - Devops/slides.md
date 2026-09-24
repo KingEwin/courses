@@ -1106,7 +1106,7 @@ duration: 20 min
 layout: qcm
 duration: 20 min
 questions: 20
-cover: CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
+cover: couches TCP/IP et OSI, parcours URL → DNS → TCP → serveur, IP/DNS, routage, cloud (IaaS/PaaS/SaaS/serverless), AWS/Azure/GCP, haute disponibilité
 ---
 
 # QCM de clôture — Séance 1
