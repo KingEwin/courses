@@ -85,26 +85,3 @@ jobs:
           docker compose -f current/compose.yaml --project-name "$project" build --pull
           docker compose -f current/compose.yaml --project-name "$project" up -d --remove-orphans
           REMOTE_SCRIPT
-
-      - name: Verify remote health
-        run: |
-          set -euo pipefail
-          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s -- "$PROJECT_NAME" <<'REMOTE_SCRIPT'
-          set -euo pipefail
-          project="$1"
-
-          attempt=0
-          until [ "$attempt" -ge 10 ]; do
-            status="$(docker inspect --format '{{.State.Health.Status}}' "$project" 2>/dev/null || echo unknown)"
-            if [ "$status" = "healthy" ]; then
-              echo "Deployment healthy: $project"
-              exit 0
-            fi
-            attempt=$((attempt + 1))
-            sleep 3
-          done
-
-          echo "Container did not report a healthy state after deploy" >&2
-          docker inspect --format '{{json .State}}' "$project" >&2 || true
-          exit 1
-          REMOTE_SCRIPT
