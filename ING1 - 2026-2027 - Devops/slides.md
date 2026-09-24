@@ -21,7 +21,7 @@ instructor: Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes...
 # Cloud, Réseaux et DevOps
 
 <!--
-Durée : 3 min.
+Durée : 1 min.
 
 Se présenter : Clément DAOU, ingénieur Cloud-DevOps, expérience terrain sur AWS, Azure et Kubernetes. Préciser le contexte professionnel : conception d'architectures cloud, automatisation de pipelines, exploitation de clusters Kubernetes en production.
 
@@ -38,14 +38,17 @@ Transition : passer au plan global des 4 séances.
 
 
 - **Clément DAOU** — Ingénieur DevOps & architecte cloud
-- Techno : **AWS**, **Azure**, **Kubernetes**
-- Conception d'architectures cloud natives et automatisation de pipelines CI/CD
+- Compétences : **AWS**, **Azure**, **Kubernetes**, **Terraform**, **CI/CD**, **Docker**, **Java**, **Node.js** .....
+- Conception d'architectures cloud natives
+- Domaines d'expertise : HA, Applications liées à la lutte contre la fraude, à la facturation et aux obligations légales
 
 
 <!--
-Durée : 2 min.
+Durée : 1 min.
 
-Développer brièvement le parcours : missions autour de la conteneurisation, de l'infrastructure cloud et des chaînes CI/CD, dans des contextes multi-fournisseurs (pas un seul hyperscaler).
+Développer brièvement le parcours : missions autour de la conteneurisation, de l'infrastructure cloud et des chaînes CI/CD, dans des contextes multi-fournisseurs (pas un seul hyperscaler), pour des applications liées à la fraude, à la facturation et aux obligations légales. Ces applications actives et critiques exigent une haute disponibilité.
+
+Relier ces missions au cours : les notions de haute disponibilité et d'exploitation permettent de maintenir ces services disponibles.
 
 Point à verbaliser : le cours reste volontairement généraliste — il ne pousse ni AWS, ni Azure, ni GCP comme référence unique. L'objectif est de comprendre les concepts communs pour être autonome face à n'importe lequel de ces environnements en stage ou en poste.
 
@@ -68,7 +71,7 @@ Transition : présenter le plan global des 4 séances.
   <span class="text-sm opacity-70">TLS, secrets, stratégies de déploiement, logs/métriques/traces, audit IA, TP final</span>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Verbaliser le fil rouge : une application Node.js simple sert de trame sur les 4 séances. Elle est versionnée avec Git, conteneurisée avec Docker, puis validée par un pipeline CI. Le déploiement public reste une option, jamais une obligation bloquante.
 
@@ -95,11 +98,47 @@ Transition : détailler les objectifs pédagogiques précis du module.
 - Auditer une configuration Docker/CI générée par une IA
 
 <!--
-Durée : 3 min.
+Durée : 1 min.
 
 Ces 10 objectifs sont ceux évalués par le TP final et les quiz formatifs. Les lire une fois à voix haute, sans les commenter un par un — l'idée est de donner une checklist de référence, pas de noyer le début du cours.
 
 Exemple concret : rappeler qu'un futur chef de projet IT n'a pas besoin de tout coder lui-même, mais doit savoir lire ces éléments pour dialoguer avec une équipe technique — lien direct avec le profil management du master.
+
+Transition : présenter les pré-requis techniques avant les TP.
+-->
+
+---
+
+# Pré-requis techniques avant les TP
+
+<div class="grid grid-cols-2 gap-6">
+<div>
+
+## 🐳 Docker
+
+- **macOS** : Docker Desktop, ou alternative légère **Colima**
+- **Windows** : activer **WSL**, puis installer Docker Desktop
+- Vérifier l'installation : `docker --version`
+
+</div>
+<div>
+
+## 🐙 GitHub
+
+- Avoir un **compte GitHub** actif
+- Avoir accès à un **dépôt GitHub** dédié aux TP
+
+</div>
+</div>
+
+<!--
+Durée : 3 min.
+
+Annoncer clairement que la suite du cours suppose ces trois pré-requis déjà en place : les TP démarrent directement sans temps d'installation dédié en séance.
+
+Verbaliser précisément le périmètre attendu : sur macOS, Docker Desktop ou Colima (plus léger, en ligne de commande) ; sur Windows, WSL d'abord puis Docker Desktop par-dessus. Ne pas dérouler une installation complète ici — seulement `docker --version` doit répondre avant la séance 2, moment du premier TP Docker.
+
+Exemple concret : comparer à un cours de cuisine où chacun arrive avec ses ustensiles déjà lavés — le temps de séance sert à cuisiner, pas à faire la vaisselle.
 
 Transition : entrer dans la séance 1, réseaux et cloud.
 -->
@@ -143,7 +182,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 9 min (dont ~3 min d'échange avec la salle).
+Durée : 7 min (dont ~1 min d'échange avec la salle).
 
 Présenter TCP/IP comme le modèle pratique utilisé pour le reste du cours, et OSI comme un modèle de référence à savoir situer sans en faire un objet de certification — pas de calcul ni de distinction fine entre présentation/session à retenir par cœur.
 
@@ -171,7 +210,7 @@ Transition : voir la correspondance précise entre les deux modèles dans un tab
 </v-clicks>
 
 <!--
-Durée : 4 min.
+Durée : 3 min.
 
 Présenter les 7 couches OSI dans l'ordre, en rappelant qu'il s'agit d'un modèle de référence à savoir situer (souvent cité en entreprise ou en certification), pas d'un objet de calcul ou de mémorisation exhaustive.
 
@@ -196,11 +235,11 @@ Les 3 couches hautes d'OSI (application, présentation, session) sont regroupée
 </Tip>
 
 <!--
-Durée : 3 min (dont ~3 min d'échange).
+Durée : 2 min (dont ~1 min d'échange).
 
 Le tableau OSI→TCP/IP sert uniquement à comprendre pourquoi TLS ou une session se rangent dans la couche "Application" côté TCP/IP — pas de distinction fine à mémoriser par cœur entre présentation et session.
 
-Faire réagir la salle avant de conclure : demander à deux ou trois étudiants de retrouver, pour un protocole de leur choix (SSH, DNS, HTTPS...), la couche TCP/IP à laquelle il appartient — ce temps d'échange consolide la compréhension avant de passer au schéma d'encapsulation.
+Faire réagir la salle avant de conclure : demander à un étudiant de retrouver, pour un protocole de son choix (SSH, DNS, HTTPS...), la couche TCP/IP à laquelle il appartient — ce temps d'échange consolide la compréhension avant de passer au schéma d'encapsulation.
 
 Transition : détailler l'encapsulation avec un schéma de paquet.
 -->
@@ -255,7 +294,7 @@ Transition : passer à l'adressage IPv4/IPv6.
 </v-clicks>
 
 <!--
-Durée : 9 min (dont ~4 min d'exercices de lecture d'adresses).
+Durée : 8 min (dont ~4 min d'exercices de lecture d'adresses).
 
 Rappeler que les adresses privées ne sont pas routables sur Internet : elles servent en interne (LAN, VPC cloud), une passerelle NAT fait le pont vers l'extérieur.
 
@@ -282,7 +321,7 @@ Plus le préfixe est petit, plus le réseau est grand : `/8` couvre bien plus d'
 </Tip>
 
 <!--
-Durée : 8 min (dont ~4 min d'exercices de lecture de CIDR).
+Durée : 7 min (dont ~4 min d'exercices de lecture de CIDR).
 
 Objectif : que l'étudiant sache lire "192.168.1.0/24" comme "256 adresses possibles dans ce réseau", sans exiger de calcul binaire complexe.
 
@@ -306,13 +345,11 @@ Transition : passer à IPv6 en contraste rapide.
 </v-clicks>
 
 <!--
-Durée : 4 min.
+Durée : 3 min.
 
 Rester bref : IPv6 n'est pas le cœur du cours, mais l'étudiant doit savoir le reconnaître et comprendre pourquoi il existe.
 
 Exemple concret : un enregistrement DNS `AAAA` (vu juste après) sert précisément à publier une adresse IPv6, en miroir du `A` pour IPv4.
-
-Point d'échange rapide : demander si quelqu'un dans la salle a déjà vu une adresse IPv6 en pratique (chez un fournisseur d'accès, un cloud) — sert de transition naturelle et concrète.
 
 Transition : enchaîner sur le DNS, qui traduit les noms de domaine en adresses IP.
 -->
@@ -337,13 +374,13 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~6 min de démonstration live).
+Durée : 3 min (dont ~1 min de démonstration live).
 
 Insister sur l'analogie annuaire téléphonique : on cherche un nom, on obtient un numéro (ici une adresse IP).
 
 Exemple concret : demander à la salle de citer un site qu'ils visitent souvent, puis expliquer que taper son nom déclenche cette résolution avant même l'envoi de la requête HTTP.
 
-Démonstration live : exécuter `dig exemple.com` (ou `nslookup`) devant la salle sur le nom de domaine cité, commenter chaque champ de la réponse (TTL, adresse résolue, serveur ayant répondu) puis relancer la commande pour montrer l'effet du cache.
+Démonstration live : exécuter `dig exemple.com` (ou `nslookup`) devant la salle sur le nom de domaine cité, commenter brièvement les champs clés de la réponse (TTL, adresse résolue).
 
 Transition : détailler les types d'enregistrements DNS les plus courants.
 -->
@@ -360,13 +397,13 @@ Transition : détailler les types d'enregistrements DNS les plus courants.
 | `MX` | Serveur de messagerie | `exemple.com → mail.exemple.com` |
 
 <!--
-Durée : 6 min (dont ~3 min d'échange sur des cas vécus).
+Durée : 4 min (dont ~1 min d'échange sur des cas vécus).
 
 Ces 4 types couvrent la majorité des cas rencontrés en entreprise. Insister sur `CNAME` : très utilisé pour pointer un sous-domaine vers un service géré (CDN, plateforme cloud) sans exposer d'adresse IP brute.
 
 Exemple concret : un enregistrement `MX` mal configuré est une cause fréquente d'emails qui n'arrivent jamais — bon exemple de conséquence business d'une erreur réseau.
 
-Échange avec la salle : demander si quelqu'un a déjà configuré un enregistrement DNS (sous-domaine personnel, projet perso) et faire raconter brièvement le cas — ancre la notion dans du vécu avant de continuer.
+Échange rapide avec la salle : demander si quelqu'un a déjà configuré un enregistrement DNS (sous-domaine personnel, projet perso).
 
 Transition : voir comment un paquet trouve son chemin jusqu'au bon serveur (routage).
 -->
@@ -374,6 +411,10 @@ Transition : voir comment un paquet trouve son chemin jusqu'au bon serveur (rout
 ---
 
 # Routage et passerelle par défaut
+
+<Tip type="info">
+Le routage ne garantit pas un chemin unique : plusieurs routes peuvent exister, le routeur choisit la plus pertinente selon sa table.
+</Tip>
 
 <v-clicks>
 
@@ -383,18 +424,71 @@ Transition : voir comment un paquet trouve son chemin jusqu'au bon serveur (rout
 
 </v-clicks>
 
-<Tip type="info">
-Le routage ne garantit pas un chemin unique : plusieurs routes peuvent exister, le routeur choisit la plus pertinente selon sa table.
-</Tip>
+
 
 <!--
-Durée : 5 min (dont ~2 min d'échange).
+Durée : 4 min (dont ~1 min d'échange).
 
 Rester conceptuel : pas besoin de détailler les protocoles de routage (BGP, OSPF) à ce niveau, juste le principe de saut en saut.
 
 Exemple concret : `traceroute`/`tracert` révèle visuellement ces sauts intermédiaires — sert de transition parfaite vers la manipulation guidée qui suit.
 
-Échange rapide avec la salle : demander combien de sauts ils imaginent entre leur poste et un site connu, noter 2-3 estimations au tableau, sans plus développer — la confrontation au résultat réel se fait dans la manipulation guidée `traceroute` qui suit immédiatement.
+Échange rapide avec la salle : demander combien de sauts ils imaginent entre leur poste et un site connu, noter 1-2 estimations au tableau, sans plus développer — la confrontation au résultat réel se fait dans la manipulation guidée `traceroute` qui suit.
+
+Transition : avant la manipulation guidée, une courte séquence sur le pare-feu — un mécanisme déjà croisé implicitement dans les avertissements sur `traceroute`.
+-->
+
+---
+
+# Pare-feu : filtrer le trafic réseau
+
+<v-clicks>
+
+- Un **pare-feu réseau** examine chaque paquet et l'autorise ou le bloque selon des **règles**
+- Critères de filtrage : **IP source/destination**, **port**, **protocole**, **direction** (entrant/sortant)
+- Exemple : HTTPS entrant en `TCP/443` **autorisé**, SSH entrant en `TCP/22` **limité ou refusé**
+
+</v-clicks>
+
+<br>
+
+| Règle                   | Direction | Protocole/Port | Action                           |
+|-------------------------|-----------|----------------|----------------------------------|
+| Trafic web              | Entrant   | TCP/443        | Autorisé                         |
+| Administration distante | Entrant   | TCP/22         | Limité (IP autorisées) ou refusé |
+
+<!--
+Durée : 2 min.
+
+Poser le principe simplement : le pare-feu est une liste de règles ("si ce type de trafic correspond à cette règle, alors autoriser ou bloquer"), pas une boîte magique.
+
+Exemple concret : un serveur web public autorise le port 443 (HTTPS) depuis n'importe où, mais restreint le port 22 (SSH, administration) à une liste d'adresses IP connues — c'est ce qui explique pourquoi un `ping` ou un port scan externe voit rarement le port 22 ouvert d'un serveur bien configuré.
+
+Transition : préciser une nuance importante entre pare-feu réseau et pare-feu applicatif.
+-->
+
+---
+
+# Pare-feu réseau vs pare-feu applicatif
+
+<v-clicks>
+
+- Le **pare-feu réseau** filtre sur IP/port/protocole, sans regarder le contenu de la requête
+- Un **pare-feu applicatif (WAF)** inspecte le contenu (ex. requêtes HTTP suspectes), en plus du réseau
+- Les deux niveaux sont complémentaires, pas interchangeables
+
+</v-clicks>
+
+<Tip type="warning">
+Un port ouvert ne garantit pas qu'une application saine écoute derrière : le pare-feu contrôle l'accès réseau, pas la santé de l'application.
+</Tip>
+
+<!--
+Durée : 2 min.
+
+Rester très léger sur cette distinction : l'objectif est que l'étudiant sache qu'un pare-feu réseau (IP/port) et un pare-feu applicatif/WAF (contenu HTTP) existent à des niveaux différents, sans entrer dans la configuration de l'un ou l'autre.
+
+Exemple concret : un port 443 ouvert et répondant ne prouve pas que l'application derrière fonctionne correctement (elle peut renvoyer des erreurs 500 en boucle) — nuance qui prépare la partie observabilité vue en séance 4.
 
 Transition : passer à la première manipulation guidée, autour de `ping` et `traceroute`.
 -->
@@ -473,11 +567,11 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 6 min.
+Durée : 5 min.
 
 Objectif de cette slide : relier en une seule fois tout ce qui vient d'être vu séparément (couches, ports, IP, DNS, routage) sur un schéma compact unique, déjà annoncé en ouverture de séance.
 
-Reprendre la question posée en tout début de séance ("que se passe-t-il avant que la page s'affiche ?") et confronter les réponses notées au tableau avec les 6 étapes de ce schéma. Point à verbaliser : le port 443 est la convention HTTPS ; TLS s'intercale entre la connexion TCP et la requête HTTP.
+Confronter brièvement ce schéma à la question posée en tout début de séance ("que se passe-t-il avant que la page s'affiche ?"). Point à verbaliser : le port 443 est la convention HTTPS ; TLS s'intercale entre la connexion TCP et la requête HTTP.
 
 Transition : passer à la manipulation guidée qui vérifie concrètement ce parcours.
 -->
@@ -534,11 +628,11 @@ Transition : refermer le bloc réseau, ouvrir le cloud après la pause.
 
 ---
 layout: pause
-duration: 10 min
+duration: 20 min
 ---
 
 <!--
-Durée : 10 min de pause.
+Durée : 20 min de pause.
 
 Rester disponible pour des questions individuelles sur le bloc réseau qui vient de se terminer.
 
@@ -589,12 +683,42 @@ Exemple concret : citer sans jugement de valeur qu'un compte cloud mal configur�
 
 Développer les pièges de facturation avec un cas concret : une machine de test qu'on oublie d'éteindre le week-end, ou un transfert de données volumineux vers un autre cloud qui déclenche des frais d'egress inattendus en fin de mois. Insister sur le réflexe budget/alerte comme geste de gestion de projet, pas seulement technique — lien direct avec le profil management du master.
 
+Transition : avant de détailler les modèles de service cloud, un point essentiel de gestion — la maîtrise du coût.
+-->
+
+---
+
+# FinOps : maîtriser le coût de l'infrastructure cloud
+
+<v-clicks>
+
+- **Valeur business** : dépenser au bon endroit, pas simplement "dépenser moins"
+- **Visibilité et ownership** : des **tags** identifient quelle équipe/projet paie quoi
+- **Budgets et alertes** : seuil de dépense défini à l'avance, notification avant dépassement
+- **Rightsizing** : ajuster une ressource surdimensionnée à son usage réel
+- Arrêter les ressources inutiles (environnement de test oublié allumé le week-end)
+
+</v-clicks>
+
+<KeyConcept title="Un service managé n'est pas toujours plus cher" icon="💡">
+Un service managé peut coûter plus cher, moins cher, ou différemment en coût direct par rapport à une solution auto-gérée. Le bon réflexe : évaluer le **coût total** (infrastructure + exploitation + risque), jamais se limiter au seul prix affiché. Sources de coûts souvent sous-estimées : les frais de sortie de données (**egress**) et les outils d'**observabilité**.
+</KeyConcept>
+
+<!--
+Durée : 3 min.
+
+FinOps désigne la pratique qui rapproche équipes techniques et gestion financière autour de la dépense cloud — pertinent pour le profil management du master autant que pour un futur ingénieur.
+
+Point à corriger explicitement s'il est mal compris : "managé" ne veut pas dire "plus cher automatiquement" — un service managé peut réduire le coût d'exploitation (moins d'heures d'ingénieur à maintenir un serveur) même si son prix catalogue semble plus élevé qu'une VM nue. Toujours comparer le coût total, pas seulement la ligne de facture infra.
+
+Exemple concret : une équipe qui laisse tourner une base de données de test tout le week-end sans besoin réel paie pour rien ; un budget avec alerte à 80 % du seuil aurait signalé l'anomalie avant la facture de fin de mois.
+
 Transition : détailler les modèles de service cloud (IaaS, PaaS, SaaS, serverless).
 -->
 
 ---
 
-# IaaS, PaaS, SaaS, serverless
+# IaaS, PaaS, SaaS, serverless : le curseur de responsabilité
 
 ```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
@@ -614,18 +738,41 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 6 min (dont ~1 min d'exemple filé).
+Durée : 3 min.
 
-Chaque modèle déplace le curseur de responsabilité : plus on monte vers le SaaS, moins le client gère d'infrastructure, mais moins il a de contrôle fin.
+Chaque modèle déplace le curseur de responsabilité : plus on monte vers le SaaS, moins le client gère d'infrastructure, mais moins il a de contrôle fin. Un exemple concret unique et filé sur la slide suivante rend cette abstraction immédiatement lisible.
 
-Exemple concret : IaaS = louer un appartement vide (vous meublez tout) ; PaaS = un appartement meublé (vous apportez vos affaires) ; SaaS = un hôtel (tout est fourni, service inclus) ; serverless = payer une chambre uniquement pendant la nuit où vous dormez.
+Transition : voir ce curseur appliqué à un cas concret unique, décliné sur les quatre modèles.
+-->
+
+---
+
+# Exemple concret : héberger une API Node sur les 4 modèles
+
+| Modèle | Qui gère l'application/le code | Qui gère l'OS/runtime | Qui gère l'infrastructure physique |
+|---|---|---|---|
+| **On-premise** | Vous | Vous | Vous |
+| **IaaS** | Vous | Vous | Fournisseur |
+| **PaaS** | Vous | Fournisseur | Fournisseur |
+| **SaaS** | Fournisseur | Fournisseur | Fournisseur |
+
+<Tip type="info">
+Sur ce même besoin — héberger une API Node — le code applicatif reste presque toujours de votre responsabilité (sauf en SaaS, où vous n'avez plus de code à héberger, mais un logiciel fourni tel quel). Ce qui change, c'est tout ce qu'il y a en dessous.
+</Tip>
+
+<!--
+Durée : 3 min.
+
+Reprendre le même besoin ("je veux héberger une API Node") ligne par ligne, en insistant sur ce qui change réellement entre chaque modèle plutôt que sur le vocabulaire seul.
+
+Exemple concret : en IaaS, l'équipe installe et met à jour Node elle-même sur une VM louée ; en PaaS (type Heroku, Azure App Service), elle pousse son code et le runtime Node est déjà prêt ; en SaaS, il n'y a plus d'API à coder soi-même — on consomme un service existant qui répond au même besoin métier.
 
 Transition : comparer ces modèles à un hébergement classique via une étude de cas.
 -->
 
 ---
 
-# Étude de cas — quel modèle choisir ?
+# Quel modèle choisir ?
 
 | Contexte | Modèle pertinent | Pourquoi |
 |---|---|---|
@@ -639,36 +786,127 @@ Aucun modèle n'est universellement supérieur : le choix dépend du contexte, d
 </Tip>
 
 <!--
-Durée : 6 min (temps d'étude de cas en petits groupes puis mise en commun rapide).
+Durée : 3 min (temps d'étude de cas en binômes, resserré pour laisser place au focus serverless qui suit).
 
 Faire réagir la salle : donner un cas (ex. "startup de 3 développeurs qui lance un MVP") et demander quel modèle ils choisiraient, puis confronter les réponses.
 
 Exemple concret : une PME qui migre sa messagerie vers un SaaS (type Microsoft 365 ou Google Workspace) gagne en simplicité mais perd en personnalisation fine — bon exemple pour le profil management du master (arbitrage coût/contrôle).
 
-Déroulé pratique : former des binômes, distribuer 1-2 minutes pour trancher sur le cas proposé et justifier le choix à l'oral, puis passer à un second cas contrasté (ex. "grand compte avec exigences de conformité strictes"). Prévoir 2 min de mise en commun collective à la fin.
+Déroulé pratique : former des binômes, distribuer 1 minute pour trancher sur le cas proposé et justifier le choix à l'oral, puis passer directement à la mise en commun collective (le second cas contrasté est abandonné pour laisser plus de temps au focus serverless qui suit).
 
-Transition : voir comment AWS, Azure et GCP incarnent ces modèles.
+Transition : avant de voir le serverless en détail puis AWS, Azure et GCP, clarifier précisément qui gère quoi selon le modèle.
+-->
+
+---
+
+# Qui gère quoi ?
+
+| Responsabilité | On-Premise | IaaS | PaaS | SaaS |
+|---|---|---|---|---|
+| Application et données | Client | Client | Client | Fournisseur |
+| Runtime / middleware | Client | Client | Fournisseur | Fournisseur |
+| Système d'exploitation | Client | Client | Fournisseur | Fournisseur |
+| Virtualisation | Client | Fournisseur | Fournisseur | Fournisseur |
+| Serveurs, stockage, réseau physique | Client | Fournisseur | Fournisseur | Fournisseur |
+
+<Tip type="warning">
+Les frontières exactes varient selon le fournisseur et l'offre précise — ce tableau donne le cas général, pas une règle absolue. Dans la plupart des modèles, y compris en SaaS, les données et les accès restent une responsabilité du client (configuration des droits, classification des données sensibles).
+</Tip>
+
+<!--
+Durée : 4 min.
+
+Ce tableau prolonge directement le modèle de responsabilité partagée vu plus tôt dans la séance, en le rendant explicite ligne par ligne plutôt qu'en une seule notion générale.
+
+Point à corriger explicitement s'il est mal compris : "Fournisseur" ne veut jamais dire "le client n'a plus rien à faire" sur cette ligne — même en SaaS, le client reste responsable de qui a accès à ses données et de leur classification.
+
+Lire la première ligne (application et données) en écho direct à l'exemple "héberger une API Node" vu juste avant : c'est la ligne qui change de colonne le plus tard (seulement en SaaS), contrairement à l'infrastructure physique qui change dès l'IaaS.
+
+Transition : un cas particulier de ce tableau mérite un focus dédié — le serverless, avant de voir comment AWS, Azure et GCP l'incarnent concrètement.
+-->
+
+---
+
+# Serverless : objectifs et principes
+
+<v-clicks>
+
+- Le code s'exécute **en réponse à un événement** : requête HTTP, message dans une file d'attente, dépôt de fichier...
+- La plateforme **scale automatiquement** en fonction du trafic, y compris jusqu'à **zéro** instance en l'absence d'activité
+- La facturation suit **l'usage réel** (temps d'exécution, nombre d'invocations), pas une capacité réservée à l'avance
+- Objectif : réduire au maximum les tâches d'infrastructure à la charge de l'équipe (dimensionnement, patch, disponibilité du socle)
+
+</v-clicks>
+
+<KeyConcept title="« Sans serveur » ne veut pas dire « sans responsabilité »" icon="⚠️">
+Le fournisseur gère l'infrastructure, la scalabilité et le patch du socle d'exécution. L'équipe reste responsable de son code, de sa configuration, de ses données et des permissions qu'elle accorde.
+</KeyConcept>
+
+<!--
+Durée : 4 min.
+
+Poser les trois déclencheurs classiques (HTTP, message, fichier) comme porte d'entrée : le serverless n'est pas un modèle isolé, mais une façon de répondre à un événement sans provisionner de serveur à l'avance.
+
+Point à corriger explicitement s'il est mal compris : "sans serveur" ne signifie jamais "sans responsabilité" — le fournisseur gère l'infrastructure, la scalabilité et le patch du socle, mais l'équipe garde la responsabilité de son code, de sa configuration et de ses permissions d'accès.
+
+Nuance à ne pas passer sous silence : le serverless n'est ni gratuit ni universellement meilleur. Limites concrètes à citer : le cold start (latence au premier appel après une période d'inactivité), des limites de durée et de ressources d'exécution imposées par le fournisseur, une dépendance parfois forte au fournisseur selon le service utilisé, et un besoin d'observabilité et de suivi des coûts qui ne disparaît pas — il se déplace.
+
+Exemple concret : une fonction qui traite un fichier déposé dans un stockage objet ne tourne que pendant le traitement, puis s'arrête complètement — contrairement à un serveur classique qui reste allumé même sans trafic.
+
+Transition : voir comment ce modèle s'incarne concrètement chez les trois grands fournisseurs, du déclencheur au service.
+-->
+
+---
+
+# Serverless chez les hyperscalers : du déclencheur au service
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A[Événement] --> B[Fonction]
+  B --> C[Service aval]
+```
+
+| Besoin                    | AWS            | Azure             | GCP             |
+|---------------------------|----------------|-------------------|-----------------|
+| Fonction serverless       | Lambda         | Azure Functions   | Cloud Functions |
+| Passerelle API            | API Gateway    | API Management    | API Gateway     |
+| Orchestration de workflow | Step Functions | Durable Functions | Workflows       |
+| Bus d'événements          | EventBridge    | Event Grid        | Eventarc        |
+
+
+<!--
+Durée : 5 min.
+
+Lire le schéma comme un fil conducteur : un événement (HTTP, message, fichier) déclenche une fonction, qui elle-même peut appeler un service en aval (base de données, autre file, notification). C'est ce même fil qui se retrouve sous des noms différents chez chaque fournisseur.
+
+Parcourir le tableau ligne par ligne : la fonction elle-même (Lambda / Azure Functions / Cloud Functions), la façon d'exposer une fonction en HTTP via une passerelle API (API Gateway / API Management / API Gateway), l'orchestration de plusieurs fonctions en workflow (Step Functions / Durable Functions / Workflows), et le bus d'événements qui route les déclencheurs (EventBridge / Event Grid / Eventarc).
+
+Point à corriger explicitement s'il est mal compris : Fargate, Container Apps et Cloud Run ne sont pas des fonctions serverless au même titre que Lambda ou Cloud Functions — ce sont des conteneurs serverless, un modèle hybride qui supprime la gestion de serveur mais conserve la notion de conteneur complet. Le bon choix entre fonction et conteneur serverless dépend du cas (taille du code, durée d'exécution, dépendances).
+
+Exemple concret : un fichier déposé dans un bucket S3 déclenche EventBridge, qui invoque une fonction Lambda, qui écrit le résultat dans une base DynamoDB — la même chaîne existe chez Azure et GCP avec des noms différents.
+
+Transition : après la fonction et le service managé, revenir sur les briques transverses communes à AWS, Azure et GCP.
 -->
 
 ---
 
 # AWS, Azure, GCP : mêmes briques, noms différents
 
-| Besoin | AWS | Azure | GCP |
-|---|---|---|---|
-| Machine virtuelle | EC2 | Virtual Machines | Compute Engine |
-| Stockage objet | S3 | Blob Storage | Cloud Storage |
-| Base de données managée | RDS | Azure SQL | Cloud SQL |
-| Serverless (fonctions) | Lambda | Azure Functions | Cloud Functions |
-| Réseau virtuel | VPC | VNet | VPC |
-| Conteneurs orchestrés | ECS / EKS | AKS | GKE |
+| Besoin                  | AWS       | Azure            | GCP             |
+|-------------------------|-----------|------------------|-----------------|
+| Machine virtuelle       | EC2       | Virtual Machines | Compute Engine  |
+| Stockage objet          | S3        | Blob Storage     | Cloud Storage   |
+| Base de données managée | RDS       | Azure SQL        | Cloud SQL       |
+| Serverless (fonctions)  | Lambda    | Azure Functions  | Cloud Functions |
+| Réseau virtuel          | VPC       | VNet             | VPC             |
+| Conteneurs orchestrés   | ECS / EKS | AKS              | GKE             |
 
 <!--
-Durée : 6 min (dont ~2 min d'échange sur les exemples publics).
+Durée : 4 min.
 
-Message clé : ce ne sont pas des familles de services fondamentalement différentes — ce sont des implémentations différentes des mêmes concepts (calcul, stockage, base de données, fonctions, réseau, conteneurs).
+Message clé : ce ne sont pas des familles de services fondamentalement différentes — ce sont des implémentations différentes des mêmes concepts (calcul, stockage, base de données, fonctions, réseau, conteneurs). La ligne serverless vient d'être détaillée juste avant : ce tableau la resitue simplement parmi les autres briques.
 
-Exemple concret à formuler avec prudence : des architectures cloud sont documentées publiquement par des entreprises comme Netflix (AWS), ou par Microsoft et Google pour leurs propres services Azure et GCP — ce sont des cas publics datés, pas des relations exclusives ni des modèles universels à copier tel quel.
+Exemple concret à formuler avec prudence, sans ouvrir d'échange dessus : des architectures cloud sont documentées publiquement par des entreprises comme Netflix (AWS), ou par Microsoft et Google pour leurs propres services Azure et GCP — ce sont des cas publics datés, pas des relations exclusives ni des modèles universels à copier tel quel.
 
 Transition : ces trois acteurs ne sont pas les seuls — voir comment s'organisent identité et gouvernance chez un fournisseur cloud.
 -->
@@ -685,18 +923,20 @@ Transition : ces trois acteurs ne sont pas les seuls — voir comment s'organise
 
 </v-clicks>
 
-| Fournisseur | Organisation | Identités et droits |
-|---|---|---|
-| AWS | AWS Organizations | IAM |
-| Azure | Management Groups | Microsoft Entra ID |
-| GCP | Organization | Cloud IAM |
+<br>
+
+| Fournisseur | Organisation      | Identités et droits |
+|-------------|-------------------|---------------------|
+| AWS         | AWS Organizations | IAM                 |
+| Azure       | Management Groups | Microsoft Entra ID  |
+| GCP         | Organization      | Cloud IAM           |
 
 <!--
-Durée : 4 min.
+Durée : 3 min.
 
 Point à verbaliser : cette organisation par comptes et IAM est la brique technique qui porte concrètement le modèle de responsabilité partagée vu plus tôt — le client configure ses droits d'accès, le fournisseur ne le fait pas à sa place.
 
-Exemple concret : un accès trop ouvert dans l'IAM d'un compte (droit "tout" donné par erreur) est une cause fréquente d'incident de sécurité cloud, quel que soit le fournisseur.
+Exemple concret, énoncé rapidement sans ouvrir la discussion : un accès trop ouvert dans l'IAM d'un compte (droit "tout" donné par erreur) est une cause fréquente d'incident de sécurité cloud, quel que soit le fournisseur.
 
 Transition : avec ces briques communes, quels critères orientent un vrai choix de fournisseur ?
 -->
@@ -704,6 +944,10 @@ Transition : avec ces briques communes, quels critères orientent un vrai choix 
 ---
 
 # Choisir un fournisseur cloud : les critères qui comptent
+
+<Tip type="warning">
+Aucun fournisseur n'est universellement meilleur : le bon choix dépend du contexte, jamais d'une préférence de principe.
+</Tip>
 
 <v-clicks>
 
@@ -714,16 +958,12 @@ Transition : avec ces briques communes, quels critères orientent un vrai choix 
 
 </v-clicks>
 
-<Tip type="warning">
-Aucun fournisseur n'est universellement meilleur : le bon choix dépend du contexte, jamais d'une préférence de principe.
-</Tip>
+
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
-Rester bref : cette slide est une synthèse de critères de décision managériale, pas une nouvelle notion technique — elle prépare directement la nuance SecNumCloud qui suit.
-
-Exemple concret : une entreprise déjà formée sur AWS ne migre pas vers Azure pour un gain marginal ; le coût de montée en compétence dépasse souvent le bénéfice.
+Rester bref : cette slide est une synthèse de critères de décision managériale, pas une nouvelle notion technique — elle prépare directement la nuance SecNumCloud qui suit. Énoncer l'exemple concret sans ouvrir de discussion : une entreprise déjà formée sur AWS ne migre pas vers Azure pour un gain marginal ; le coût de montée en compétence dépasse souvent le bénéfice.
 
 Transition : un cas particulier de conformité et de souveraineté mérite un focus dédié — SecNumCloud.
 -->
@@ -759,11 +999,11 @@ Transition : un cas particulier de conformité et de souveraineté mérite un fo
 </Comparison>
 
 <!--
-Durée : 7 min.
+Durée : 6 min.
 
 Point à corriger explicitement s'il est mal compris : SecNumCloud n'est pas un attribut que "toute entreprise française" possède automatiquement ; c'est une qualification obtenue offre par offre, après audit, selon un référentiel publié par l'ANSSI.
 
-Cas typiques où la question se pose concrètement : données de santé ou données sensibles d'un secteur régulé, marchés du secteur public — sans prétendre que SecNumCloud serait une obligation générale ou automatique dans ces cas.
+Cas typiques où la question se pose concrètement, énoncés sans les développer en échange ouvert : données de santé ou données sensibles d'un secteur régulé, marchés du secteur public — sans prétendre que SecNumCloud serait une obligation générale ou automatique dans ces cas.
 
 Exemple concret : présenter la comparaison comme un arbitrage, pas un jugement de valeur — un hyperscaler reste pertinent pour l'écosystème et l'élasticité, une offre SecNumCloud reste pertinente quand la souveraineté et la sécurité renforcée priment sur le catalogue de services.
 
@@ -774,34 +1014,62 @@ Transition : passer à la haute disponibilité, dernier bloc de la séance 1.
 
 ---
 
-# Haute disponibilité — les mécanismes clés
-
-```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
-graph LR
-  U[Utilisateur] --> LB[Load balancer]
-  LB --> I1[Instance A]
-  LB --> I2[Instance B]
-  I1 -.->|Health check| LB
-  I2 -.->|Health check| LB
-```
+# Haute disponibilité : health check HTTP ou TCP ?
 
 <v-clicks>
 
-- **Zones multiples** — répartir sur des salles de machines distinctes
-- **Instances multiples** — pas de point unique de défaillance
-- **Load balancer** — répartit le trafic entre instances saines
-- **Health check** — détecte et retire une instance défaillante
+- **Load balancer** — répartit le trafic entre instances déclarées saines, via des vérifications régulières
+- **Health check TCP** — vérifie seulement que le port répond : contrôle simple mais superficiel
+- **Health check HTTP** — attend une vraie réponse applicative (code **2xx** sur un endpoint dédié, ex. `/health`)
 
 </v-clicks>
 
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  LB[Load balancer] -.->|Health check| I1[Instance A]
+  LB -.->|Health check| I2[Instance B]
+```
+
+<Tip type="warning">
+Un health check TCP peut déclarer une instance "saine" alors que l'application plante en boucle derrière un port qui reste ouvert.
+</Tip>
+
 <!--
-Durée : 9 min (dont ~1 min d'échange).
+Durée : 3 min.
 
 Relier au vocabulaire du cloud vu juste avant : ces mécanismes existent chez tous les fournisseurs, sous des noms différents (Auto Scaling Group, Availability Set, Managed Instance Group...).
 
-Exemple concret : si une seule instance tombe, le load balancer cesse de lui envoyer du trafic dès que son health check échoue — l'utilisateur ne voit rien passer.
+Bien distinguer les deux niveaux de health check, sans s'attarder : TCP se contente de vérifier qu'une connexion s'établit sur le port (rapide, mais ne dit rien de l'état de l'application) ; HTTP appelle un endpoint précis et attend un code de statut 2xx (plus représentatif, mais toujours limité — un `/health` peut répondre "ok" sans vérifier une dépendance critique comme la base de données).
 
-Reprendre rapidement chaque mécanisme (zones, instances, load balancer, health check) avec un scénario de panne concret associé — le temps supplémentaire, libéré par le passage du QCM en clôture de séance, reste disponible pour approfondir à l'oral si le rythme le permet.
+Transition : voir comment le load balancer et l'orchestrateur réagissent concrètement à un health check en échec.
+-->
+
+---
+
+# Réaction automatique : retrait, restart, réconciliation
+
+<v-clicks>
+
+- Health check en échec → le load balancer **retire l'instance** du trafic
+- L'orchestrateur déclenche un **restart automatique** de l'instance défaillante
+- **Boucle de réconciliation** : compare en continu l'état désiré (ex. 3 replicas) à l'état réel, et corrige l'écart
+
+</v-clicks>
+
+<KeyConcept title="Exemple" icon="🔄">
+3 replicas tournent ; l'un d'eux tombe. La réconciliation détecte 2 replicas au lieu de 3 et relance une instance de remplacement, sans intervention humaine.
+</KeyConcept>
+
+<Tip type="warning">
+Un restart automatique ne corrige ni un bug applicatif qui se reproduit à chaque démarrage, ni une base de données indisponible en amont — les logs et le monitoring restent indispensables pour diagnostiquer la cause réelle (sujet approfondi en séance 4, avec l'observabilité).
+</Tip>
+
+<!--
+Durée : 3 min.
+
+Exemple concret, énoncé sans ouvrir de démonstration en direct : si une seule instance tombe, le load balancer cesse de lui envoyer du trafic dès que son health check échoue — l'utilisateur ne voit rien passer ; l'orchestrateur relance ensuite une instance de remplacement pour revenir à l'état désiré.
+
+Point à corriger explicitement s'il est mal compris : la haute disponibilité automatise la résilience face à une panne d'instance, mais ne répare jamais un défaut du code ou une dépendance externe indisponible (base de données, API tierce) — un restart en boucle sur un bug qui se reproduit à chaque démarrage est un symptôme d'alerte à surveiller, pas une solution.
 
 Transition : synthèse de la séance 1.
 -->
@@ -816,10 +1084,10 @@ section: Séance 1 — Réseaux, cloud et haute disponibilité
 - **Couches réseau** : application, transport, réseau, liaison — encapsulation à l'émission
 - **IPv4/IPv6, CIDR** : adresse + masque définissent la taille d'un réseau
 - **DNS** : `A`/`AAAA`/`CNAME`/`MX` traduisent des noms en ressources
-- **Routage** : passerelle par défaut, sauts successifs, diagnostic via ping/traceroute/nslookup
-- **Cloud** : élasticité, mutualisation, paiement à l'usage, responsabilité partagée
-- **IaaS/PaaS/SaaS/serverless** : le curseur de contrôle vs simplicité
-- **Haute disponibilité** : zones, instances multiples, load balancer, health check
+- **Routage et pare-feu** : passerelle par défaut, sauts successifs, filtrage par IP/port/protocole/direction
+- **Cloud** : élasticité, mutualisation, paiement à l'usage, responsabilité partagée, FinOps
+- **IaaS/PaaS/SaaS/serverless** : le curseur de contrôle vs simplicité, qui gère quoi
+- **Haute disponibilité** : health check HTTP/TCP, retrait, restart, boucle de réconciliation
 
 <!--
 Durée : 3 min.
@@ -830,51 +1098,27 @@ Transition : lancer le QCM de clôture de la séance 1.
 -->
 
 ---
-layout: exercise
-duration: 18 min
-type: solo
+layout: pause
+duration: 20 min
+---
+
+---
+layout: qcm
+duration: 20 min
+questions: 20
+cover: CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
 ---
 
 # QCM de clôture — Séance 1
 
-<div class="grid grid-cols-2 gap-8 items-center h-full">
-<div>
-
-**Couvre** : couches TCP/IP et OSI, parcours URL → DNS → TCP → serveur, IP/DNS, routage, cloud (IaaS/PaaS/SaaS/serverless), AWS/Azure/GCP, haute disponibilité
-
-- 20 questions (section Séance 1)
-- Certaines questions à **réponses multiples**, indiqué sur chaque question
-
-
-</div>
-<div class="flex flex-col items-center justify-center gap-4">
-  <div
-    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
-    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
-  >
-    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
-      <span class="block font-bold text-[#c1502e]">QR CODE</span>
-      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
-    </div>
-  </div>
-  <div class="text-center">
-    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
-    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
-  </div>
-</div>
-</div>
-
 <!--
-Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
+Durée : 20 min (lancement 2 min, jeu 15 min, débrief 3 min) pour 30 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 1 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 30 questions de la section « Séance 1 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
 
 Verbaliser avant de lancer : objectif individuel de vérification des acquis, pas une compétition à forte pression ; signaler explicitement les questions à réponses multiples (plusieurs cases à cocher) pour éviter toute confusion sur le mode de réponse ; laisser large sur le temps par question pour absorber une connexion réseau lente en salle.
 
-Exemple concret de question possible : "Quel type d'enregistrement DNS pointe vers une adresse IPv4 ?" (réponse attendue : A) — les 20 questions réelles sont dans `qcm-kahoot.md`.
+Exemple concret de question possible : "Quel type d'enregistrement DNS pointe vers une adresse IPv4 ?" (réponse attendue : A) — les 30 questions réelles sont dans `qcm-kahoot.md`.
 
 Transition : débriefer collectivement les 2-3 questions les plus ratées, puis annoncer la séance 2 — DevOps, Git, Docker et écosystème cloud-native.
 -->
@@ -911,7 +1155,7 @@ Transition : retour rapide sur la séance 1.
 </v-clicks>
 
 <!--
-Durée : 7 min (dont ~3 min de tour de table).
+Durée : 4 min (dont ~2 min de tour de table).
 
 Tour de table rapide sur la consigne interséance (observation de haute disponibilité sur un service utilisé). Objectif : réactiver les acquis avant d'enchaîner.
 
@@ -1146,7 +1390,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 8 min (dont ~4 min de démonstration live).
+Durée : 5 min (dont ~3 min de démonstration live).
 
 Insister sur "atomique" : un commit doit correspondre à un changement logique cohérent, pas à un mélange de plusieurs sujets non liés.
 
@@ -1439,11 +1683,11 @@ Transition : présenter les bonnes pratiques associées (.dockerignore, utilisat
 
 ---
 layout: pause
-duration: 10 min
+duration: 20 min
 ---
 
 <!--
-Durée : 10 min de pause.
+Durée : 20 min de pause.
 
 Répondre aux questions individuelles sur Git ou Docker pendant la pause.
 
@@ -1591,7 +1835,7 @@ volumes:
 </style>
 
 <!--
-Durée : 4 min.
+Durée : 2 min.
 
 Compose décrit une stack multi-conteneurs de façon déclarative : un seul fichier, une seule commande de démarrage/arrêt.
 
@@ -1619,7 +1863,7 @@ Sans volume, les données écrites dans un conteneur disparaissent à son arrêt
 </Tip>
 
 <!--
-Durée : 5 min.
+Durée : 3 min.
 
 Ces trois notions rendent Compose utilisable en pratique : réseau pour la communication inter-services, variables pour la configuration, volumes pour la persistance.
 
@@ -1759,43 +2003,14 @@ Transition : lancer le QCM de clôture de la séance 2.
 -->
 
 ---
-layout: exercise
+layout: qcm
 duration: 18 min
-type: solo
+questions: 20
+cover: DevOps/DORA, Git (branche, PR/MR, commit, SemVer), Infrastructure as Code, Docker (image, couche, registre, bonnes pratiques), Compose, CNCF/Kubernetes (vocabulaire)
 ---
 
 # QCM de clôture — Séance 2
 
-<div class="grid grid-cols-2 gap-8 items-center h-full">
-<div>
-
-**Couvre** : DevOps/DORA, Git (branche, PR/MR, commit, SemVer), Infrastructure as Code, Docker (image, couche, registre, bonnes pratiques), Compose, CNCF/Kubernetes (vocabulaire)
-
-- 20 questions (section Séance 2)
-- Certaines questions à **réponses multiples**, indiqué sur chaque question
-
-
-
-</div>
-<div class="flex flex-col items-center justify-center gap-4">
-  <div
-    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
-    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
-  >
-    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
-      <span class="block font-bold text-[#c1502e]">QR CODE</span>
-      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
-    </div>
-  </div>
-  <div class="text-center">
-    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
-    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
-  </div>
-</div>
-</div>
 
 <!--
 Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
@@ -1841,7 +2056,7 @@ Transition : retour sur l'image Docker et les erreurs fréquentes rencontrées.
 </v-clicks>
 
 <!--
-Durée : 14 min (dont ~8 min d'échange collectif).
+Durée : 10 min (dont ~5 min d'échange collectif).
 
 Tour de table rapide sur les difficultés rencontrées avec Docker depuis la séance 2. Objectif : lever les blocages résiduels avant d'ajouter une couche d'automatisation par-dessus.
 
@@ -1938,7 +2153,7 @@ jobs:
 ```
 
 <!--
-Durée : 11 min (dont ~5 min de démonstration live).
+Durée : 8 min (dont ~4 min de démonstration live).
 
 Dérouler : `name` identifie le workflow, `on` définit le déclencheur, `jobs` contient les tâches, `runs-on` choisit le runner, `steps` liste les actions séquentielles.
 
@@ -2032,7 +2247,7 @@ test:
 </v-clicks>
 
 <!--
-Durée : 9 min (dont ~4 min de démonstration comparative).
+Durée : 6 min (dont ~3 min de démonstration comparative).
 
 Comparer directement avec GitHub Actions : `stages` ≈ ordre des jobs, `script` ≈ `run`, `runner` ≈ `runs-on`. Le vocabulaire diffère, les concepts sont identiques.
 
@@ -2068,11 +2283,11 @@ Transition : pause avant le TP pipeline.
 
 ---
 layout: pause
-duration: 10 min
+duration: 20 min
 ---
 
 <!--
-Durée : 10 min de pause.
+Durée : 20 min de pause.
 
 Rester disponible pour clarifier une confusion GitHub Actions / GitLab CI avant le TP.
 
@@ -2215,45 +2430,15 @@ Transition : lancer le QCM de clôture de la séance 3.
 -->
 
 ---
-layout: exercise
+layout: qcm
 duration: 18 min
-type: solo
+questions: 20
+cover: CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
 ---
 
 # QCM de clôture — Séance 3
 
-<div class="grid grid-cols-2 gap-8 items-center h-full">
-<div>
 
-**Couvre** : CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
-
-
-- 20 questions(section Séance 3)
-- Certaines questions à **réponses multiples**, indiqué sur chaque question
-
-
-
-
-</div>
-<div class="flex flex-col items-center justify-center gap-4">
-  <div
-    class="relative w-56 h-56 bg-white rounded-lg shadow-xl border-4 border-[#2b2620] flex items-center justify-center"
-    style="background-image: repeating-conic-gradient(#2b2620 0% 25%, #ffffff 0% 50%); background-size: 16px 16px;"
-  >
-    <div class="absolute top-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute top-2 right-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="absolute bottom-2 left-2 w-10 h-10 border-4 border-[#2b2620] bg-white"></div>
-    <div class="relative z-10 bg-white/95 px-4 py-3 rounded-md border-2 border-[#c1502e] text-center leading-tight">
-      <span class="block font-bold text-[#c1502e]">QR CODE</span>
-      <span class="block font-bold text-[#c1502e]">À REMPLACER</span>
-    </div>
-  </div>
-  <div class="text-center">
-    <div class="font-semibold text-heading">Kahoot ou équivalent</div>
-    <div class="text-sm text-muted">Rejoignez le quiz avec le PIN affiché à l'écran</div>
-  </div>
-</div>
-</div>
 
 <!--
 Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
@@ -2299,7 +2484,7 @@ Transition : revue des pipelines et objectifs du livrable final.
 </v-clicks>
 
 <!--
-Durée : 13 min (dont ~7 min d'échange sur l'état des livrables).
+Durée : 8 min (dont ~4 min d'échange sur l'état des livrables).
 
 Rappeler la checklist du livrable final : dépôt Git identifiable, application lançable, Dockerfile fonctionnel, pipeline vert, secrets absents du dépôt, preuve d'observabilité, audit IA écrit.
 
@@ -2482,11 +2667,11 @@ Transition : pause.
 
 ---
 layout: pause
-duration: 10 min
+duration: 20 min
 ---
 
 <!--
-Durée : 10 min de pause.
+Durée : 20 min de pause.
 
 Rester disponible pour les questions sur TLS ou les secrets.
 
@@ -2667,7 +2852,7 @@ Toute suggestion d'IA est une proposition à vérifier, jamais une vérité à c
 </v-clicks>
 
 <!--
-Durée : 15 min (dont ~3 min d'échange et ~7 min de démonstration en direct).
+Durée : 10 min (dont ~2 min d'échange et ~5 min de démonstration en direct).
 
 Message central : l'objectif n'est pas d'évaluer la capacité de l'IA à produire du YAML, mais la capacité de l'étudiant à repérer ce qui ne va pas dans la proposition.
 
@@ -2712,9 +2897,10 @@ Transition : lancer le QCM de clôture de la séance 4, dernier quiz du module.
 -->
 
 ---
-layout: exercise
+layout: qcm
 duration: 18 min
-type: solo
+questions: 20
+cover: TLS/HTTPS, secrets, sécurité CI/CD, stratégies de déploiement, observabilité (logs/métriques/traces), feature flags, audit IA, TP final
 ---
 
 # QCM de clôture — Séance 4
@@ -2817,6 +3003,7 @@ Des questions ?
 
 <!--
 Durée : 10-15 min de questions ouvertes.
+Q&A facultative, hors budget des 12 h : ne pas la décompter des 180 min de la séance 4.
 
 Proposer, si la salle est silencieuse, un tour rapide : "qu'avez-vous trouvé le plus utile ?", "qu'est-ce qui reste flou ?".
 
