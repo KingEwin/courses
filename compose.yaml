@@ -1,12 +1,13 @@
 services:
+
   course-network-devops:
+    container_name: slidev-network-devops
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: deployment/Dockerfile
       args:
         COURSE_DIR: "ING1 - 2026-2027 - Devops"
-    image: course-network-devops:latest
-    container_name: course-network-devops
+    image: slidev-network-devops:latest
     restart: unless-stopped
     read_only: true
     security_opt:
@@ -20,12 +21,12 @@ services:
     networks:
       - traefik-proxy
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.course-network-devops.rule=Host(`course-network-devops.hoststack.tech`)
-      - traefik.http.routers.course-network-devops.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
-      - traefik.http.routers.course-network-devops.tls=true
-      - traefik.http.routers.course-network-devops.tls.certresolver=letsencrypt
-      - traefik.http.services.course-network-devops.loadbalancer.server.port=8080
+      - "traefik.enable=true"
+      - "traefik.http.routers.course-network-devops.rule=Host(`course-network-devops.hoststack.tech`)"
+      - "traefik.http.services.course-network-devops.loadbalancer.server.port=8080"
+      - "traefik.http.routers.course-network-devops.entrypoints=https"
+      - "traefik.http.routers.course-network-devops.tls=true"
+      - "traefik.http.routers.course-network-devops.tls.certresolver=letsencrypt"
 
 networks:
   traefik-proxy:

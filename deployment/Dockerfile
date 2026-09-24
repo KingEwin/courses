@@ -8,7 +8,7 @@ ARG COURSE_DIR="ING1 - 2026-2027 - Devops"
 WORKDIR /workspace
 
 # Root lockfile drives the toolchain (@slidev/cli, vue) shared by every course.
-COPY package.json package-lock.json ./
+COPY ../package.json package-lock.json ./
 RUN npm ci
 
 # Only the targeted course sources are needed to produce its static build.

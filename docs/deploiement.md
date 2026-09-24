@@ -5,7 +5,7 @@ sur le VPS, via GitHub Actions, Docker Compose et Traefik.
 
 ## Architecture
 
-- **Build** : image multi-stage (`Dockerfile`) — stage 1 Node 20 Alpine exécute
+- **Build** : image multi-stage (`../deployment/Dockerfile`) — stage 1 Node 20 Alpine exécute
   `npm ci` (lockfile racine) puis `slidev build` sur le cours ciblé (build arg
   `COURSE_DIR`, défaut `ING1 - 2026-2027 - Devops`) ; stage 2 sert le dist
   statique via `nginxinc/nginx-unprivileged:1.27-alpine` (non-root, port 8080).

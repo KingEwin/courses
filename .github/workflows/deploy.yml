@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - "Dockerfile"
+      - "../../deployment/Dockerfile"
       - ".dockerignore"
-      - "nginx.conf"
+      - "../../deployment/nginx.conf"
       - "compose.yaml"
       - "package.json"
       - "package-lock.json"
@@ -25,9 +25,9 @@ env:
   REMOTE_BASE: /root/opt/docker/apps/slidev
   PROJECT_NAME: course-network-devops
   RELEASE: ${{ github.sha }}
-  SSH_HOST: ${{ secrets.VPS_HOST }}
-  SSH_USER: ${{ secrets.VPS_USER }}
-  SSH_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+  SSH_HOST: ${{ vars.VPS_HOST }}
+  SSH_USER: ${{ vars.VPS_USER }}
+  SSH_PORT: ${{ vars.VPS_SSH_PORT || '22' }}
 
 jobs:
   deploy:
@@ -43,7 +43,7 @@ jobs:
           mkdir -p "$HOME/.ssh"
           printf '%s\n' "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > "$HOME/.ssh/deploy_key"
           chmod 600 "$HOME/.ssh/deploy_key"
-          printf '%s\n' "${{ secrets.VPS_SSH_KNOWN_HOSTS }}" > "$HOME/.ssh/known_hosts"
+          printf '%s\n' "${{ vars.VPS_SSH_KNOWN_HOSTS }}" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
           {
             echo "SSH_CMD=ssh -p $SSH_PORT -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
