@@ -67,7 +67,7 @@ jobs:
             --exclude='node_modules' \
             --exclude='dist' \
             -e "$SSH_CMD" \
-            Dockerfile .dockerignore nginx.conf compose.yaml package.json package-lock.json "ING1 - 2026-2027 - Devops" \
+            deployment .dockerignore compose.yaml package.json package-lock.json "ING1 - 2026-2027 - Devops" \
             "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE/"
 
       - name: Switch current release, build and start
