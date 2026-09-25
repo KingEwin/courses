@@ -4,6 +4,7 @@
 FROM node:20-alpine AS build
 
 ARG COURSE_DIR="ING1 - 2026-2027 - Devops"
+ARG PART="1"
 
 WORKDIR /workspace
 
@@ -14,7 +15,7 @@ RUN npm ci
 # Only the targeted course sources are needed to produce its static build.
 COPY "${COURSE_DIR}" "./${COURSE_DIR}"
 
-RUN cd "${COURSE_DIR}" && npx --no-install slidev build --base "/" --out /workspace/dist
+RUN cd "${COURSE_DIR}" && npx --no-install slidev build slides-students-p${PART}.md --without-notes --base "/" --out /workspace/dist
 
 # --- Stage 2: serve the static build with a hardened, non-root Nginx ---
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
