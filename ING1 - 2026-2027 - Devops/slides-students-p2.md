@@ -143,68 +143,116 @@ section: Séance 2 — 3h
 
 # DevOps, Git, Docker et écosystème cloud-native
 
-De la culture aux premières images exécutables
+De la culture DevOps aux conteneurs et à Compose
 
 <!--
-Durée : 1 min.
+Durée : 1 min (introduction : 5 min au total avec le rappel de la séance 1 et l'annonce des deux TP).
 
-Annoncer le fil de la séance : d'abord la culture DevOps et son histoire, puis Git en équipe, puis Docker, puis un premier pas dans l'écosystème cloud-native avec la CNCF et une introduction à Kubernetes.
+Annoncer le déroulé : la culture DevOps et les métiers, Git et les commandes de base, l'Infrastructure as Code et le GitOps, les fondamentaux Docker, une pause, les bonnes pratiques d'images, Docker Compose, un premier aperçu de l'écosystème cloud-native avec la CNCF et Kubernetes, puis le lancement de deux TP et le QCM de clôture.
 
-Exemple concret : rappeler le fil rouge — l'application Node.js va être versionnée avec Git puis conteneurisée avec Docker dans cette séance.
-
-Transition : retour rapide sur la séance 1.
+Transition : rappel factuel de la séance 1.
 -->
 
 ---
 
-# Retour sur la séance 1
+# Rappel de la séance 1
 
 <v-clicks>
 
-- Réseau : couches, IP, DNS, routage — acquis ?
-- Cloud : IaaS/PaaS/SaaS/serverless — un exemple retenu ?
-- Haute disponibilité — qu'avez-vous observé sur un service que vous utilisez ?
+- **Réseau** : couches TCP/IP, adresse IP + masque (CIDR), DNS qui traduit un nom en adresse, ports
+- **Cloud** : IaaS, PaaS, SaaS, serverless ; responsabilité partagée entre fournisseur et client
+- **Haute disponibilité** : redondance, health checks, retrait des instances malades, redémarrage
+- **Aujourd'hui** : ces notions reviennent avec les conteneurs (ports, DNS interne, probes)
 
 </v-clicks>
 
 <!--
-Durée : 2 min (dont ~1 min de tour de table).
+Durée : 2 min.
 
-Tour de table rapide sur la consigne interséance (observation de haute disponibilité sur un service utilisé). Objectif : réactiver les acquis avant d'enchaîner.
+Rappel purement factuel, sans interroger la salle : on remet en mémoire le vocabulaire utile pour la suite. Le réseau (ports, DNS) servira à comprendre la communication entre conteneurs ; le cloud et la haute disponibilité donnent le contexte de l'automatisation et de Kubernetes.
 
-Exemple concret attendu des étudiants : "l'appli de ma banque affiche une page de maintenance par zone", "mon jeu en ligne a un statut serveur public".
+Exemple concret : un nom comme `api` résolu en adresse IP par un DNS, vu en séance 1 pour Internet, existe aussi à l'intérieur d'un réseau de conteneurs, ce que l'on verra avec Compose.
 
-Tour de table complet : donner la parole à 4-5 étudiants successivement (pas seulement les volontaires spontanés) pour maximiser la diversité des exemples et vérifier que la consigne a été comprise par l'ensemble du groupe.
-
-Transition : rappeler le scénario applicatif du fil rouge avant d'attaquer le DevOps.
+Transition : annoncer les deux TP qui rythment la fin de la séance.
 -->
 
 ---
 
-# Le scénario applicatif du fil rouge
+# Cette séance : théorie, puis deux TP
+
+<div class="grid grid-cols-3 gap-4 mt-4">
+  <div class="card">
+    <div class="text-3xl mb-2">📚</div>
+    <div class="font-bold text-accent mb-1">Comprendre</div>
+    <div class="text-sm">DevOps, Git, Infrastructure as Code, GitOps, Docker, Compose, Kubernetes</div>
+  </div>
+  <div class="card">
+    <div class="text-3xl mb-2">🛠️</div>
+    <div class="font-bold text-accent mb-1">Deux TP</div>
+    <div class="text-sm"><strong>TP Docker</strong> puis <strong>TP Compose</strong> : énoncés présentés en fin de séance, démarrage en séance</div>
+  </div>
+  <div class="card">
+    <div class="text-3xl mb-2">📦</div>
+    <div class="font-bold text-accent mb-1">À rendre avant la séance 3</div>
+    <div class="text-sm">Dépôt(s) <strong>GitHub public(s)</strong>, corrigés au début de la séance 3</div>
+  </div>
+</div>
 
 <v-clicks>
 
-- Une application web **Node.js minimale** : une page, un endpoint de contrôle
-- Elle sera **versionnée** avec Git (cette séance)
-- Elle sera **conteneurisée** avec Docker (cette séance)
-- Elle sera **validée par un pipeline** (séance 3) puis **sécurisée et supervisée** (séance 4)
-- Le TP de la séance 2 est **votre propre frontend** (Angular, React ou Vue), un projet autonome distinct du fil rouge
+- Les deux TP se terminent **hors séance** : la séance sert à bien démarrer
+- Un compte **GitHub** et un poste avec Docker et Git sont nécessaires
+
+</v-clicks>
+
+<!--
+Durée : 2 min.
+
+Annoncer dès maintenant que la séance se termine par le lancement de deux TP : un TP Docker puis un TP Compose. Ils sont à terminer en dehors du cours et à rendre AVANT la séance 3 sous forme de dépôt(s) GitHub public(s), pour correction. Les énoncés détaillés, les attendus de remise et 15 minutes de mise en pratique viennent en fin de séance, juste avant le QCM : inutile d'entrer dans le détail maintenant.
+
+Les prérequis (Docker, Git, Node ou bun, compte GitHub) ont été annoncés à la séance 1 ; vérifier d'un mot que chacun a Docker opérationnel, car le temps de séance ne permet pas de dépanner une installation.
+
+Exemple concret : le travail terminé à la maison sera relu comme une revue de code, d'où l'importance d'un dépôt lisible.
+
+Transition : commençons par la culture DevOps, avec les métiers d'hier.
+-->
+
+---
+
+# Métiers d'hier : Dev d'un côté, Ops de l'autre
+
+<Comparison left="Dev" right="Ops" leftColor="blue" rightColor="orange">
+  <template #left>
+
+  - Conçoit et écrit les fonctionnalités
+  - Teste sur son poste ou un environnement de recette
+  - Livre une version, puis passe au sujet suivant
+
+  </template>
+  <template #right>
+
+  - Administre les systèmes et serveurs, physiques puis machines virtuelles
+  - Gère le réseau, le stockage, les sauvegardes
+  - Déploie, surveille, répond aux incidents
+
+  </template>
+</Comparison>
+
+<v-clicks>
+
+- La livraison passait de main en main : **tickets**, fenêtres de mise en production, procédures manuelles
+- Chaque équipe optimisait **son** objectif : nouveauté d'un côté, stabilité de l'autre
 
 </v-clicks>
 
 <!--
 Durée : 3 min.
 
-Ce rappel évite que les étudiants perçoivent Git, Docker et CI/CD comme des blocs isolés — c'est une seule chaîne, appliquée au même projet du début à la fin.
+Présenter les deux métiers historiques sans caricature : chacun avait une vraie expertise et des contraintes légitimes. Les développeurs étaient jugés sur les fonctionnalités livrées ; les administrateurs systèmes sur la disponibilité des serveurs, avec des machines physiques à racker puis, plus tard, des machines virtuelles, et un réseau à maintenir.
 
-Exemple concret : montrer la structure attendue du dépôt final (code, tests, Dockerfile, fichier de pipeline) pour donner un repère visuel stable.
+Exemple concret : une nouvelle version demandait un ticket pour obtenir un serveur, un autre pour ouvrir un port, un troisième pour la mise en production : chaque délai était raisonnable, leur somme ne l'était plus.
 
-Vérification rapide : demander qui a déjà cloné le dépôt fil rouge et lancé l'application localement — traiter en direct les deux ou trois blocages d'environnement les plus fréquents avant de continuer.
-
-Support distinct : le TP de la séance 2 est le propre frontend de l'étudiant (Angular, React ou Vue, au choix), créé en séance dans le dossier imposé `frontend/`, conteneurisé puis versionné sur son dépôt GitHub public. Aucun starter n'est fourni. L'application Node.js/API reste le fil rouge (démos Node sur le port 3000, séances 3 et 4, CI). La séance 3 ne réutilise pas le Dockerfile frontend ; ne pas le promettre. Il n'existe pas de frontend dans ce dépôt de slides.
-
-Transition : entrer dans l'histoire du DevOps.
+Transition : voir ce que cette séparation provoque quand les changements deviennent fréquents.
 -->
 
 ---
@@ -226,36 +274,46 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
-Poser le problème avant la solution : sans culture partagée, chaque livraison devient un conflit d'intérêt entre celui qui code et celui qui exploite.
+Poser le problème avant la solution : sans objectifs partagés, chaque livraison devient un conflit d'intérêt entre celui qui code et celui qui exploite.
 
 Exemple concret : une mise en production qui casse un vendredi soir, le développeur injoignable, l'équipe d'exploitation seule pour gérer l'incident — schéma classique pré-DevOps.
 
-Transition : introduire le mouvement DevOps comme réponse à ce silo.
+Transition : pourquoi ce problème est-il devenu critique ces dernières années ?
 -->
 
 ---
 
-# Le besoin : vitesse ET fiabilité
+# Pourquoi DevOps aujourd'hui ?
 
-<v-clicks>
-
-- Le marché exige des livraisons **plus fréquentes**
-- Le service doit rester **fiable** malgré la fréquence des changements
-- Solution : rapprocher développement et exploitation autour d'objectifs communs
-- Les leviers : **cloud**, **conteneurs**, **automatisation**, **CI/CD**, **observabilité**
-
-</v-clicks>
+<div class="grid grid-cols-2 gap-4 mt-2">
+  <div class="card">
+    <div class="font-bold text-accent mb-1">⏱️ Fréquence</div>
+    <div class="text-sm">Les produits évoluent en continu : on livre chaque semaine, voire chaque jour, plus chaque trimestre</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🧩 Complexité</div>
+    <div class="text-sm">Services multiples, cloud, conteneurs, dépendances : impossible de tout gérer à la main</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🛡️ Fiabilité</div>
+    <div class="text-sm">Les utilisateurs attendent un service disponible en permanence, même pendant les changements</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🔁 Feedback</div>
+    <div class="text-sm">Un retour rapide (tests, métriques, incidents) permet de corriger tôt, quand c'est peu coûteux</div>
+  </div>
+</div>
 
 <!--
 Durée : 3 min.
 
-DevOps n'est pas né d'une mode mais d'une contrainte business réelle : livrer plus vite sans casser la production. Les 5 leviers cités seront chacun développés dans les séances suivantes.
+DevOps n'est pas né d'une mode mais d'une contrainte réelle : livrer plus souvent, dans des systèmes plus complexes, sans dégrader la fiabilité. Les leviers qui l'ont rendu possible sont le cloud, les conteneurs, l'automatisation, le CI/CD et l'observabilité, développés dans ce cours.
 
-Exemple concret : une équipe qui déployait une fois par trimestre avant, plusieurs fois par jour après adoption de pratiques DevOps — pas une promesse marketing, une conséquence mesurable de l'automatisation.
+Exemple concret : une équipe qui déployait une fois par trimestre avec une longue nuit de mise en production peut, avec des changements petits, automatisés et testés, livrer plusieurs fois par semaine ; un petit changement échoue moins gravement qu'un gros.
 
-Transition : préciser que DevOps ne remplace pas la responsabilité, il la partage.
+Transition : DevOps ne supprime pas les rôles, il partage la responsabilité du résultat.
 -->
 
 ---
@@ -277,31 +335,67 @@ DevOps ne supprime pas les rôles : il fait porter conjointement le résultat de
 <!--
 Durée : 2 min.
 
-Nuance importante à verbaliser : "responsabilité partagée" ne veut pas dire "personne n'est responsable" — c'est l'inverse, chacun reste responsable mais sur un objectif commun.
+Nuance importante à verbaliser : « responsabilité partagée » ne veut pas dire « personne n'est responsable » — chacun reste responsable, mais sur un objectif commun.
 
 Exemple concret : un développeur qui ajoute un healthcheck à son service facilite le travail de l'équipe d'exploitation — petit geste, grand effet sur la fiabilité partagée.
 
-Transition : montrer comment ces pratiques ont évolué dans les métiers, sans figer un intitulé universel.
+Transition : à quoi ressemblent concrètement les métiers aujourd'hui.
 -->
 
 ---
 
-# Une évolution des métiers, pas un poste unique
+# Métiers d'aujourd'hui : collaboration et automatisation
+
+<div class="grid grid-cols-3 gap-4 mt-2">
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🤝 Collaborer</div>
+    <div class="text-sm">Dev et Ops travaillent sur les mêmes outils, relisent les mêmes changements, partagent les astreintes et les incidents</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">⚙️ Automatiser</div>
+    <div class="text-sm">Tests, builds, déploiements et infrastructure décrits en code, versionnés et rejouables</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🧭 Partager</div>
+    <div class="text-sm">Le résultat de bout en bout est porté ensemble : le code, mais aussi son exploitation</div>
+  </div>
+</div>
 
 <v-clicks>
 
-- Des pratiques associées à des intitulés variés selon les organisations (ingénieur plateforme, SRE, ingénieur DevOps...)
+- L'expertise **système, réseau et sécurité** reste indispensable : elle s'exprime davantage en code et en plateformes
+- Les intitulés varient (ingénieur DevOps, SRE, ingénieur plateforme, administrateur système...) : ce sont les **pratiques** qui comptent
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Message à faire passer : les compétences d'administration restent précieuses ; ce qui change, c'est la manière de les exercer (automatisation, code, collaboration) et le partage du résultat. Ne pas laisser croire que le métier d'administrateur disparaît, ni qu'un « poste DevOps » unique résoudrait seul les problèmes de l'organisation.
+
+Exemple concret : le même besoin, « ouvrir un port et déployer une nouvelle version », passe d'un ticket entre deux équipes à un changement relu dans un dépôt, appliqué automatiquement et observable.
+
+Transition : une courte remarque sur les intitulés, puis le cycle DevOps.
+-->
+
+---
+
+# Des intitulés variés, un même état d'esprit
+
+<v-clicks>
+
+- Ingénieur plateforme, SRE, ingénieur DevOps : des appellations selon les organisations
 - Aucun intitulé n'est une norme universelle — le contexte de l'entreprise prime
 - Ce qui compte : les **pratiques** (automatisation, mesure, collaboration), pas l'étiquette du poste
 
 </v-clicks>
 
 <!--
-Durée : 2 min.
+Durée : 1 min.
 
-Éviter tout discours prescriptif sur "le" métier DevOps : insister sur la diversité des organisations et des appellations selon les entreprises et les pays.
+Éviter tout discours prescriptif sur « le » métier DevOps : insister sur la diversité des organisations et des appellations selon les entreprises et les pays.
 
-Exemple concret : deux entreprises comparables peuvent appeler la même fonction "DevOps Engineer" et "Site Reliability Engineer" sans différence pratique majeure — l'intitulé suit la culture de l'entreprise, pas une règle figée.
+Exemple concret : deux entreprises comparables peuvent appeler la même fonction « DevOps Engineer » et « Site Reliability Engineer » sans différence pratique majeure.
 
 Transition : formaliser le cycle DevOps et introduire les métriques DORA.
 -->
@@ -365,31 +459,140 @@ Transition : refermer le bloc DevOps, ouvrir le bloc Git.
 
 ---
 
-# Git en équipe : au-delà du solo
+# Git : un historique versionné et distribué
+
+<KeyConcept title="Git" icon="🌿">
+Un outil qui enregistre l'historique d'un projet sous forme de **commits** et permet de travailler à plusieurs sur les mêmes fichiers.
+</KeyConcept>
 
 <v-clicks>
 
-- Les commandes de base (`add`, `commit`, `push`) sont acquises
-- En équipe, il faut des **conventions partagées**
-- **Branches**, **pull/merge requests**, **revue de code** structurent la collaboration
+- **Historique** : chaque commit est un instantané identifié, daté et attribué à son auteur
+- **Distribué** : chaque clone contient l'historique complet, on travaille d'abord **en local**
+- **Local puis distant** : on partage ses commits avec un dépôt distant quand on le décide
+- **Git ≠ GitHub** : Git est l'outil ; GitHub et GitLab sont des plateformes qui hébergent des dépôts Git et ajoutent PR/MR, issues, CI
 
 </v-clicks>
 
 <!--
 Durée : 3 min.
 
-Vérifier rapidement les acquis : lever la main qui utilise déjà des branches régulièrement. Adapter le rythme selon la réponse de la salle.
+Poser la distinction fondamentale avant tout flux collaboratif : Git fonctionne sans réseau et sans plateforme. Une plateforme comme GitHub ou GitLab héberge un dépôt distant de référence et ajoute des services (pull/merge requests, revue, tickets, intégration continue).
 
-Exemple concret : une équipe qui travaille tous sur `main` sans branche finit par écraser le travail des autres — bon point de départ pour justifier le besoin de convention.
+Exemple concret : on peut créer un dépôt, committer dix fois et consulter l'historique dans un avion, sans connexion ; le partage ne vient qu'ensuite.
 
-Prolonger l'échange : demander à un étudiant de raconter un conflit de fusion (merge conflict) déjà vécu, en stage ou en projet — sert d'accroche concrète avant de détailler dépôt/commit/branche.
-
-Transition : détailler dépôt, commit, branche et merge/pull request.
+Transition : situer précisément où vivent les changements, du fichier modifié au dépôt distant.
 -->
 
 ---
 
-# Dépôt, commit, branche
+# Local et distant : où vivent les changements ?
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  A["Répertoire de travail<br/>fichiers modifiés"] -->|"git add"| B["Index<br/>prochain commit"]
+  B -->|"git commit"| C["Dépôt local<br/>historique"]
+  C -->|"git push"| D["Dépôt distant<br/>plateforme"]
+  D -->|"git pull / clone"| C
+```
+
+<v-clicks>
+
+- Le **commit** enregistre uniquement ce qui a été préparé avec `add`
+- Le **dépôt local** et le **dépôt distant** sont deux copies distinctes de l'historique
+- `push` envoie ses commits ; `pull` récupère ceux des autres
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Parcourir le schéma de gauche à droite. Le répertoire de travail contient les fichiers que l'on édite ; l'index (staging) liste ce qui sera inclus dans le prochain commit ; le dépôt local stocke l'historique ; le dépôt distant sert de point d'échange.
+
+Exemple concret : modifier deux fichiers mais n'ajouter que l'un d'eux à l'index permet de produire un commit propre sur un seul sujet, l'autre modification restant à traiter ensuite — c'est la base du commit atomique.
+
+Transition : les commandes qui matérialisent ce schéma.
+-->
+
+---
+
+# Commandes Git (1/2) : démarrer et enregistrer
+
+```bash
+git init                      # crée un dépôt dans le dossier courant
+git clone <url>               # copie un dépôt distant (historique inclus)
+git status                    # fichiers modifiés, préparés ou non suivis
+git diff                      # changements pas encore ajoutés à l'index
+git add README.md             # prépare un fichier pour le prochain commit
+git commit -m "docs: ajoute un README"   # enregistre un instantané
+git log --oneline             # historique résumé, un commit par ligne
+```
+
+<v-clicks>
+
+- `status` est le **réflexe** : avant `add`, avant `commit`, en cas de doute
+- `diff` relit ce qui va être enregistré ; `add` choisit ce qui y entre
+- Un message de commit décrit **le pourquoi** du changement
+
+</v-clicks>
+
+<style scoped>
+.slidev-code { font-size: 0.72em !important; line-height: 1.4 !important; }
+</style>
+
+<!--
+Durée : 4 min (dont ~2 min de démonstration enseignant).
+
+Démonstration sur un dépôt d'exemple jetable, distinct des TP : `git init` dans un dossier vide, créer un fichier, `git status` (fichier non suivi), `git add`, `git status` (fichier préparé), `git commit`, `git log --oneline`, modifier le fichier puis `git diff`. `git clone` est présenté mais exécuté seulement si un dépôt public d'exemple est disponible.
+
+Les chevrons `<url>` sont un paramètre à remplacer ; ne pas coller de jeton d'accès dans une URL.
+
+Exemple concret : `git status` avant chaque commit évite d'embarquer par mégarde un fichier généré ou un fichier de configuration local.
+
+Transition : travailler avec des branches et un dépôt distant.
+-->
+
+---
+
+# Commandes Git (2/2) : brancher et partager
+
+```bash
+git switch -c feature/page-accueil   # crée une branche et s'y place
+git switch main                      # revient sur la branche main
+git branch                           # liste les branches locales
+git remote add origin <url>          # déclare un dépôt distant nommé origin
+git remote -v                        # affiche les dépôts distants connus
+git push -u origin feature/page-accueil   # envoie la branche et mémorise le suivi
+git pull                             # récupère et intègre les changements distants
+```
+
+<v-clicks>
+
+- Une **branche** isole un travail sans toucher à `main`
+- `origin` n'est qu'un **nom par convention** pour le dépôt distant principal
+- `pull` avant de reprendre le travail, `push` quand un lot de commits est prêt
+
+</v-clicks>
+
+<style scoped>
+.slidev-code { font-size: 0.68em !important; line-height: 1.4 !important; }
+</style>
+
+<!--
+Durée : 4 min (dont ~2 min de démonstration enseignant).
+
+Exemples volontairement génériques (nom de branche, nom du dépôt) et sans lien avec les TP. `switch -c` crée et sélectionne une branche ; `remote add` relie le dépôt local à un dépôt distant dont l'URL vient de la plateforme ; `push -u` envoie la branche et mémorise sa correspondance distante, ce qui permet ensuite un simple `git push`.
+
+Sécurité : l'authentification (jeton personnel ou clé SSH) se configure en dehors de la commande ; ne jamais coller un jeton dans l'URL ni dans un message partagé. Un dépôt public expose son historique à tous.
+
+Exemple concret : deux personnes travaillent chacune sur leur branche, publient avec `push`, puis une PR/MR propose la fusion sur `main`.
+
+Transition : voir comment une branche arrive sur main dans un travail d'équipe.
+-->
+
+---
+
+# Du commit à la fusion : le cycle d'une branche
 
 ```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
@@ -408,13 +611,13 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 3 min (dont ~1 min de démonstration live).
+Durée : 2 min (dont ~1 min de démonstration live).
 
 Insister sur "atomique" : un commit doit correspondre à un changement logique cohérent, pas à un mélange de plusieurs sujets non liés.
 
 Exemple concret : un commit "fix typo + ajoute feature X + change la config CI" est un anti-pattern — trois commits séparés seraient plus lisibles et plus faciles à annuler individuellement si besoin.
 
-Démonstration live : créer une branche, faire deux commits atomiques distincts sur le dépôt fil rouge, puis lancer `git log --oneline --graph` devant la salle pour montrer un historique lisible. Pointer chaque commit et faire deviner son objet avant de l'ouvrir.
+Démonstration live : créer une branche, faire deux commits atomiques distincts sur un dépôt d'exemple, puis lancer `git log --oneline --graph` devant la salle pour montrer un historique lisible. Pointer chaque commit et faire deviner son objet avant de l'ouvrir.
 
 Transition : détailler le flux de pull/merge request et la revue de code.
 -->
@@ -455,6 +658,8 @@ Transition : détailler commits atomiques et SemVer.
 
 # Commits atomiques et historique lisible
 
+**Conventional Commits** : `type(scope optionnel): description`
+
 ```text
 feat: add health-check endpoint
 fix: handle missing environment variable
@@ -463,16 +668,17 @@ docs: update README with run instructions
 
 <v-clicks>
 
+- `feat` fonctionnalité, `fix` correction, `docs` documentation → historique navigable
 - Un commit = **un changement logique**, un message clair
-- Préfixe sémantique (`feat`, `fix`, `docs`...) → historique navigable
+- [Spécification Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
 - Historique lisible = diagnostic plus rapide en cas d'incident
 
 </v-clicks>
 
 <!--
-Durée : 4 min (dont ~2 min d'exercice écrit).
+Durée : 2 min (dont ~1 min d'exercice écrit).
 
-Ce format de message n'est pas obligatoire par Git lui-même, mais devient vite un standard d'équipe efficace, notamment pour retrouver rapidement quel commit a introduit un bug.
+Cette convention n'est pas imposée par Git ; elle facilite la lecture de l'historique et l'usage d'outils de release, sans déclencher à elle seule un versionnement automatique.
 
 Exemple concret : un `git log` lisible permet de répondre en 30 secondes à "qui a changé ce fichier et pourquoi", contre plusieurs minutes sur un historique de commits vagues ("update", "fix", "wip").
 
@@ -501,13 +707,13 @@ v1.4.2
 </v-clicks>
 
 <!--
-Durée : 3 min (dont ~1 min de questions-réponses).
+Durée : 1 min.
 
 Poser la question à la salle : "renommer un endpoint d'API, c'est quel type de changement ?" — réponse attendue : MAJOR (breaking change).
 
 Exemple concret : un client qui consomme une API et valide strictement le format de réponse verra son intégration casser si un champ obligatoire est ajouté sans bump MAJOR — impact direct sur la confiance du versionnage.
 
-Prolonger avec 2-3 cas supplémentaires à la volée (ajouter un champ optionnel, corriger un bug sans changer l'API, changer le format d'une date en réponse) et faire trancher la salle à main levée avant de donner la réponse — consolide la compréhension MAJOR/MINOR/PATCH avant de basculer sur l'Infrastructure as Code.
+Si le temps le permet, un cas supplémentaire (ajouter un champ optionnel : MINOR) consolide MAJOR/MINOR/PATCH.
 
 Transition : passer de Git à une autre forme de code versionné — celui qui décrit l'infrastructure elle-même.
 -->
@@ -534,7 +740,7 @@ Transition : passer de Git à une autre forme de code versionné — celui qui d
 </Comparison>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Verbaliser le problème avant la solution : sans trace écrite, la configuration réelle d'un serveur finit par ne vivre que dans la tête d'une seule personne — le jour où elle est absente ou part, plus personne ne sait reproduire l'environnement.
 
@@ -569,7 +775,7 @@ Terraform garde la correspondance entre le code et l'infra réelle dans un fichi
 </v-clicks>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Verbaliser la boucle : on décrit ce qu'on veut (déclaratif), l'outil calcule ce qui doit changer (plan) sans encore rien toucher, puis applique réellement le changement (apply) ; ré-exécuter le même code sur une infra déjà conforme ne doit rien changer (idempotence).
 
@@ -589,17 +795,17 @@ Transition : voir maintenant qui propose ce genre d'outil, à commencer par Terr
 | Configuration de serveurs | Ansible (hors Terraform) | Installer un paquet, éditer un fichier de config |
 
 <Tip type="info">
-Terraform et ses alternatives **provisionnent** des ressources (créer une VM, un réseau) ; un outil comme Ansible **configure** ensuite ce qui tourne dessus (installer, paramétrer). Les deux rôles sont complémentaires, pas concurrents.
+Terraform et ses alternatives <strong>provisionnent</strong> des ressources (créer une VM, un réseau) ; un outil comme Ansible <strong>configure</strong> ensuite ce qui tourne dessus (installer, paramétrer). Les deux rôles sont complémentaires, pas concurrents.
 </Tip>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Terraform reste l'outil dominant et multi-cloud : un seul langage pour AWS, Azure, GCP et bien d'autres providers, y compris VMware pour du hors-cloud. Les alternatives sont positionnées sans être détaillées : OpenTofu est un fork open source né après un changement de licence de Terraform ; Pulumi permet d'écrire l'infra dans un langage de programmation classique (Python, TypeScript) plutôt qu'un langage déclaratif dédié ; CloudFormation (AWS) et Bicep (Azure) sont les équivalents propriétaires liés à un seul fournisseur.
 
 Exemple concret : une entreprise avec des serveurs VMware en interne ET des ressources AWS peut utiliser Terraform pour les deux, avec un provider différent pour chaque cible — un seul outil, deux terrains.
 
-Transition : voir le cycle Terraform en pratique, sans compte cloud, avec une ressource locale, puis retour à Docker.
+Transition : voir le cycle Terraform en pratique, sans compte cloud, avec une ressource locale.
 -->
 
 ---
@@ -631,7 +837,7 @@ resource "local_file" "bienvenue" {
 </v-clicks>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Objectif : montrer la structure d'un projet Terraform avec une ressource sans risque. `local_file` est l'équivalent pédagogique d'une VM ou d'un bucket : même cycle, aucun impact hors du dossier de travail.
 
@@ -666,7 +872,7 @@ terraform destroy          # supprime ce que Terraform a créé
 </v-clicks>
 
 <Tip type="warning">
-N'utilisez pas `-auto-approve` en apprentissage : il supprime la relecture, c'est-à-dire le garde-fou principal de Terraform.
+N'utilisez pas <code>-auto-approve</code> en apprentissage : il supprime la relecture, c'est-à-dire le garde-fou principal de Terraform.
 </Tip>
 
 <style scoped>
@@ -674,7 +880,7 @@ N'utilisez pas `-auto-approve` en apprentissage : il supprime la relecture, c'es
 </style>
 
 <!--
-Durée : 6 min (dont ~3 min de démonstration enseignant).
+Durée : 3 min (dont ~2 min de démonstration enseignant, abrégée).
 
 Dérouler dans l'ordre : `fmt` (style), `init` (prépare le dossier), `validate` (erreurs de syntaxe sans toucher à rien), `plan -out=tfplan` (le "diff" de l'infrastructure), `apply tfplan` (exécute ce plan précis, donc ce qui a été relu), `destroy` (nettoyage).
 
@@ -698,7 +904,7 @@ Transition : que doit-on versionner dans Git et que doit-on laisser de côté ?
 | `tfplan` | ❌ Non | Plan local, peut contenir des valeurs sensibles |
 
 <!--
-Durée : 2 min.
+Durée : 1 min.
 
 Rappel du lien avec la slide précédente sur le fichier d'état (state) : il sert de mémoire à Terraform mais peut contenir des secrets en clair, donc jamais dans Git. En équipe, on le stocke dans un backend distant protégé — hors périmètre du module.
 
@@ -706,7 +912,64 @@ Exemple concret : deux étudiants qui clonent le dépôt obtiennent les mêmes v
 
 Vérification rapide : demander de proposer les lignes du `.gitignore` Terraform (`.terraform/`, `*.tfstate`, `*.tfstate.*`, `tfplan`) avant de les afficher.
 
-Transition : retour à Docker — VM versus conteneur.
+Transition : GitOps, qui prolonge l'idée de décrire et versionner l'état voulu.
+-->
+
+---
+
+# GitOps : Git comme source de vérité de l'état désiré
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  E["Équipe"] -->|"PR/MR relue puis fusionnée"| A["Dépôt Git<br/>état désiré versionné"]
+  B["Agent GitOps"] -->|"lit l'état désiré"| A
+  B -->|"observe l'état réel"| C["Environnement<br/>état réel"]
+  B ==>|"réconcilie : corrige l'écart"| C
+```
+
+<v-clicks>
+
+- L'**état désiré** (ce qui doit tourner) est décrit dans Git, relu et historisé comme du code
+- Un **agent** compare en continu l'état **réel** à l'état **désiré**
+- Un écart (**drift**), par exemple une modification manuelle, est détecté puis réconcilié ou signalé
+
+</v-clicks>
+
+<!--
+Durée : 2 min.
+
+GitOps étend l'idée d'Infrastructure as Code : l'état voulu du système vit dans Git, et c'est un agent qui travaille à faire coïncider l'environnement avec cet état. La boucle compare-réconcilie rappelle celle des orchestrateurs vue en séance 1. Un drift est un écart entre ce qui est décrit et ce qui existe réellement ; selon la configuration, l'agent le corrige automatiquement ou le signale.
+
+Exemple concret : quelqu'un modifie à la main le nombre de réplicas d'un service ; l'agent constate que l'état réel diffère de l'état décrit dans Git et le ramène à la valeur versionnée, ou lève une alerte.
+
+Transition : situer GitOps par rapport à l'IaC vue juste avant.
+-->
+
+---
+
+# IaC et GitOps : deux approches complémentaires
+
+| | Infrastructure as Code (ex. Terraform) | GitOps |
+|---|---|---|
+| Idée | Décrire l'infrastructure en fichiers | Faire de Git la source de vérité de l'état désiré |
+| Qui applique ? | Une personne ou un pipeline lance `plan` / `apply` | Un agent compare et réconcilie en continu |
+| Détection du drift | À la prochaine exécution du plan | Fait partie du fonctionnement de l'agent |
+| Outils typiques | Terraform, OpenTofu, Pulumi | Argo CD, Flux (concept, sans démonstration) |
+
+<Tip type="warning">
+Un <code>git push</code> ne signifie pas que l'infrastructure est déjà déployée : l'agent doit détecter le changement, les contrôles doivent passer et l'application peut échouer. Revenir à un état Git précédent est possible, mais n'annule pas forcément les effets déjà produits (données, migrations).
+</Tip>
+
+<!--
+Durée : 2 min.
+
+Les deux approches se combinent : l'IaC décrit des ressources, le GitOps fournit le mode de livraison (changement par PR/MR, application par un agent, détection de dérive). Argo CD et Flux sont cités comme exemples d'agents, notamment dans Kubernetes : aucune installation ni démonstration ici, seulement le principe.
+
+Nuances à verbaliser : un dépôt à jour ne prouve pas que l'environnement l'est — il faut observer le statut de réconciliation. Le « retour arrière » consiste à ramener l'état désiré à une version antérieure, ce qui n'efface pas les données écrites ni ne défait certaines migrations.
+
+Exemple concret : fusionner une PR qui change la version d'une image déclenche, quelques instants plus tard, la mise à jour par l'agent ; si l'image est introuvable, le dépôt est correct mais l'environnement reste sur l'ancienne version.
+
+Transition : retour à la conteneurisation, avec les fondamentaux Docker.
 -->
 
 ---
@@ -733,7 +996,7 @@ Transition : retour à Docker — VM versus conteneur.
 </Comparison>
 
 <!--
-Durée : 4 min (dont ~2 min de discussion comparée).
+Durée : 3 min (dont ~1 min de discussion comparée).
 
 Le point à faire comprendre : un conteneur n'embarque pas un système d'exploitation complet, il partage le noyau de la machine hôte — c'est ce qui explique sa légèreté.
 
@@ -765,7 +1028,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 3 min (dont ~1 min de manipulation guidée ; 1 min regagnée pour financer le TP frontend, aucune notion supprimée).
+Durée : 3 min (dont ~1 min de manipulation guidée).
 
 Analogie utile : image = classe en programmation orientée objet, conteneur = instance de cette classe. Une image ne change pas, un conteneur a un état d'exécution propre.
 
@@ -795,13 +1058,13 @@ CMD ["node", "server.js"]
 ```
 
 <!--
-Durée : 6 min (démonstration live resserrée ; 2 min regagnées pour financer le TP frontend : un seul étudiant au clavier, aucune notion supprimée).
+Durée : 3 min (démonstration live resserrée).
 
 Dérouler chaque instruction : image de base, répertoire de travail, copie ciblée des fichiers de dépendances avant le reste du code (pour préserver le cache), exposition documentaire du port, commande de démarrage.
 
 Exemple concret : si le code applicatif change mais pas `package.json`, l'étape `npm ci` n'est pas rejouée — gain de temps de build significatif sur un projet qui grossit.
 
-Démonstration live pas à pas (bloc le plus dense de la séance, prévoir le temps complet) : écrire ce Dockerfile ligne par ligne devant la salle sur le dépôt fil rouge, en commentant chaque choix ; lancer `docker build` et montrer les couches se construire une par une dans le terminal ; lancer `docker run` avec la publication du port, puis vérifier l'endpoint exposé avec `curl localhost:3000` ou dans le navigateur ; enfin modifier une ligne du code applicatif et relancer un build pour observer le cache en action sur les couches inchangées. Faire venir un étudiant au clavier pour reproduire une étape en conditions réelles avant de conclure.
+Démonstration live resserrée : écrire ce Dockerfile ligne par ligne devant la salle sur une petite application Node d'exemple, en commentant chaque choix ; lancer `docker build` et montrer les couches se construire une par une dans le terminal ; lancer `docker run` avec la publication du port, puis vérifier l'endpoint exposé avec `curl localhost:3000` ou dans le navigateur ; enfin modifier une ligne du code applicatif et relancer un build pour observer le cache en action sur les couches inchangées.
 
 Transition : récapituler les commandes qui accompagnent ce Dockerfile au quotidien.
 -->
@@ -811,19 +1074,19 @@ Transition : récapituler les commandes qui accompagnent ce Dockerfile au quotid
 # Docker — le cycle de commandes
 
 ```bash
-docker build -t devops-web:1.0 ./frontend            # construit l'image
-docker run -d --name web -p 8080:80 devops-web:1.0   # lance un conteneur
+docker build -t demo-app:1.0 .                       # construit l'image
+docker run -d --name demo -p 9090:80 demo-app:1.0   # lance un conteneur
 docker ps                                           # conteneurs actifs
-docker logs -f web                                  # suit les logs (Ctrl+C)
-docker exec -it web sh                              # shell dans le conteneur
-docker stop web && docker rm web                    # arrête puis supprime
+docker logs -f demo                                  # suit les logs (Ctrl+C)
+docker exec -it demo sh                              # shell dans le conteneur
+docker stop demo && docker rm demo                    # arrête puis supprime
 docker images                                       # images locales
 ```
 
 <v-clicks>
 
 - **Image** : `build`, `images` — **conteneur** : `run`, `ps`, `logs`, `exec`, `stop`, `rm`
-- `-p 8080:80` : port de l'**hôte** : port du **conteneur**
+- `-p 9090:80` : port de l'**hôte** : port du **conteneur**
 - `stop` n'efface pas le conteneur : `rm` est nécessaire pour libérer le nom
 
 </v-clicks>
@@ -833,15 +1096,15 @@ docker images                                       # images locales
 </style>
 
 <!--
-Durée : 3 min (1 min regagnée pour financer le TP frontend, aucune notion supprimée).
+Durée : 3 min.
 
 Regrouper en deux familles pour la mémorisation : commandes sur l'image, commandes sur le conteneur. Distinguer `docker ps` (actifs) de `docker ps -a` (tous, y compris arrêtés).
 
-Exemple concret : lancer deux fois `docker run --name web` provoque une erreur de nom déjà utilisé — d'où `stop` puis `rm`, ou l'option `--rm` pour les essais jetables.
+Exemple concret : lancer deux fois `docker run --name demo` provoque une erreur de nom déjà utilisé — d'où `stop` puis `rm`, ou l'option `--rm` pour les essais jetables.
 
-Cohérence des supports : cette slide utilise `./frontend` et le port 8080 (support du TP frontend, pas le fil rouge). Les démos précédentes sur l'application Node.js utilisaient le port 3000 ; ne pas mélanger les deux exemples.
+Les noms d'image et de conteneur ainsi que le port publié sont purement illustratifs : rien n'est imposé.
 
-Rappel de sécurité : ne jamais passer de secret en clair dans une commande partagée ; le TP qui suit n'en utilise aucun et publie sur un dépôt public.
+Rappel de sécurité : ne jamais passer de secret en clair dans une commande partagée  ; les TP publient sur un dépôt public.
 
 Transition : pause de 20 minutes, puis bonnes pratiques Docker.
 -->
@@ -856,19 +1119,51 @@ Durée : 20 min de pause.
 
 Répondre aux questions individuelles sur Git ou Docker pendant la pause.
 
-Transition au retour : bonnes pratiques Docker (cache, .dockerignore, utilisateur non privilégié, multi-stage).
+Transition au retour : construire de bonnes images (principes, cache, .dockerignore, utilisateur non privilégié, multi-stage).
 -->
 
 ---
 
-# Ordonner les couches intelligemment
+# Construire une image : principes généraux
+
+<div class="grid grid-cols-4 gap-3 mt-2 text-sm">
+  <div class="card"><div class="font-bold text-accent mb-1">🌐 API</div>Runtime + dépendances de production + code, port d'écoute</div>
+  <div class="card"><div class="font-bold text-accent mb-1">⚙️ Worker</div>Même base qu'une API, mais sans port : il consomme des tâches</div>
+  <div class="card"><div class="font-bold text-accent mb-1">⌨️ CLI</div>Un exécutable et son point d'entrée, lancé à la demande</div>
+  <div class="card"><div class="font-bold text-accent mb-1">🖼️ Front statique</div>Fichiers construits + un serveur web pour les servir</div>
+</div>
+
+<v-clicks>
+
+- **Reproductible** : version de l'image de base choisie (pas de `latest`), fichier de verrouillage des dépendances
+- **Séparer** les dépendances, les outils de construction et les artefacts : l'image finale n'embarque que le nécessaire à l'exécution
+- **Sans secret** dans l'image ; la configuration arrive à l'exécution
+- Le **cache** de build est un confort de vitesse, secondaire par rapport à la reproductibilité
+
+</v-clicks>
+
+<!--
+Durée : 3 min.
+
+Le raisonnement est le même pour tout type d'application : que faut-il, et seulement quoi, pour EXÉCUTER ? Une API et un worker partagent les mêmes dépendances ; un worker n'écoute aucun port. Une CLI est un exécutable lancé ponctuellement. Un front construit est un ensemble de fichiers statiques à servir. Dans tous les cas, ce qui sert à construire (compilateur, gestionnaire de paquets, dépendances de développement) n'a pas à finir dans l'image d'exécution.
+
+Reproductibilité : épingler la version de l'image de base et utiliser le fichier de verrouillage des dépendances donne le même résultat d'un jour à l'autre ; `latest` change sans prévenir.
+
+Exemple concret : deux builds du même code à un mois d'intervalle produisent des images différentes si la base n'est pas épinglée, ce qui complique le diagnostic d'un incident.
+
+Transition : le cache de build d'abord, puis `.dockerignore` et le multi-stage, qui formalise la séparation entre construction et exécution.
+-->
+
+---
+
+# Ordonner les couches : un gain de vitesse
 
 ```dockerfile
 # Moins optimal — tout invalidé au moindre changement de code
 COPY . .
 RUN npm ci
 
-# Préférable — le cache npm ci survit aux changements de code
+# Préférable — l'installation survit aux changements de code
 COPY package*.json ./
 RUN npm ci
 COPY . .
@@ -877,21 +1172,21 @@ COPY . .
 <v-clicks>
 
 - Les instructions **les moins susceptibles de changer** en premier
-- Le cache de build accélère radicalement les reconstructions
 - Un changement de code ne doit pas invalider l'installation des dépendances
+- Le cache accélère les rebuilds, mais **ne remplace pas** une construction reproductible
 
 </v-clicks>
 
 <!--
-Durée : 2 min (comparaison chronométrée à commenter rapidement ou à montrer en une seule exécution ; 1 min regagnée pour financer le TP frontend).
+Durée : 3 min (comparaison à commenter rapidement ou à montrer en une seule exécution).
 
-Ce pattern d'ordre des couches est LE réflexe à ancrer chez les étudiants — il a un impact direct et mesurable sur la vitesse de build en local et en CI.
+Chaque instruction crée une couche mise en cache tant que ses entrées ne changent pas ; dès qu'une couche est invalidée, toutes les suivantes sont reconstruites. Copier d'abord les fichiers de dépendances puis le code préserve donc le cache d'installation.
 
-Exemple concret : un changement d'une ligne dans le code applicatif peut faire passer un rebuild de 2 minutes à 2 secondes, simplement grâce à cet ordre.
+Exemple concret : un changement d'une ligne de code peut faire passer un rebuild de plusieurs minutes à quelques secondes, simplement grâce à cet ordre.
 
-Comparaison chronométrée : relancer un build avec l'ordre "moins optimal" puis avec l'ordre "préférable" sur le même changement de code, chronomètre à l'appui, pour rendre visible et mesurable le gain de cache devant la salle.
+Comparaison chronométrée possible : même changement de code avec chacun des deux ordres, chronomètre à l'appui.
 
-Transition : présenter .dockerignore et l'utilisateur non privilégié.
+Transition : `.dockerignore` et utilisateur non privilégié.
 -->
 
 ---
@@ -919,7 +1214,7 @@ USER node
 </v-clicks>
 
 <!--
-Durée : 2 min (vérification pratique brève, le `.dockerignore` est pratiqué ensuite dans le TP frontend ; 1 min regagnée pour financer le TP).
+Durée : 3 min (vérification pratique brève).
 
 Deux bonnes pratiques de sécurité et de propreté à traiter ensemble : elles sont souvent oubliées par des débutants, avec un vrai coût en sécurité et en taille d'image.
 
@@ -927,54 +1222,56 @@ Exemple concret : un `.env` copié dans l'image reste présent dans les couches 
 
 Vérification pratique : construire l'image sans puis avec `.dockerignore`, comparer la taille avec `docker images`, puis, seulement si le Dockerfile de l'image contient bien `USER node`, lancer `docker exec <conteneur> whoami` : la valeur attendue est `node`.
 
-Transition : introduire le multi-stage build pour réduire drastiquement la taille finale.
+Transition : le multi-stage build, qui sépare construction et exécution.
 -->
 
 ---
 
-# Multi-stage build
+# Multi-stage build : le principe
 
-```dockerfile {all|1-6|8-12|all}
-# --- Stage 1 : construction ---
-FROM node:20 AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
+```dockerfile {all|1-4|6-9|all}
+# Étape 1 : construction (outils nécessaires au build)
+FROM <image-avec-outils> AS build
+COPY . /src
+RUN <commande-de-build>
 
-# --- Stage 2 : exécution ---
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/node_modules ./node_modules
-COPY . .
-CMD ["node", "server.js"]
+# Étape 2 : exécution (image finale)
+FROM <image-runtime>
+COPY --from=build /src/<artefact> /app/<artefact>
+CMD ["<commande-de-démarrage>"]
 ```
 
 <v-clicks>
 
-- **Stage de construction** — image lourde avec tout l'outillage
-- **Stage d'exécution** — image minimale, ne contient que le nécessaire
-- Résultat final = uniquement le **dernier stage**
+- Plusieurs `FROM` : chaque étape repart d'une **image de base** propre
+- `COPY --from=build` ne récupère que des **artefacts** de l'étape précédente
+- L'image finale est celle de la **dernière étape** : outils et sources de build n'y figurent pas, sauf si on les copie
 
 </v-clicks>
 
+<style scoped>
+.slidev-code { font-size: 0.72em !important; line-height: 1.4 !important; }
+</style>
+
 <!--
-Durée : 3 min (dont ~1 min de comparaison de tailles ; 1 min regagnée pour financer le TP frontend).
+Durée : 3 min.
 
-L'idée clé : on n'a pas besoin des outils de build en production, seulement du résultat compilé/installé. Le multi-stage sépare proprement les deux mondes.
+Les éléments entre chevrons sont des paramètres de l'exemple : image avec compilateur ou gestionnaire de paquets, commande de build, artefact produit, image d'exécution, commande de démarrage. Insister sur les deux notions clés : `FROM ... AS` nomme une étape, `COPY --from=` en extrait des fichiers.
 
-Exemple concret : gain typique de x5 à x10 en taille d'image finale entre une version naïve et une version multi-stage optimisée avec une base alpine.
+L'intérêt est de séparer clairement construction et exécution : image finale plus simple à auditer, avec moins de paquets inutiles. Le gain de taille dépend du projet et se mesure avec `docker images` ; ne pas promettre un chiffre.
 
-Comparaison rapide : afficher côte à côte la taille de l'image mono-stage construite plus tôt et celle du multi-stage via `docker images`, pour rendre le gain concret et chiffré.
+Un multi-stage n'a de sens que s'il y a un vrai build à isoler : ajouter une étape qui ne produit aucun artefact utile n'apporte rien.
 
-Transition : appliquer le même principe à un frontend, où la différence de taille est encore plus nette.
+Exemple concret : un projet compilé produit un binaire ou un dossier statique dans l'étape 1 ; l'étape 2 ne reçoit que ce résultat.
+
+Transition : un exemple explicite avec un frontend.
 -->
 
 ---
 
-# Frontend : build statique → Nginx
+# Exemple : frontend construit avec Node, servi par Nginx
 
-```dockerfile {all|1-6|8-11|all}
+```dockerfile {all|1-6|8-9|all}
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
@@ -984,36 +1281,30 @@ RUN npm run build
 
 FROM nginx:1.28-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-HEALTHCHECK --interval=10s --timeout=2s --retries=3 CMD wget -q --spider http://127.0.0.1/ || exit 1
 ```
 
 <v-clicks>
 
-- **Stage build** : Node produit les fichiers statiques ; **image runtime** : Nginx seul
-- **React/Vue (Vite)** : sortie `dist` ; **Angular** : `dist/<nom>/browser`
-- Angular : adapter la copie → `/app/dist/<nom>/browser`
+- **Étape build** : Node installe les dépendances et produit les fichiers statiques
+- **Étape finale** : Nginx sert ces fichiers ; Node et `node_modules` n'y figurent pas
+- Le dossier de sortie (`dist` ici) et les versions sont **illustratifs** : ils dépendent du projet et de l'outil
 
 </v-clicks>
 
 <style scoped>
-.slidev-code { font-size: 0.65em !important; line-height: 1.35 !important; }
+.slidev-code { font-size: 0.7em !important; line-height: 1.4 !important; }
 </style>
 
 <!--
-Durée : 2 min (1 min regagnée pour financer le TP frontend).
+Durée : 3 min.
 
-Dockerfile de référence à lire avant le TP, où les étudiants écrivent le leur pour leur propre frontend (Angular, React ou Vue). Le Node du Dockerfile sert uniquement à construire dans Docker ; le poste de l'étudiant a aussi Node 22 LTS ou bun pour générer le projet et contrôler le build local.
+Exemple d'illustration d'un seul cas, pas un modèle à recopier : un frontend dont le build produit des fichiers statiques. Étape 1 : `npm ci` (reproductible grâce au fichier de verrouillage) puis `npm run build`. Étape 2 : Nginx repart d'une image propre et reçoit uniquement la sortie statique dans le dossier qu'il sert.
 
-Lire en deux temps : le premier stage lance `npm ci` (reproductible grâce à `package-lock.json`) puis `npm run build`. Le second repart de Nginx et ne copie que la sortie statique vers `/usr/share/nginx/html`. Node et `node_modules` ne sont pas dans l'image finale : image plus petite, surface d'attaque réduite.
+Dossier de sortie : il dépend de l'outil et de la version (par exemple `dist` pour un projet Vite, un sous-dossier propre au projet pour Angular) ; il se vérifie dans son propre projet après un build, jamais par supposition. Les numéros de version des images sont eux aussi des exemples à adapter.
 
-Dossier de sortie : Vite (React et Vue) produit `dist` ; Angular produit `dist/<nom>/browser` (`<nom>` = nom du projet, `frontend` avec `ng new frontend`). Pour Angular, remplacer la ligne de copie par `COPY --from=build /app/dist/<nom>/browser /usr/share/nginx/html`. Toujours vérifier le dossier réel après `npm run build` (le dossier réel dépend du projet et de la version de l'outil).
+Note SPA : une application à routes côté client peut renvoyer 404 au rechargement d'une route si le serveur ne redirige pas vers `index.html` ; on le mentionne sans le détailler.
 
-Healthcheck : `wget -q --spider` vérifie que Nginx répond en HTTP sans télécharger le contenu ; intervalle de 10 s pour voir `healthy` rapidement. Il est facultatif dans le TP.
-
-Note SPA : une application à routes côté client (ex. `/profil`) renvoie 404 au rechargement car Nginx cherche un fichier ; il faut une configuration Nginx de repli vers `index.html` (`try_files`). On la mentionne sans la détailler.
-
-Transition : un conteneur est jetable ; voir comment conserver des données avec les volumes avant de passer à Compose.
+Transition : un conteneur est jetable ; voir comment conserver des données avec les volumes.
 -->
 
 ---
@@ -1028,11 +1319,11 @@ Transition : un conteneur est jetable ; voir comment conserver des données avec
 | Portabilité | Bonne | Dépend de l'arborescence de l'hôte |
 
 <Tip type="warning">
-Le contenu d'un conteneur disparaît avec lui ; seul un volume (ou un bind mount) survit à `docker rm`.
+Le contenu d'un conteneur disparaît avec lui ; seul un volume (ou un bind mount) survit à <code>docker rm</code>.
 </Tip>
 
 <!--
-Durée : 3 min (dont ~1 min de démonstration ; 1 min regagnée pour financer le TP frontend, volumes conservés comme notion générale).
+Durée : 3 min (dont ~1 min de démonstration).
 
 Message clé : le système de fichiers d'un conteneur est éphémère. Pour persister, on monte soit un volume géré par Docker (nommé), soit un dossier de l'hôte (bind mount).
 
@@ -1040,92 +1331,157 @@ Démonstration enseignant : `docker volume create demo-data`, lancer un conteneu
 
 Exemple concret : une base PostgreSQL sans volume perd toutes ses données au `docker rm` ; un bind mount est pratique pour le développement mais dépend du chemin de la machine, donc peu portable.
 
-Transition : Compose décrit plusieurs services et leur réseau dans un seul fichier ; les volumes déclarés au même endroit relèvent de la notion générale vue ici.
+Transition : une application réunit plusieurs conteneurs — pourquoi et comment les décrire avec Compose.
 -->
 
 ---
 
-# Docker Compose — plusieurs services, un fichier
+# Pourquoi plusieurs conteneurs ?
+
+```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
+graph LR
+  U["Navigateur"] --> F["Front<br/>pages statiques"]
+  U --> A["API<br/>logique métier"]
+  A --> D[("Base de données")]
+```
+
+<v-clicks>
+
+- Une application réelle réunit plusieurs **services**, chacun avec sa responsabilité (front, API, base de données, cache...)
+- Un conteneur = en général **un processus principal** : on en lance donc plusieurs
+- À la main, il faut enchaîner des `docker run` avec réseau, ports, volumes et variables : **long et sujet aux erreurs**
+
+</v-clicks>
+
+<!--
+Durée : 2 min.
+
+Partir du besoin avant l'outil. Une application web classique est faite de plusieurs briques qui communiquent ; les isoler dans des conteneurs distincts permet de les mettre à jour, de les remplacer et de les superviser séparément. Mais lancer chacune à la main implique de créer un réseau, de retenir l'ordre de démarrage, les ports publiés, les volumes et les variables : chaque oubli devient un problème de reproductibilité.
+
+Exemple concret : un nouveau collègue doit lancer quatre conteneurs avec une dizaine d'options chacun, copiées depuis un vieux message ; au moindre écart, rien ne fonctionne.
+
+Transition : Compose décrit cet ensemble de façon déclarative.
+-->
+
+---
+
+# Compose : décrire l'ensemble, de façon déclarative
+
+<Comparison left="Commandes à la main" right="Fichier Compose" leftColor="orange" rightColor="green">
+  <template #left>
+
+  - Suite de `docker run` à rejouer dans le bon ordre
+  - Réseau, ports et volumes à gérer soi-même
+  - Connaissance dans la tête ou dans un vieux message
+
+  </template>
+  <template #right>
+
+  - Un fichier **versionné** décrit services, réseau et volumes
+  - Une commande démarre l'ensemble, une autre l'arrête
+  - Même description pour toute l'équipe, relue comme du code
+
+  </template>
+</Comparison>
+
+<v-clicks>
+
+- On décrit l'**état souhaité** ; Compose crée ce qui manque (même idée que l'Infrastructure as Code)
+- Compose cible **une seule machine** : développement, démonstration, petits environnements
+
+</v-clicks>
+
+<!--
+Durée : 2 min.
+
+Faire le lien avec l'Infrastructure as Code vue plus tôt : on déclare ce que l'on veut, l'outil se charge de l'obtenir. Compose ne remplace pas un orchestrateur multi-machines ; il simplifie la description et le lancement d'un ensemble de conteneurs sur une machine.
+
+Exemple concret : le même fichier lance la pile à l'identique sur le poste de chaque membre de l'équipe.
+
+Transition : lire un fichier Compose, d'abord à titre d'exemple pédagogique.
+-->
+
+---
+
+# Lire un fichier Compose
 
 `compose.yaml`
 
 ```yaml
-name: devops-lab
+name: demo
 
 services:
   web:
-    build: ./frontend
-    image: devops-web:1.0
+    image: nginx:1.28-alpine
     ports:
-      - "8080:80"
+      - "9090:80"
     depends_on:
-      - backend
+      - whoami
 
-  backend:
+  whoami:
     image: traefik/whoami:v1.11.0
 ```
 
 <v-clicks>
 
-- **`web`** : construit depuis `./frontend` et publié sur l'hôte (**8080**)
-- **`backend`** : image open source `traefik/whoami`, sans `ports:` donc **non publié** sur l'hôte
-- `depends_on` règle seulement l'**ordre de démarrage**, pas la disponibilité
+- **`services`** : un bloc par conteneur ; **`image`** : l'image utilisée
+- **`ports: "9090:80"`** : port de l'**hôte** 9090 → port **interne** 80 du conteneur
+- `whoami` n'a **pas** de `ports:` : il n'est pas publié sur l'hôte
+- `depends_on` règle l'**ordre de démarrage**, pas la disponibilité (≠ readiness)
 
 </v-clicks>
 
 <style scoped>
-.slidev-code { font-size: 0.7em !important; line-height: 1.3 !important; }
+.slidev-code { font-size: 0.72em !important; line-height: 1.3 !important; }
 </style>
 
 <!--
 Durée : 3 min.
 
-Compose décrit une stack multi-conteneurs de façon déclarative : un fichier versionné, une commande pour démarrer et arrêter. `name: devops-lab` fixe le nom du projet, donc le réseau s'appellera `devops-lab_default` quel que soit le dossier de travail.
+Exemple purement pédagogique, sans rapport avec une architecture front + API + base de données : un serveur web et un petit service de démonstration. `name: demo` fixe le nom du projet, donc le réseau par défaut s'appellera `demo_default`. `traefik/whoami` est un petit serveur HTTP open source qui répond avec le nom et l'adresse de son conteneur ; tag explicite, jamais `latest`. Les valeurs (nom de projet, ports, versions) sont illustratives.
 
-Exemple concret : sans Compose, il faudrait créer un réseau puis enchaîner deux `docker run` dans le bon ordre ; ici tout tient dans ce fichier.
+Précision importante : `depends_on` simple garantit seulement que le conteneur démarre après l'autre, pas que le service à l'intérieur soit prêt à répondre ; pour attendre un service prêt, il faut un healthcheck et une condition dédiée, hors périmètre ici.
 
-Points à pointer : `build: ./frontend` réutilise le Dockerfile du TP (compose.yaml placé dans le dossier parent de `frontend/`) et `image: devops-web:1.0` donne à l'image construite le même nom que précédemment. `web` est le seul service publié (`8080:80`). `backend` utilise `traefik/whoami` en tag explicite `v1.11.0` (tag vérifié sur Docker Hub, jamais `latest`) : un petit serveur HTTP open source qui répond avec le nom et l'IP de son conteneur, écoute sur le port 80 et n'a pas de `ports:`.
+Exemple concret : une API qui démarre avant que sa base soit prête échoue à sa première connexion même avec `depends_on` ; il faut une logique de nouvelle tentative ou une condition de santé.
 
-Précision importante : `depends_on` simple ne garantit que l'ordre de démarrage des conteneurs, pas qu'un service soit prêt ; `whoami` n'a pas de healthcheck dans ce parcours, donc on ne parle pas de `service_healthy`. Le frontend n'appelle pas fonctionnellement `backend` : c'est un exercice de connectivité et de DNS, pas une vraie application à deux niveaux.
-
-Transition : voir comment `web` trouve `backend` sans connaître son IP.
+Transition : comment ces services se parlent, et comment le navigateur les atteint.
 -->
 
 ---
 
-# Réseau Compose : DNS par nom de service
+# Réseau Compose : DNS interne, navigateur dehors
 
 ```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
 graph LR
-  H["Hôte<br/>localhost:8080"] -->|"8080 → 80"| W
-  subgraph N["Réseau devops-lab_default"]
-    W["web<br/>Nginx :80"] -->|"http://backend:80"| B["backend<br/>whoami :80"]
+  B["Navigateur<br/>sur l'hôte"] -->|"localhost:9090"| W
+  subgraph N["Réseau Docker du projet"]
+    W["web<br/>port interne 80"] -->|"http://whoami:80"| Q["whoami<br/>port interne 80"]
   end
 ```
 
 <v-clicks>
 
-- Compose crée le réseau **`devops-lab_default`** et y attache les deux services
-- Le DNS interne résout le **nom du service** (`backend`) vers l'IP de son conteneur
-- Port **80** = port interne du conteneur ; **8080** = port publié sur l'hôte
-- Entre services, on utilise le port interne ; `backend` n'est pas joignable depuis l'hôte
+- Compose crée un **réseau par défaut** et y attache tous les services
+- Entre services, le **DNS interne** résout le **nom du service** vers l'IP de son conteneur
+- Le **navigateur** est sur l'hôte, **hors** du réseau Docker : il n'utilise que les ports **publiés**
+- Port **hôte** (9090) ≠ port **interne** (80) : entre conteneurs, on utilise le port interne
 
 </v-clicks>
 
 <Tip type="info">
-Les volumes restent une notion à part : ils persistent des données, ils ne servent pas à faire communiquer les services.
+Les volumes persistent des données ; ils ne servent pas à faire communiquer les services.
 </Tip>
 
 <!--
 Durée : 3 min.
 
-Lire le schéma de gauche à droite : seul `web` est atteint depuis l'hôte via 8080 vers 80. À l'intérieur du réseau `devops-lab_default`, `web` joint `backend` par son nom et par le port interne 80. Ne pas confondre : `8080` n'existe que sur l'hôte ; entre conteneurs, aucun mapping de port n'est nécessaire.
+Lire le schéma : le navigateur se trouve sur la machine hôte et n'atteint que ce qui est publié (`localhost:9090`). À l'intérieur du réseau du projet, `web` joint `whoami` par son nom et par le port interne 80 ; aucun mapping de port n'est nécessaire entre conteneurs. Les adresses IP des conteneurs changent à chaque recréation, d'où l'usage du nom de service. Même idée que le nom DNS d'un Service Kubernetes, vu ensuite.
 
-Les IP des conteneurs changent à chaque recréation : c'est pourquoi on utilise le nom du service, résolu par le DNS intégré de Docker. Même idée que le nom DNS de Service en Kubernetes, vu juste après.
+Conséquence à retenir : un service non publié n'est pas joignable depuis le navigateur ; un navigateur ne sait pas résoudre le nom d'un service interne ; et dans un conteneur, `localhost` désigne le conteneur lui-même, pas la machine hôte ni un autre service.
 
-Rappel court sur les volumes : ils sont traités dans la slide dédiée précédente (volume nommé vs bind mount) ; aucun volume, aucune variable d'environnement ni secret dans ce parcours Compose.
+Exemple concret : depuis le conteneur `web`, `http://whoami` répond ; depuis le navigateur de l'hôte, `http://whoami` ne se résout pas.
 
-Transition : les commandes Compose du quotidien, puis le TP frontend.
+Transition : les commandes Compose du quotidien.
 -->
 
 ---
@@ -1142,7 +1498,7 @@ docker compose down -v         # idem + SUPPRIME les volumes déclarés
 ```
 
 <Tip type="warning">
-`down -v` supprime aussi les volumes déclarés dans le fichier : à réserver aux environnements jetables.
+<code>down -v</code> supprime aussi les volumes déclarés dans le fichier : à réserver aux environnements jetables.
 </Tip>
 
 <style scoped>
@@ -1150,371 +1506,13 @@ docker compose down -v         # idem + SUPPRIME les volumes déclarés
 </style>
 
 <!--
-Durée : 3 min (dont ~1 min de démonstration).
+Durée : 2 min.
 
 Montrer le cycle complet : `up -d --build`, `ps`, `logs -f web` (Ctrl+C pour quitter), `exec web sh` pour entrer dans un service, puis `down`, qui supprime conteneurs et réseau.
 
 Distinction à retenir : `down` supprime conteneurs et réseau mais conserve les volumes nommés ; `down -v` les efface aussi. Notre stack d'exemple n'en déclare aucun, mais le réflexe doit être pris.
 
 Exemple concret : un `down -v` lancé par réflexe sur une stack de préproduction efface ses données ; on vérifie toujours l'option `-v` avant de valider.
-
-Transition : le TP frontend de la séance, du projet vide jusqu'au dépôt GitHub public.
--->
-
----
-
-# TP — Votre frontend conteneurisé : feuille de route
-
-```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
-graph LR
-  A["1. Init<br/>frontend/"] --> B["2. Build local"] --> C["3. Dockerfile"] --> D["4. Run<br/>8080:80"] --> E["5. GitHub<br/>public"]
-```
-
-<v-clicks>
-
-- Dossier imposé : **`frontend/`** ; framework au choix : **Angular, React ou Vue**
-- Image : **`devops-web:1.0`** ; conteneur : **`web`** ; port **8080 → 80**
-- Preuve 1 : l'**URL publique** de votre dépôt GitHub
-- Preuve 2 : `docker image ls devops-web:1.0` (image **locale**)
-
-</v-clicks>
-
-<!--
-Durée : 3 min.
-
-Cadrer le TP : c'est le propre frontend de l'étudiant, créé de zéro avec npm ou bun, sans starter fourni, et indépendant du fil rouge Node.js/API (port 3000) qui revient en séances 3 et 4. Les cinq étapes se suivent ; chaque étape a un contrôle visible. Binômes autorisés, mais chacun pousse son propre dépôt.
-
-Budget indicatif du TP obligatoire : 31 min au total = feuille de route 3 + initialisation 6 + installation/build 4 + Dockerfile 5 + build/run/contrôle 5 + dépôt GitHub 6 + checkpoint 2. Le Compose est un bonus non chronométré (0 min dans le budget).
-
-Coupes de repli à annoncer dès maintenant :
-- À T+15 min (fin de la partie Dockerfile) : un étudiant sans projet qui build encore passe en mode copier-coller du Dockerfile projeté ; le bonus Compose est abandonné.
-- Réseau coupé ou registres inaccessibles (npm, Docker Hub) : démonstration enseignant de 6 min sur un frontend préparé (build, run, `curl -I`, `docker image ls`), les étudiants suivent et reprennent le TP à la maison.
-- Push reporté : si l'authentification GitHub bloque, commit local validé en séance (`git log`), push et URL publique à rendre avant la prochaine séance.
-Pause et QCM jamais réduits.
-
-Transition : étape 1, créer le projet.
--->
-
----
-
-# TP 1/6 — Créer le projet dans `frontend/`
-
-| Framework | npm | bun |
-|---|---|---|
-| **Angular** | `npm create @angular@latest frontend` | `bunx @angular/cli new frontend --package-manager bun` |
-| **React** | `npm create vite@latest frontend -- --template react` | `bun create vite frontend --template react` |
-| **Vue** | `npm create vue@latest frontend` | `bun create vue frontend` |
-
-<v-clicks>
-
-- **Angular** : Node reste requis, même avec bun ; répondre **non** à SSR/SSG
-- **React / Vue** : options facultatives → **non**
-- Ensuite : `cd frontend`
-
-</v-clicks>
-
-<style scoped>
-table { font-size: 0.78em; }
-</style>
-
-<!--
-Durée : 6 min (dont ~4 min de manipulation en autonomie).
-
-Choisir UNE ligne (un framework) et UNE colonne (npm ou bun). Le dossier doit s'appeler `frontend`, pour que toutes les commandes suivantes soient identiques pour toute la salle.
-
-Angular : même avec `bunx`, Angular CLI s'exécute sur Node, donc Node 22 LTS doit être installé. Aux questions SSR/SSG (rendu serveur / prérendu), répondre non : un site statique suffit pour Nginx. Les autres questions (style, etc.) : valeurs par défaut. Angular CLI initialise aussi un dépôt Git et un premier commit dans `frontend/` ; ce n'est pas gênant pour l'étape GitHub.
-
-React / Vue : les assistants proposent des options facultatives (TypeScript, routeur, tests, lint, démarrage immédiat, etc.) : répondre non, ou valeur la plus simple. Aucun framework n'est plus « juste » qu'un autre pour ce TP.
-
-Les commandes de génération sont celles documentées par les outils au moment de la rédaction ; les assistants évoluent, donc les questions posées peuvent légèrement varier. Vérifier avant la séance sur un poste de test (non exécuté lors de la rédaction de ces slides).
-
-Erreurs fréquentes : mauvais dossier (le dossier ne s'appelle pas `frontend`), version de Node trop ancienne, proxy ou réseau bloquant npm.
-
-Transition : installer les dépendances et construire en local.
--->
-
----
-
-# TP 2/6 — Installer et construire en local
-
-<div class="grid grid-cols-2 gap-4">
-<div>
-
-**npm**
-
-```bash
-cd frontend
-npm install
-npm run build
-```
-
-</div>
-<div>
-
-**bun**
-
-```bash
-cd frontend
-bun install
-bun run build
-```
-
-</div>
-</div>
-
-Contrôler la sortie statique :
-
-```bash
-ls dist            # React / Vue (Vite)
-ls dist/*/browser  # Angular
-```
-
-<v-clicks>
-
-- Un dossier avec **`index.html`** doit exister
-- Notez le chemin exact : il servira au `Dockerfile`
-
-</v-clicks>
-
-<!--
-Durée : 4 min.
-
-`install` récupère les dépendances ; `build` produit les fichiers statiques. Ce contrôle local évite de découvrir une erreur de code au milieu d'un build Docker plus lent.
-
-React et Vue (Vite) : sortie dans `dist`. Angular : `dist/<nom>/browser` (avec `ng new frontend`, `dist/frontend/browser`). Dans le doute, `ls dist` puis explorer. Si le nom du dossier diffère, c'est ce chemin qu'il faudra copier dans le Dockerfile.
-
-Erreurs fréquentes : commande lancée hors de `frontend/` ; version de Node insuffisante ; avertissements de budget Angular (sans gravité pour le TP) ; dépendances inaccessibles faute de réseau.
-
-Transition : écrire le Dockerfile qui reproduit ce build dans Docker.
--->
-
----
-
-# TP 3/6 — Dockerfile et `.dockerignore`
-
-<div class="grid grid-cols-2 gap-4">
-<div>
-
-```dockerfile
-# frontend/Dockerfile
-FROM node:22-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-FROM nginx:1.28-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-```
-
-</div>
-<div>
-
-```text
-# frontend/.dockerignore
-node_modules
-dist
-.git
-.env
-```
-
-</div>
-</div>
-
-<v-clicks>
-
-- **Angular** : copier `/app/dist/<nom>/browser`
-- **bun** : `npm ci` exige un `package-lock.json` → `npm install --package-lock-only`
-
-</v-clicks>
-
-<style scoped>
-.slidev-code { font-size: 0.7em !important; line-height: 1.35 !important; }
-</style>
-
-<!--
-Durée : 5 min (dont ~4 min d'écriture ; modèle : slide « Frontend : build statique → Nginx »).
-
-Les étudiants écrivent eux-mêmes `frontend/Dockerfile` et `frontend/.dockerignore`. `EXPOSE 80` et le healthcheck de la slide modèle sont facultatifs dans ce TP : les ajouter si le temps le permet.
-
-Angular : remplacer la ligne de copie par `COPY --from=build /app/dist/<nom>/browser /usr/share/nginx/html`, `<nom>` étant le dossier constaté à l'étape précédente.
-
-Note bun : le Dockerfile pédagogique utilise `npm ci`, qui exige `package-lock.json` synchronisé avec `package.json`. Un projet initialisé avec bun a un `bun.lock`, pas de `package-lock.json` : générer le fichier avec `npm install --package-lock-only`, sans toucher à `node_modules`, puis le versionner. Sinon `npm ci` échoue.
-
-`.dockerignore` : exclut `node_modules` (build plus rapide, pas de dépendances de l'hôte copiées), `dist`, `.git` et surtout `.env` (jamais de secret copié dans une couche d'image).
-
-Erreurs fréquentes : mauvais chemin de copie (Nginx affiche alors sa page par défaut ou 403/404) ; `npm ci` en échec (lockfile absent) ; fichiers créés au mauvais endroit (hors `frontend/`).
-
-Coupe de repli : à T+15 min, Dockerfile projeté en copier-coller.
-
-Transition : construire l'image, la lancer et la contrôler.
--->
-
----
-
-# TP 4/6 — Construire, lancer, contrôler
-
-```bash
-docker build -t devops-web:1.0 .
-docker run -d --name web -p 8080:80 devops-web:1.0
-curl -I localhost:8080
-docker ps
-docker image ls devops-web:1.0
-docker stop web && docker rm web
-```
-
-<v-clicks>
-
-- Dans `frontend/`, le `.` final de `docker build` est le **contexte**
-- `curl -I` doit répondre **`200 OK`** ; `http://localhost:8080` dans le navigateur
-- `-p 8080:80` : port **hôte** 8080 → port **conteneur** 80
-- Gardez l'**image** (preuve) ; supprimez le **conteneur**
-
-</v-clicks>
-
-<style scoped>
-.slidev-code { font-size: 0.75em !important; line-height: 1.4 !important; }
-</style>
-
-<!--
-Durée : 5 min (dont ~4 min de manipulation ; le premier build est le plus long).
-
-Déroulé : build, run, `curl -I`, navigateur, `docker ps` (état `healthy` après ~10 s si le healthcheck a été ajouté), `docker image ls devops-web:1.0` (taille, preuve locale), puis nettoyage du conteneur. L'image reste pour le checkpoint.
-
-Contrôle optionnel du runtime : `docker exec web sh -c 'command -v node || echo "node absent"'` (avant l'arrêt) montre que Nginx ne contient pas Node, donc image petite et surface réduite.
-
-Erreurs fréquentes : port 8080 occupé (changer le côté hôte, ex. `8081:80`, et adapter `curl`) ; nom `web` déjà utilisé (oubli du `rm`) ; 403/404 (chemin de copie du build incorrect) ; build très lent sans `.dockerignore` ; 404 au rechargement d'une route côté client (SPA fallback, `try_files` Nginx, hors périmètre).
-
-Coupe de repli : réseau coupé ou image Node indisponible → démonstration enseignant de 6 min (build, run, `curl -I`, `docker image ls`), reprise à la maison.
-
-Transition : versionner ce projet sur le dépôt GitHub public.
--->
-
----
-
-# TP 5/6 — Versionner sur GitHub (public)
-
-<div class="grid grid-cols-2 gap-4">
-<div>
-
-```bash
-echo ".env" >> .gitignore
-git init
-git status
-git add .
-git commit -m "chore: frontend conteneurisé"
-git branch -M main
-git remote add origin <URL>
-git push -u origin main
-```
-
-</div>
-<div>
-
-- `git status` : ni `node_modules`, ni `dist`, ni `.env`
-- Dépôt **public** : l'historique est visible par tous
-- Secret poussé = **secret à révoquer**
-- `<URL>` : l'URL de **votre** dépôt vide
-
-</div>
-</div>
-
-<style scoped>
-.slidev-code { font-size: 0.68em !important; line-height: 1.35 !important; }
-</style>
-
-<!--
-Durée : 6 min (dont ~4 min de manipulation).
-
-Commandes à lancer dans `frontend/`. Avant `git add .`, `git status` doit montrer le code source, `Dockerfile`, `.dockerignore`, `.gitignore` et le lockfile ; pas `node_modules`, `dist` ni `.env`. Les assistants Vite/Angular/Vue génèrent déjà un `.gitignore` ; la ligne `echo ".env"` garantit que `.env` est ignoré. Angular a déjà fait `git init` : `git init` est alors sans danger.
-
-Message de commit au format Conventional Commits : `chore: frontend conteneurisé`. `git branch -M main` aligne le nom de branche sur GitHub ; `git remote add origin <URL>` relie le dépôt public vide créé avant la séance (sans README, sinon `push` rejeté).
-
-Sécurité : le dépôt est public. Vérifier l'email Git (`git config user.email`, idéalement l'adresse noreply GitHub) et qu'aucun secret ni `.env` n'est suivi. Un secret poussé doit être considéré comme compromis : le révoquer, puis nettoyer l'historique ; supprimer le fichier dans un nouveau commit ne suffit pas.
-
-Authentification : HTTPS avec token personnel ou SSH selon la configuration. Ne jamais coller de token dans une commande partagée ou dans l'URL du remote.
-
-Coupe de repli (push reporté) : commit local validé par `git log --oneline`, push et URL publique à rendre avant la prochaine séance.
-
-Transition : checkpoint des preuves.
--->
-
----
-
-# TP 6/6 — Checkpoint : preuves et critères
-
-<div class="grid grid-cols-2 gap-4">
-<div>
-
-## Preuves à montrer
-
-- **URL publique** du dépôt, ouverte en navigation privée
-- **Image locale** : `docker image ls devops-web:1.0`
-
-</div>
-<div>
-
-## Critères de réussite
-
-- Projet dans `frontend/`, build local OK
-- `Dockerfile` + `.dockerignore` versionnés
-- `localhost:8080` répond **200**
-- Aucun `.env` ni secret, commit conventionnel
-
-</div>
-</div>
-
-<!--
-Durée : 2 min.
-
-Tour rapide : chaque étudiant (ou binôme) montre l'URL publique ouverte en navigation privée, qui prouve que le dépôt est bien public et contient les fichiers attendus, et la sortie de `docker image ls devops-web:1.0`, preuve locale que l'image existe. L'image n'est pas publiée dans un registre dans ce TP.
-
-Critères : projet dans `frontend/`, build local qui passe, Dockerfile et `.dockerignore` versionnés (avec `package-lock.json` pour `npm ci`), réponse 200 sur 8080 observée, pas de secret ni de `.env`, commit `chore: frontend conteneurisé` sur `main`.
-
-Cas non terminés : push reporté (commit local prouvé par `git log`, URL à rendre avant la séance 3) ; build impossible faute de réseau (démonstration enseignant, reprise à la maison).
-
-Rappel : ce frontend est distinct du fil rouge Node.js/API (port 3000) qui reprend en séance 3. La séance 3 ne réutilise pas ce Dockerfile frontend.
-
-Transition : bonus Compose pour ceux qui ont terminé ; les autres passent directement à la CNCF.
--->
-
----
-
-# Bonus (non chronométré) — Compose : web + whoami
-
-Hors livrable obligatoire. `compose.yaml` dans le **dossier parent**, **hors dépôt `frontend/`**.
-
-```bash
-docker compose up -d --build
-docker compose ps
-curl -I localhost:8080
-docker compose exec web wget -qO- http://backend
-curl http://backend    # depuis l'hôte : échec attendu
-docker compose down
-```
-
-<v-clicks>
-
-- `ps` : `web` publié en `8080->80`, `backend` **sans port publié**
-- `wget` depuis `web` : le nom `backend` est résolu par le DNS Compose
-- Échec de `curl` depuis l'hôte : **normal**
-
-</v-clicks>
-
-<style scoped>
-.slidev-code { font-size: 0.7em !important; line-height: 1.35 !important; }
-</style>
-
-<!--
-Durée : 0 min (bonus non chronométré, hors budget : seulement pour les étudiants qui ont terminé le checkpoint ; les autres passent à la suite sans interruption).
-
-Prérequis : le `compose.yaml` de la slide Compose (`name: devops-lab`, `web` en `build: ./frontend` + `image: devops-web:1.0`, `backend` en `traefik/whoami:v1.11.0`), placé dans le dossier PARENT de `frontend/` et non dans le dépôt versionné : le dépôt public contient seulement le frontend. Le conteneur `web` du TP doit être supprimé, sinon le port 8080 est occupé. Terminal Bash/WSL.
-
-Points à faire noter : le frontend n'appelle pas `backend` ; c'est un exercice de connectivité et de DNS. Seul `web` est publié ; entre services, on utilise le port interne 80, pas 8080. `depends_on` ne règle que l'ordre de démarrage.
-
-Variantes pour les plus rapides : `docker compose exec web getent hosts backend`, `docker compose exec web hostname -i`, `docker network inspect devops-lab_default --format '{{range .Containers}}{{.Name}} {{.IPv4Address}}{{"\n"}}{{end}}'`, et `docker compose exec web ping -c 2 backend` (peut être absent ou filtré ; la preuve de référence est `wget`). Alternative sans outil dans l'image : `docker run --rm --network devops-lab_default curlimages/curl -s http://backend`.
-
-Erreurs fréquentes : Compose lancé hors du dossier contenant `compose.yaml` ; nom de réseau `<dossier>_default` si `name:` est absent ; `exec` lancé avant la fin du démarrage.
 
 Transition : prendre de la hauteur avec la CNCF et l'écosystème cloud-native.
 -->
@@ -1536,7 +1534,7 @@ Fondation open source qui héberge des projets cloud-native, organise leur gouve
 </v-clicks>
 
 <!--
-Durée : 2 min (échange court sur un projet connu ; 1 min regagnée pour financer le TP frontend).
+Durée : 2 min (échange court possible sur un projet connu).
 
 Point important à verbaliser clairement : la CNCF est présentée AVANT Kubernetes volontairement, pour éviter de réduire tout l'écosystème cloud-native à un seul outil. Kubernetes n'est qu'un projet hébergé parmi d'autres.
 
@@ -1614,7 +1612,7 @@ Transition : nommer précisément ces 5 termes dans le tableau qui suit.
 | **Service** | La porte d'entrée stable vers l'application |
 
 <!--
-Durée : 2 min.
+Durée : 1 min.
 
 Se limiter strictement à ces 5 mots — c'est le vocabulaire visé par le module, pas plus. Aucune démonstration de `kubectl`, aucun manifeste YAML complexe à ce stade.
 
@@ -1665,11 +1663,11 @@ readinessProbe:
 </style>
 
 <!--
-Durée : 2 min (1 min regagnée pour financer le TP frontend ; lire le tableau, ne pas détailler le YAML).
+Durée : 2 min (lire le tableau, ne pas détailler le YAML).
 
 Message central : liveness = « redémarre-moi si je suis bloqué » ; readiness = « ne m'envoie pas de trafic tant que je ne suis pas prêt ». Un Pod qui démarre lentement, ou qui perd temporairement sa dépendance, doit être NotReady, pas redémarré.
 
-Le YAML est un extrait à lire, pas à écrire : exemple générique avec un endpoint `/health` sur le port 3000, sans lien avec le TP frontend. Dans la pratique, on règle aussi des délais et des seuils ; hors périmètre ici.
+Le YAML est un extrait à lire, pas à écrire : exemple générique avec un endpoint `/health` sur le port 3000, sans lien avec les TP. Dans la pratique, on règle aussi des délais et des seuils ; hors périmètre ici.
 
 Lien HA de la séance 1 : c'est le même principe que le health check d'un load balancer, qui retire du trafic une instance malade.
 
@@ -1702,7 +1700,7 @@ graph LR
 </v-clicks>
 
 <!--
-Durée : 3 min.
+Durée : 2 min.
 
 Lire le schéma : le client s'adresse toujours au Service (nom DNS et IP stables), jamais à un Pod, dont l'adresse change. Le Pod C NotReady est exclu tant que sa readiness échoue.
 
@@ -1710,7 +1708,7 @@ HA : avec un seul réplica ou un seul node, une panne coupe le service. Avec au 
 
 Nuance : un Service interne au cluster n'est pas un load balancer cloud externe ; l'exposition vers Internet relève d'autres objets ou du fournisseur cloud, hors périmètre de cette introduction.
 
-Liens : health check/load balancer de la séance 1 ; et le nom DNS de service Compose (`web`, `backend`) vu plus tôt joue un rôle comparable, à l'échelle d'une seule machine.
+Liens : health check/load balancer de la séance 1 ; et le nom DNS de service Compose (`web`, `whoami`) vu plus tôt joue un rôle comparable, à l'échelle d'une seule machine.
 
 Aucun cluster, aucun TP.
 
@@ -1719,44 +1717,41 @@ Transition : conclure sur les limites de cette introduction et faire la synthès
 
 ---
 layout: recap
-section: Séance 2 — DevOps, Git, Infrastructure as Code (1/3)
+section: Séance 2 — DevOps, Git, IaC et GitOps (1/3)
 ---
 
-# Ce qu'il faut retenir — DevOps, Git, IaC
+# Ce qu'il faut retenir — DevOps, Git, IaC, GitOps
 
-- **DevOps** : vitesse ET fiabilité, responsabilité partagée
-- **Git en équipe** : branches, PR/MR, commits atomiques, SemVer
+- **DevOps** : vitesse ET fiabilité, métiers qui collaborent, responsabilité partagée
+- **Git** : historique distribué, local puis distant ; Git ≠ GitHub ; cycle de base : consulter, indexer, valider, partager, récupérer
+- **Collaboration** : branches, PR/MR, commits atomiques, SemVer
 - **IaC** : déclaratif, plan, apply, idempotence
-- **Terraform** : `fmt`, `init`, `validate`, `plan -out`, `apply`, `destroy`
+- **GitOps** : état désiré dans Git, agent qui réconcilie
 
 <!--
 Durée : 1 min.
 
-Premier recap : la culture et l'automatisation de l'infrastructure. DevOps répond à un besoin de vitesse ET de fiabilité via cloud, conteneurs, automatisation, CI/CD et observabilité ; la responsabilité est partagée, sans intitulé de poste universel. Git en équipe : branches, PR/MR, revue, commits atomiques, SemVer. Terraform : l'état et `.terraform/` ne sont jamais versionnés. Faire reformuler à voix haute la différence entre `plan` et `apply`.
+Premier recap : culture, Git et automatisation de l'infrastructure. DevOps répond à un besoin de vitesse ET de fiabilité ; les métiers évoluent vers la collaboration et l'automatisation sans disparaître. Git : historique distribué, travail local puis partage ; ne pas confondre l'outil et la plateforme. Commandes de base à citer à l'oral : `status`, `add`, `commit`, `push`, `pull`. Terraform : état et `.terraform/` jamais versionnés. GitOps : l'état désiré est dans Git, un agent compare et réconcilie, un push ne vaut pas déploiement réussi.
 
-Transition : recap Docker, Compose et Git public.
+Transition : recap Docker et Compose.
 -->
 
 ---
 layout: recap
-section: Séance 2 — Docker, Compose, Git public (2/3)
+section: Séance 2 — Docker, images et Compose (2/3)
 ---
 
-# Ce qu'il faut retenir — Docker, Compose, Git public
+# Ce qu'il faut retenir — Docker, images, Compose
 
-- **Docker** : image, couche, registre, conteneur ; `build`, `run`, `exec`
-- **Frontend statique** : build Node, runtime **Nginx** (`dist` ou `dist/<nom>/browser`)
-- **Compose** : `up -d --build`, DNS par nom de service, `web` publié seul
-- **Git public** : `.gitignore` avec `.env` ; secret poussé = **révoqué**
+- **Docker** : image, couche, registre, conteneur ; cycle de vie : construire, lancer, observer, entrer, arrêter
+- **Images** : reproductibles, sans secret ; outils de build séparés des artefacts (multi-stage)
+- **Volumes** : volume nommé (données) vs bind mount (développement)
+- **Compose** : plusieurs services dans un fichier ; DNS par nom de service ; port hôte ≠ port interne ; ordre de démarrage ≠ service prêt
 
 <!--
-Durée : 2 min.
+Durée : 1 min.
 
-Docker : image, couche, registre, conteneur ; cycle `build`/`run`/`logs`/`exec`/`stop`/`rm`. Multi-stage : build avec Node, runtime léger Nginx pour un frontend statique ; sortie `dist` pour Vite (React, Vue), `dist/<nom>/browser` pour Angular ; `npm ci` demande un `package-lock.json`. Volumes : volume nommé (persistance) vs bind mount (développement).
-
-Compose : `up -d --build`, `ps`, `logs`, `down` ; réseau `devops-lab_default`, DNS par nom de service, port interne 80 vs port hôte 8080 ; seul `web` publié, `depends_on` = ordre de démarrage ; `down -v` supprime les volumes. Rappeler que le Compose du TP était un bonus.
-
-Git public : `.gitignore` incluant `.env`, dépôt public, aucun secret ; un secret poussé est compromis, il faut le révoquer. Commit conventionnel `chore: frontend conteneurisé`. Le frontend du TP est distinct du fil rouge Node.js/API (port 3000).
+Docker : image, couche, registre, conteneur ; cycle `build`/`run`/`ps`/`logs`/`exec`/`stop`/`rm`. Images : principes valables pour une API, un worker, une CLI ou un front ; le multi-stage (`FROM`, `COPY --from`) sépare construction et exécution, l'exemple Node vers Nginx illustre un frontend statique. Volumes : persistance des données. Compose : description déclarative de plusieurs conteneurs, réseau et DNS internes, navigateur hors réseau Docker, `depends_on` limité à l'ordre de démarrage, `down -v` supprime les volumes.
 
 Transition : recap cloud-native et Kubernetes.
 -->
@@ -1775,29 +1770,217 @@ section: Séance 2 — Cloud-native, Kubernetes (3/3)
 <!--
 Durée : 1 min.
 
-Rappeler explicitement les limites du module sur Kubernetes : pas d'installation de cluster, pas de manifeste complexe, pas de TP évalué dessus ; uniquement du vocabulaire et les idées de haute disponibilité (probes, Service). Les statuts CNCF sont des signaux de gouvernance, pas des garanties.
+Rappeler les limites du module sur Kubernetes : pas d'installation de cluster, pas de manifeste complexe, pas de TP évalué dessus ; uniquement du vocabulaire et les idées de haute disponibilité (probes, Service). Les statuts CNCF sont des signaux de gouvernance, pas des garanties.
+
+Transition : place aux deux TP de la séance, dont les énoncés suivent.
+-->
+
+---
+
+# TP Docker — votre image multi-stage
+
+<div class="grid grid-cols-4 gap-3 mt-2">
+  <div class="card">
+    <div class="text-2xl mb-1">1️⃣ 🧱</div>
+    <div class="font-bold text-accent mb-1">Créer</div>
+    <div class="text-sm">Une application web simple, dont le build produit des fichiers statiques</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">2️⃣ 🐳</div>
+    <div class="font-bold text-accent mb-1">Construire</div>
+    <div class="text-sm">Une image <strong>multi-stage</strong> : une étape construit, l'étape finale sert les artefacts</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">3️⃣ 🔍</div>
+    <div class="font-bold text-accent mb-1">Tester</div>
+    <div class="text-sm">Démarrer un conteneur depuis votre image et constater que l'application répond</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">4️⃣ 📤</div>
+    <div class="font-bold text-accent mb-1">Versionner</div>
+    <div class="text-sm">Sources, Dockerfile et README sur un dépôt GitHub <strong>public</strong></div>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+  <div class="card-accent text-sm">🎨 <strong>Vous choisissez</strong> : framework (Angular, React, Vue ou autre), structure des dossiers, noms, images, ports</div>
+  <div class="card-accent text-sm">🔒 <strong>Garde-fous</strong> : aucun secret, ni <code>node_modules</code>, ni donnée personnelle versionnés</div>
+</div>
+
+<!--
+Durée : 2 min.
+
+Énoncé volontairement ouvert : l'objectif est de produire une image multi-stage dont l'étape finale sert des artefacts frontend réellement construits (un vrai build, pas une étape décorative). Aucun nom de dossier, d'image, de conteneur ni de port n'est imposé. Le test consiste à lancer un conteneur depuis son image et à vérifier que l'application répond, dans le navigateur ou avec un client HTTP. Le dépôt GitHub public contient les sources, le Dockerfile et un README qui explique comment construire, lancer et vérifier.
+
+Sécurité : le dépôt est public ; aucun secret, aucun `node_modules`, aucune donnée personnelle ne doit être versionné ; vérifier aussi l'adresse email configurée dans Git. Un secret poussé est à considérer comme compromis.
+
+Les attendus de remise sont détaillés juste avant le QCM. Ne fournir aucune solution : les étudiants s'appuient sur les slides de cours et leur documentation.
+
+Transition : un rappel sur quelques exemples de commandes d'initialisation d'un frontend.
+-->
+
+---
+
+# Exemples : initialiser un frontend
+
+| Framework | npm | bun |
+|---|---|---|
+| **Angular** | `npm create @angular@latest mon-front` | `bunx @angular/cli new mon-front --package-manager bun` |
+| **React** | `npm create vite@latest mon-front -- --template react` | `bun create vite mon-front --template react` |
+| **Vue** | `npm create vue@latest mon-front` | `bun create vue mon-front` |
+
+<v-clicks>
+
+- `mon-front` est un **nom purement illustratif** : choisissez le vôtre
+- **Angular** : Node reste requis, même avec bun ; répondre **non** à SSR/SSG
+- **React / Vue** : options facultatives → **non**
+
+</v-clicks>
+
+<style scoped>
+table { font-size: 0.78em; }
+</style>
+
+<!--
+Durée : 1 min.
+
+Ces commandes ne sont que des exemples pour démarrer un projet frontend ; d'autres outils sont acceptés. Choisir UNE ligne (un framework) et UNE colonne (npm ou bun). Le nom du dossier est libre : `mon-front` n'est qu'un nom d'illustration.
+
+Angular : même avec `bunx`, Angular CLI s'exécute sur Node, donc Node 22 LTS doit être installé. Aux questions SSR/SSG (rendu serveur / prérendu), répondre non : un site statique suffit à être servi. React / Vue : les assistants proposent des options facultatives (TypeScript, routeur, tests, lint, démarrage immédiat...) : répondre non ou prendre la valeur la plus simple. Aucun framework n'est plus « juste » qu'un autre.
+
+Les commandes de génération sont celles documentées par les outils au moment de la rédaction ; les assistants évoluent, donc les questions posées peuvent légèrement varier. Vérifier avant la séance sur un poste de test.
+
+Transition : l'énoncé du second TP.
+-->
+
+---
+
+# TP Compose — front + API + base de données
+
+<div class="grid grid-cols-4 gap-3 mt-2">
+  <div class="card">
+    <div class="text-2xl mb-1">1️⃣ 🧩</div>
+    <div class="font-bold text-accent mb-1">Trois services</div>
+    <div class="text-sm">Un front, une API backend, une base de données ; un <strong>Hello World</strong> suffit</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">2️⃣ 📄</div>
+    <div class="font-bold text-accent mb-1">Un fichier Compose</div>
+    <div class="text-sm">Il décrit l'ensemble et le démarre de façon reproductible</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">3️⃣ 🔗</div>
+    <div class="font-bold text-accent mb-1">Communications</div>
+    <div class="text-sm">Prouver que l'API atteint la base, et que le navigateur atteint un endpoint adapté de l'API</div>
+  </div>
+  <div class="card">
+    <div class="text-2xl mb-1">4️⃣ 📝</div>
+    <div class="font-bold text-accent mb-1">Documenter</div>
+    <div class="text-sm">README : lancement, tests, preuves ; paramètres factices expliqués</div>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+  <div class="card-accent text-sm">🗄️ <strong>Rôle de la base</strong> : illustratif (ex. conserver une valeur simple) — pas de CRUD complet, pas d'accès direct depuis le navigateur</div>
+  <div class="card-accent text-sm">🎨 <strong>Libre</strong> : langages, frameworks, structure, noms, images, ports — <strong>GitHub public</strong>, sans secret réel</div>
+</div>
+
+<!--
+Durée : 2 min.
+
+Second TP, plus ambitieux dans l'architecture mais minimal dans la fonctionnalité : trois services qui communiquent. Un Hello World suffit : le front affiche un résultat obtenu auprès de l'API, l'API interroge la base (ou y écrit/lit une valeur simple). La base a un rôle illustratif (stockage ou persistance simple) : pas de CRUD complet, et le navigateur ne doit jamais accéder directement à la base.
+
+À prouver : la communication entre services (API vers base) et celle du navigateur vers l'API par un endpoint approprié. Aucun nom de service, de port, de dossier, d'image ni de langage n'est imposé. Les paramètres de configuration (identifiants de base, par exemple) doivent être factices et documentés dans le README ; aucun secret réel n'est versionné.
+
+Le fichier Compose, les sources et le README sont publiés sur un dépôt GitHub public. Le TP Docker précédent peut servir de base pour le front, sans obligation. Les attendus de remise suivent.
+
+Ne pas fournir de solution ni de recette : les étudiants mobilisent la partie Compose du cours.
+
+Transition : lancer la mise en pratique.
+-->
+
+---
+layout: exercise
+duration: 15 min
+type: solo
+---
+
+# Mise en pratique — démarrez votre TP
+
+<div class="grid grid-cols-3 gap-4 mt-2">
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🎯 1. Choisir</div>
+    <div class="text-sm">Votre technologie, la structure du projet, et par quel TP vous commencez</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">🚀 2. Obtenir un premier résultat</div>
+    <div class="text-sm">Une application qui répond, ou un premier essai de construction d'image</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">📌 3. Noter les blocages</div>
+    <div class="text-sm">Ce qui coince : à résoudre ensuite, hors séance, ou à poser avant la fin</div>
+  </div>
+</div>
+
+<div class="card-accent text-sm mt-4">⏭️ La suite se fait <strong>hors séance</strong> ; les deux TP sont à rendre <strong>avant la séance 3</strong>.</div>
+
+<!--
+Durée : 15 min.
+
+Temps de démarrage encadré, pas d'objectif d'achèvement : le travail se finalise hors cours, ce qui est explicitement autorisé. Circuler, aider à débloquer l'environnement (Docker opérationnel, accès réseau, authentification GitHub), et renvoyer les étudiants à la documentation et aux slides plutôt qu'à une solution toute faite.
+
+Si Docker ou les registres sont inaccessibles (réseau de la salle), poursuivre la conception et le code applicatif et reporter les builds à la maison. Si l'authentification GitHub bloque, versionner en local et publier plus tard : seule la remise avant la séance 3 compte.
+
+Modalités individuelles ou en binôme à confirmer avec l'enseignant ; dans tous les cas, les auteurs doivent être identifiables dans le dépôt rendu.
+
+Transition : rappel des attendus de remise.
+-->
+
+---
+
+# Remise des TP — attendus avant la séance 3
+
+<div class="grid grid-cols-2 gap-4 mt-2">
+  <div class="card">
+    <div class="font-bold text-accent mb-2">📦 À remettre</div>
+
+- L'**URL de chaque dépôt GitHub public** (un ou plusieurs dépôts)
+- Des travaux **identifiables** : TP Docker et TP Compose distincts
+- Un **README** par TP : description, lancement, tests
+- Les **preuves de fonctionnement** : captures ou sorties de commandes
+
+</div>
+</div>
+
+<!--
+Durée : 2 min.
+
+Récapituler les attendus : les deux TP sont rendus AVANT la séance 3, pour correction. Un ou plusieurs dépôts GitHub publics au choix, à condition que le TP Docker et le TP Compose soient clairement identifiables. Chaque TP s'accompagne d'un README qui explique comment lancer, comment tester et ce qui prouve le fonctionnement (sorties de commandes, captures).
+
+Pour le TP Docker : sources, Dockerfile multi-stage et README. Pour le TP Compose : fichier Compose, sources des services et README. Les preuves incluent la communication entre services demandée dans l'énoncé.
+
+Sécurité : dépôt public, donc aucune donnée sensible ; les identifiants d'exemple sont factices et expliqués. Aucune image n'est à publier dans un registre et aucun déploiement cloud n'est demandé.
+
+Le canal de remise des URL (plateforme, courriel...) est précisé par l'enseignant. En cas de difficulté, prévenir avant la date limite plutôt qu'après.
 
 Transition : lancer le QCM de clôture de la séance 2.
 -->
 
 ---
 layout: qcm
-duration: 18 min
-questions: 20
-cover: DevOps/DORA, Git (PR/MR, commit atomique, SemVer), Infrastructure as Code (cycle déclaratif, plan/apply, idempotence), Docker (image, couche, registre, volumes, multi-stage frontend statique/Nginx, bonnes pratiques), Git public (secrets, .gitignore), Compose (deux services, réseau par défaut, DNS par nom de service, port publié vs interne), CNCF (statuts de maturité), Kubernetes (vocabulaire, liveness/readiness, Service)
+duration: 20 min
+questions: 30
+cover: DevOps et métiers, Git, Infrastructure as Code et GitOps, Docker et images, Compose, CNCF et Kubernetes
 ---
 
 # QCM de clôture — Séance 2
 
-
 <!--
-Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
+Durée : 20 min (lancement 2 min, jeu 15 min, débrief 3 min) pour 30 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 2 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 30 questions de la section « Séance 2 » de `qcm-kahoot.md` (temps proposé par question indiqué dans la banque), puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
 
-Verbaliser avant de lancer : ce quiz couvre un volume de notions plus large que celui de la séance 1 (DevOps, Git, Infrastructure as Code, Docker, cloud-native) — signaler explicitement les questions à réponses multiples avant de démarrer.
+Verbaliser avant de lancer : objectif individuel de vérification des acquis, pas une compétition à forte pression ; signaler explicitement les questions à réponses multiples ; laisser de la marge sur le temps par question pour absorber une connexion lente en salle.
 
-Exemple concret de question possible : "Quelle commande construit une image à partir d'un Dockerfile ?" (réponse attendue : `docker build`) — à adapter selon les questions réellement configurées dans le quiz.
-
-Transition : débriefer collectivement les 1-2 questions les plus ratées, puis annoncer la séance 3 — CI/CD avec GitHub Actions et GitLab CI.
+Transition : débriefer collectivement les 2-3 questions les plus ratées, rappeler la date de remise des deux TP (avant la séance 3), puis annoncer la séance 3 — CI/CD avec GitHub Actions et GitLab CI.
 -->
