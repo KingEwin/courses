@@ -16,7 +16,7 @@ layout: course-cover
 subtitle: Des fondamentaux réseau aux pipelines automatisés
 session: 4 séances de 3h — 12h
 instructor: Clément DAOU — Ingénieur Cloud-DevOps (AWS, Azure, Kubernetes...)
-presenter: false # disable presenter mode
+presenter: true # disable presenter mode
 ---
 
 # Cloud, Réseaux et DevOps
@@ -1276,6 +1276,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
+RUN echo "G4"
 COPY . .
 RUN npm run build
 
