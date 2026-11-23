@@ -3009,33 +3009,29 @@ Poser le fil conducteur : qu'est-ce qui déclenche la CI, où s'exécute le job 
 
 # Correction Docker — de React à nginx
 
-`Dockerfile` multi-stage · un front statique, sans API
+`tp/docker/react/Dockerfile` · un front statique, sans API
 
-<div class="grid grid-cols-2 gap-4 mt-4">
-  <div class="card">
+<div class="dockerfile">
 
-**1 · Fabriquer avec Bun**
-
-```dockerfile
-FROM oven/bun:latest AS build
-```
-
-`bun run build` → TypeScript puis Vite → `/app/dist/`.
+<<< ./tp/docker/react/Dockerfile dockerfile
 
 </div>
-  <div class="card">
 
-**2 · Servir avec nginx**
+**Build avec Bun** : TypeScript puis Vite → `/app/dist/`. **Exécution avec nginx** : port `80`, sans Bun.
 
-```dockerfile
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-```
-
-nginx écoute sur le port **80** du conteneur. Bun n'est pas nécessaire à l'exécution.
-
-</div>
-</div>
+<style scoped>
+.dockerfile {
+  --slidev-code-font-size: 14px;
+  --slidev-code-line-height: 17px;
+}
+.dockerfile :deep(pre) {
+  columns: 2;
+  column-gap: 1rem;
+}
+.dockerfile :deep(pre code) {
+  line-height: inherit;
+}
+</style>
 
 <!--
 Durée : 8 min.
@@ -3103,13 +3099,24 @@ Question : pourquoi un `502` juste après `up -d` ne prouve-t-il pas une erreur 
 
 # Correction Compose — vérifier les deux réponses
 
+<div style="--slidev-code-font-size: 15px; --slidev-code-line-height: 21px">
+
 Depuis le dossier contenant `compose.yml` :
 
 ```bash
 docker compose up --build -d
 ```
 
-- **`http://localhost:8080/`** : page React ; **`http://localhost:8080/api/hello`** : JSON de l'API.
+Ouvrir **`http://localhost:8080/`** pour voir la page React, puis comparer :
+
+```bash
+# Depuis l'hôte : requête relayée par nginx
+curl -fsS http://localhost:8080/api/hello
+# Depuis le conteneur nginx : accès direct via le DNS interne de Compose
+docker compose exec -T frontend curl -fsS http://backend:3000/api/hello
+```
+
+**JSON** : `{"message":"Hello World!","timestamp":"2026-11-23T14:00:00.000Z"}` (heure variable).
 
 ```bash
 docker compose logs --tail=30 frontend backend
@@ -3118,10 +3125,12 @@ docker compose down
 
 **Correction partielle** : deux services, **sans base de données** ni persistance.
 
+</div>
+
 <!--
 Durée : 6 min.
 
-Ouvrir les deux URL. Montrer que « Hello World! » et l'horodatage proviennent d'Express. Si la page répond mais pas l'API, comparer les journaux du front et du backend. Le port Compose n'est pas limité à la boucle locale comme le port de la démo précédente : vérifier le contexte réseau de la machine de démo.
+Ouvrir la page puis exécuter les deux `curl` avant `down`. Dans le conteneur `frontend`, `curl` (fourni par `nginx:alpine`) résout `backend` et atteint Express directement, sans passer par le proxy. Dans les deux cas, « Hello World! » et l'horodatage proviennent d'Express. Si la page répond mais pas l'API, comparer les journaux du front et du backend. Le port Compose n'est pas limité à la boucle locale comme le port de la démo précédente : vérifier le contexte réseau de la machine de démo.
 
 L'énoncé de séance 2 demandait aussi une base et sa persistance : aucune des deux n'est démontrée ici. Ne pas présenter ces sources comme un rendu complet.
 
@@ -3142,7 +3151,7 @@ Transition : on vient de vérifier à la main. Que peut-on vérifier automatique
 </v-clicks>
 
 <!--
-Durée : 5 min.
+Durée : 4 min.
 
 Comparer deux équipes : l'une découvre une erreur TypeScript sur une semaine de changements, l'autre la voit sur le dernier petit push. Demander laquelle peut corriger plus vite et pourquoi. La CI donne un signal partagé ; elle ne remplace pas la revue de code.
 
@@ -3164,9 +3173,35 @@ Transition : automatiser une vérification ne signifie pas mettre en production.
 **Notre démo : CI seule.** Un build vert et un artefact ne sont pas un déploiement.
 
 <!--
-Durée : 5 min.
+Durée : 4 min.
 
 Faire classer trois situations : (1) chaque push lance un build, sans mise en production ; (2) une version validée est toujours disponible et un responsable décide quand la mettre en production ; (3) le pipeline la déploie automatiquement si les contrôles passent.
+
+Transition : suivre un changement du commit à l'artefact, puis distinguer ce qui se passe après la CI.
+-->
+
+---
+
+# Du commit à la CI/CD
+
+```mermaid {theme: 'base', flowchart: {nodeSpacing: 28, rankSpacing: 16, padding: 8}, themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', edgeLabelBackground: '#ffffff', textColor: '#2b2620', fontSize: '17px'}}
+flowchart LR
+  commit["Commit local"] --> push["Push vers le dépôt<br/>Déclenche la CI<br/>si configuré"]
+  push --> job["Job sur un runner<br/>Récupère le commit<br/>Installe · lint · build<br/>Vérifie"]
+  job -->|Échec| echec["Statut et logs<br/>Corriger puis<br/>pousser à nouveau"]
+  job -->|Succès| artefact["Artefact archivé"]
+  artefact -.-> livraison["Livraison continue<br/>Déploiement sur<br/>décision humaine"]
+  artefact -.-> deploiement["Déploiement continu<br/>Déploiement automatique<br/>si configuré"]
+  classDef etapeTP fill:#e08a63,stroke:#8f3a1f,stroke-width:2px,color:#2b2620
+  class artefact etapeTP
+```
+
+**Le TP s'arrête à l'artefact.** Les tests ne tournent que s'ils existent et sont configurés.
+
+<!--
+Durée : 2 min.
+
+Faire repérer ce qui ne déclenche rien à lui seul (le commit local), où regarder en cas d'échec (le statut et les logs), puis où s'arrête le TP (l'archivage de `react-dist`). Les flèches en pointillé montrent deux pratiques possibles après la CI, pas deux étapes successives. Le front de démo n'a pas de suite automatisée.
 
 Transition : plusieurs outils exécutent cette même logique.
 -->

@@ -1,0 +1,47 @@
+name: Compiler le TP Docker
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'ING1 - 2026-2027 - Devops/tp/docker/react'
+    steps:
+      - name: Récupérer les sources
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Configurer Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Configurer Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.3'
+          no-cache: true
+
+      - name: Installer les dépendances
+        run: bun install --frozen-lockfile
+
+      - name: Compiler le front React
+        run: bun run build
+
+      - name: Vérifier la sortie compilée
+        run: test -s dist/index.html
+
+      - name: Charger les fichiers compilés comme artefact
+        uses: actions/upload-artifact@v6
+        with:
+          name: tp-docker-react-dist
+          path: 'ING1 - 2026-2027 - Devops/tp/docker/react/dist/'
+          if-no-files-found: error
