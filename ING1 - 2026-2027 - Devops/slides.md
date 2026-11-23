@@ -2995,254 +2995,397 @@ section: Séance 3 — 3h
 
 # CI/CD : GitHub Actions et GitLab CI
 
-Automatiser l'installation, les tests et la fabrication de l'image
+Corriger les TP Docker et Compose, puis automatiser la validation du code
 
 <!--
 Durée : 1 min.
 
-Annoncer le fil de la séance : comprendre l'anatomie commune d'un pipeline, puis la décliner sur GitHub Actions et GitLab CI, avant un TP qui construit un pipeline réel.
+Déroulé sur 3 h : correction Docker et Compose (29 min, ouverture incluse), principes et commandes de référence (24 min), GitHub Actions (21 min), pause (20 min), GitLab CI (35 min), lecture en miroir et synthèse (8 min), TP et remise (25 min), QCM (18 min).
 
-Exemple concret : rappeler que l'application Node.js et son Dockerfile existent déjà (séance 2) — cette séance ajoute la validation automatique.
-
-Transition : retour sur l'image Docker et les erreurs fréquentes rencontrées.
+Poser le fil conducteur : qu'est-ce qui déclenche la CI, où s'exécute le job et comment vérifier ce qu'il a produit ? Le TP de cette séance automatise uniquement le build du front choisi avec GitHub Actions.
 -->
 
 ---
 
-# Retour sur l'image Docker
+# Correction Docker — de React à nginx
+
+`Dockerfile` multi-stage · un front statique, sans API
+
+<div class="grid grid-cols-2 gap-4 mt-4">
+  <div class="card">
+
+**1 · Fabriquer avec Bun**
+
+```dockerfile
+FROM oven/bun:latest AS build
+```
+
+`bun run build` → TypeScript puis Vite → `/app/dist/`.
+
+</div>
+  <div class="card">
+
+**2 · Servir avec nginx**
+
+```dockerfile
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+```
+
+nginx écoute sur le port **80** du conteneur. Bun n'est pas nécessaire à l'exécution.
+
+</div>
+</div>
+
+<!--
+Durée : 8 min.
+
+Demander à deux binômes ce qui les a bloqués, puis rouvrir le Dockerfile. Le premier étage installe avec `bun i` et fabrique les fichiers statiques ; le second récupère le résultat et sa propre configuration nginx. Ne pas confondre le dossier `dist/` et l'image finale qui le contient. Ce Dockerfile ne copie pas le lockfile avant l'installation : ne pas lui attribuer la reproductibilité du `--frozen-lockfile` montré plus tard en CI.
+
+Transition : construire l'image, puis démarrer un conteneur et vérifier le port côté hôte.
+-->
+
+---
+
+# Correction Docker — lancer et vérifier
+
+Depuis le dossier contenant le Dockerfile, construire et lancer le front :
+
+```bash
+docker build -t ing1-tp-react .
+docker run --rm -d --name ing1-tp-react -p 127.0.0.1:8081:80 ing1-tp-react
+```
+
+Ouvrir **`http://localhost:8081/`** : la page React doit s'afficher.
+
+```bash
+docker stop ing1-tp-react
+```
+
+`8081` = port de l'hôte (boucle locale) · `80` = port de nginx dans le conteneur.
+
+<!--
+Durée : 6 min.
+
+Faire prédire le dernier argument de `docker build` : `.` est le contexte de build, soit le dossier courant contenant le Dockerfile. `EXPOSE 80` dans le Dockerfile ne publie pas le port : c'est `-p` qui le fait. Si la page ne répond pas, vérifier `docker ps`, la correspondance des ports et `docker logs ing1-tp-react` avant de l'arrêter. `--rm` retire le conteneur à l'arrêt, pas l'image.
+
+Transition : avec Compose, le navigateur reste à l'extérieur mais le front doit joindre une API dans le réseau interne.
+-->
+
+---
+
+# Correction Compose — suivre `/api/hello`
+
+<div class="card mt-4">
+
+**Navigateur** → **`localhost:8080`** → **nginx (`frontend:80`)** → **Express (`backend:3000`)**
+
+</div>
 
 <v-clicks>
 
-- Votre Dockerfile fonctionne-t-il en local ?
-- Erreurs fréquentes rencontrées : ordre des couches, port non exposé, cache cassé
-- Aujourd'hui : cette même image sera **construite automatiquement** par un pipeline
+- **Seul le front est publié** (`8080:80`). nginx sert `/` et relaie `/api/hello`.
+- **DNS Compose** : nginx résout `backend` sur le réseau interne, pas le navigateur.
+- **Express** répond en JSON (`message`, `timestamp`). `expose: 3000` ne publie pas de port sur l'hôte.
+- **`depends_on`** ordonne les démarrages ; ici, il ne vérifie pas que l'API est prête.
 
 </v-clicks>
 
 <!--
-Durée : 10 min (dont ~5 min d'échange collectif).
+Durée : 8 min.
 
-Tour de table rapide sur les difficultés rencontrées avec Docker depuis la séance 2. Objectif : lever les blocages résiduels avant d'ajouter une couche d'automatisation par-dessus.
+Suivre le `fetch('/api/hello')` dans l'application React. Dans la configuration nginx, `proxy_pass http://backend:3000;` conserve le chemin `/api/hello`. Retrouver la route côté Express. Le navigateur parle à l'origine de la page : il ne contacte jamais directement `backend:3000`.
 
-Exemple concret : un port mal exposé qui donne l'impression que "l'API ne répond pas" alors que le conteneur tourne bien — diagnostic classique à rappeler.
+Question : pourquoi un `502` juste après `up -d` ne prouve-t-il pas une erreur DNS ? Le backend peut avoir démarré sans être prêt à recevoir une requête. Lire les journaux avant de conclure.
+-->
 
-Échange collectif approfondi : demander à chaque binôme de partager en une phrase la principale difficulté rencontrée sur son Dockerfile depuis la dernière séance, les noter au tableau, puis regrouper par catégorie (cache, port, permissions, taille d'image) pour montrer que les mêmes erreurs reviennent d'un groupe à l'autre — rassure et prépare le terrain avant d'ajouter l'automatisation CI par-dessus.
+---
 
-Transition : définir CI, livraison continue et déploiement continu.
+# Correction Compose — vérifier les deux réponses
+
+Depuis le dossier contenant `compose.yml` :
+
+```bash
+docker compose up --build -d
+```
+
+- **`http://localhost:8080/`** : page React ; **`http://localhost:8080/api/hello`** : JSON de l'API.
+
+```bash
+docker compose logs --tail=30 frontend backend
+docker compose down
+```
+
+**Correction partielle** : deux services, **sans base de données** ni persistance.
+
+<!--
+Durée : 6 min.
+
+Ouvrir les deux URL. Montrer que « Hello World! » et l'horodatage proviennent d'Express. Si la page répond mais pas l'API, comparer les journaux du front et du backend. Le port Compose n'est pas limité à la boucle locale comme le port de la démo précédente : vérifier le contexte réseau de la machine de démo.
+
+L'énoncé de séance 2 demandait aussi une base et sa persistance : aucune des deux n'est démontrée ici. Ne pas présenter ces sources comme un rendu complet.
+
+Transition : on vient de vérifier à la main. Que peut-on vérifier automatiquement après chaque changement ?
+-->
+
+---
+
+# Pourquoi automatiser ?
+
+<v-clicks>
+
+- **Intégrer de petits changements souvent** : une erreur est plus facile à isoler.
+- **Obtenir un retour rapide** : un statut et des journaux associés au commit.
+- **Automatiser les contrôles répétitifs** : installation, tests disponibles, build.
+- **Rejouer les mêmes vérifications** en local et en CI : commandes, versions et lockfile connus.
+
+</v-clicks>
+
+<!--
+Durée : 5 min.
+
+Comparer deux équipes : l'une découvre une erreur TypeScript sur une semaine de changements, l'autre la voit sur le dernier petit push. Demander laquelle peut corriger plus vite et pourquoi. La CI donne un signal partagé ; elle ne remplace pas la revue de code.
+
+Montrer l'intérêt d'un environnement propre : si mon build dépend de fichiers oubliés dans le dépôt, le runner le signale. Les commandes peuvent être identiques même si le poste et le runner n'ont pas le même système.
+
+Transition : automatiser une vérification ne signifie pas mettre en production.
 -->
 
 ---
 
 # CI, livraison continue, déploiement continu
 
-<Tip type="info">
-Les trois sigles se ressemblent mais désignent des niveaux d'automatisation différents.
-</Tip>
+| Pratique | Ce que l'équipe automatise | Production |
+|---|---|---|
+| **CI — intégration continue** | Intégrer souvent et vérifier automatiquement les changements | Pas de mise en production impliquée |
+| **Livraison continue** | Garder une version validée et déployable à tout moment | Mise en production sur décision humaine |
+| **Déploiement continu** | Mettre en production chaque changement qui franchit les contrôles | Mise en production automatique |
 
-
-<v-clicks>
-
-- **CI (intégration continue)** — intégrer et valider le code souvent, automatiquement
-- **Livraison continue** — le logiciel est prêt à être déployé, activation manuelle
-- **Déploiement continu** — chaque changement validé part en production automatiquement
-
-</v-clicks>
+**Notre démo : CI seule.** Un build vert et un artefact ne sont pas un déploiement.
 
 <!--
-Durée : 18 min (dont ~9 min d'exemples commentés et de quiz oral).
+Durée : 5 min.
 
-Insister sur la nuance entre les deux "CD" : livraison continue (Continuous Delivery, activation humaine) et déploiement continu (Continuous Deployment, entièrement automatique).
+Faire classer trois situations : (1) chaque push lance un build, sans mise en production ; (2) une version validée est toujours disponible et un responsable décide quand la mettre en production ; (3) le pipeline la déploie automatiquement si les contrôles passent.
 
-Exemple concret : une équipe qui a une CI solide mais choisit une livraison continue plutôt qu'un déploiement continu pour garder un contrôle humain sur le moment de la mise en production — choix légitime, pas un signe d'immaturité.
+Transition : plusieurs outils exécutent cette même logique.
+-->
 
-Quiz oral en fil rouge : présenter 4-5 scénarios d'entreprise (startup qui déploie plusieurs fois par jour, banque qui valide manuellement chaque mise en production, éditeur SaaS avec feature flags...) et demander à la salle de classer chacun en CI seule / livraison continue / déploiement continu, en justifiant à l'oral. Ce format transforme la définition théorique en exercice de classification actif, suffisant pour occuper le bloc sans exercice écrit séparé.
+---
 
-Transition : détailler l'anatomie commune d'un pipeline.
+# Panorama — quatre façons d'exécuter un pipeline
+
+| Outil | Point de repère | Fichier usuel |
+|---|---|---|
+| **GitLab CI/CD** | Intégré aux projets GitLab ; exécution par des runners | `.gitlab-ci.yml` |
+| **GitHub Actions** | Intégré à GitHub ; actions réutilisables | `.github/workflows/*.yml` |
+| **Jenkins** | Serveur CI open source à exploiter ; jobs sur des agents | `Jenkinsfile` |
+| **Azure Pipelines** | Service Azure DevOps ; agents hébergés ou autogérés | `azure-pipelines.yml` |
+
+Pour cette séance : lire **GitHub Actions et GitLab CI**.
+
+<!--
+Durée : 4 min.
+
+Comparer sur deux critères : où vit le dépôt et qui maintient les machines d'exécution ? Jenkins et Azure Pipelines sont cités pour situer les outils. Les noms de fichiers sont usuels ; leurs formats ne sont pas interchangeables.
+
+Transition : apprendre à lire les concepts communs avant les mots-clés YAML.
 -->
 
 ---
 
 # Anatomie commune d'un pipeline
 
-```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
-graph LR
-  A[Événement déclencheur] --> B[Job]
-  B --> C[Étape 1]
-  C --> D[Étape 2]
-  D --> E[Statut : succès ou échec]
+```text
+push de branche → job sur un runner → commandes → statut et journaux
+                                          └─ si succès : artefact
 ```
 
 <v-clicks>
 
-- **Événement** — ce qui déclenche le pipeline (push, pull request...)
-- **Job** — un ensemble d'étapes exécutées sur un **runner**
-- **Étape** — une action unitaire (installer, tester, construire...)
-- **Artefact** — un résultat produit, réutilisable par une autre étape
+- **Déclencheur** : événement qui lance le pipeline ; ici, un push de branche, pas un tag.
+- **Job** : travail confié à un **runner**, la machine qui l'exécute.
+- **Étape** : commande ou action dans le job. Dans nos exemples, un échec empêche les étapes de build ou d'archivage suivantes.
+- **Artefact** : résultat conservé par la CI, téléchargeable après l'exécution.
 
 </v-clicks>
 
 <!--
-Durée : 16 min (dont ~9 min d'exercice d'association de vocabulaire).
+Durée : 5 min.
 
-Ce vocabulaire est commun à GitHub Actions et GitLab CI, seuls les noms précis diffèrent légèrement (job/stage, runner/executor). L'objectif est de comprendre le concept avant la syntaxe.
+Faire associer les termes à une situation : un étudiant pousse une branche, un runner exécute les commandes, ESLint échoue, l'élève retrouve l'erreur dans les journaux. Demander si le build a tourné et si l'artefact est disponible dans ce cas. Lors d'un succès, les fichiers de travail n'ont pas besoin de rester sur le runner : c'est le service CI qui conserve l'artefact.
 
-Exemple concret : une image Docker construite dans un job peut être un artefact réutilisé dans un job de déploiement suivant — lien direct avec le pipeline cible de la séance.
+Un déclencheur de revue, planifié ou manuel existe aussi selon l'outil ; aucun n'est configuré dans nos exemples.
 
-Exercice d'association : distribuer (oralement ou au tableau) une liste mélangée de termes (événement, job, étape, runner, artefact, statut) et de définitions, et demander à des binômes de les associer correctement en 5 minutes, puis corriger ensemble terme par terme en s'appuyant sur le schéma — installe solidement le vocabulaire avant de voir sa déclinaison concrète sur GitHub Actions.
-
-Transition : illustrer avec GitHub Actions.
+Transition : définir les commandes avant de comparer les fichiers.
 -->
 
 ---
 
-# GitHub Actions — anatomie d'un workflow
+# Les quatre commandes des exemples React
 
-```yaml {all|1|3-5|7-15|all}
-name: CI
+Ces exemples de démo exécutent les commandes **à la racine du dépôt React**.
+
+```bash {all|1|2|3|4|all}
+bun install --frozen-lockfile
+bunx --no-install eslint .
+bun run build
+test -s dist/index.html
+```
+
+**Linux · Node.js 24 · Bun 1.4.3** → artefact **`react-dist`** (`dist/`).
+
+Le lint analyse le code ; le contrôle de sortie vérifie que `dist/index.html` n'est pas vide.
+
+<!--
+Durée : 5 min.
+
+Montrer le rôle du lockfile (l'installation échoue si elle doit le modifier), puis ESLint déjà installé, le build TypeScript + Vite et le contrôle d'un fichier non vide. ESLint est appelé directement sur `.` dans les exemples. Le front de démo n'a pas de suite automatisée ; ne pas inventer une commande de test.
+
+Comparer côte à côte les exemples complets.
+-->
+
+---
+
+# GitHub Actions — lire un `workflow` (1/2)
+
+Exemple de démo React, **début** du workflow.
+
+```yaml {all|3-5|7-8|10-15|all}
+name: CI React
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  react-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
+      - uses: actions/checkout@v6
+        with: { persist-credentials: false }
 ```
 
 <!--
-Durée : 8 min (dont ~4 min de démonstration live).
+Durée : 4 min.
 
-Dérouler : `name` identifie le workflow, `on` définit le déclencheur, `jobs` contient les tâches, `runs-on` choisit le runner, `steps` liste les actions séquentielles.
+Un workflow est l'automatisation décrite par un fichier YAML dans `.github/workflows/`. `on` indique quand lancer le workflow entier, non pas un job isolé. `**` inclut les branches avec `/` dans le nom ; avec `branches` seul, un push de tag ne lance pas ce workflow. Question : que se passe-t-il pour un push vers `cours/ci` ? Et pour le tag `v1.0` ?
 
-Exemple concret : `uses:` appelle une action réutilisable du marketplace (`actions/checkout`, `actions/setup-node`), `run:` exécute une commande shell classique — les deux se combinent librement.
-
-Démonstration live : ouvrir l'onglet Actions d'un dépôt GitHub réel (ou du dépôt fil rouge s'il en dispose déjà), déclencher ce workflow sur un commit, et suivre l'exécution en direct job par job jusqu'au statut vert — donne un premier repère visuel concret avant que les étudiants n'écrivent le leur en TP.
-
-Transition : détailler les déclencheurs disponibles.
+La syntaxe compacte de `with` correspond au bloc développé dans le fichier. Passer à la suite des étapes du même job, puis reprendre chaque mot-clé.
 -->
 
 ---
 
-# Déclencheurs GitHub Actions
+# GitHub Actions — produire `react-dist` (2/2)
 
-| Déclencheur | Quand ? |
-|---|---|
-| `push` | Sur un commit poussé (filtrable par branche) |
-| `pull_request` | À l'ouverture ou la mise à jour d'une pull request |
-| `schedule` | À heure fixe (syntaxe cron) |
-| `workflow_dispatch` | Déclenchement manuel depuis l'interface |
+Exemple React, **suite de `steps`** dans le même job `react-build`.
+
+```yaml {all|1-4|5-8|9-12|13-17|all}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.3'
+          no-cache: true
+      - run: bun install --frozen-lockfile
+      - run: bunx --no-install eslint .
+      - run: bun run build
+      - run: test -s dist/index.html
+      - uses: actions/upload-artifact@v6
+        with:
+          name: react-dist
+          path: dist/
+          if-no-files-found: error
+```
+
+**Archive `react-dist`** : `index.html` et `assets/` sont à la racine de l'archive.
 
 <!--
-Durée : 6 min (dont ~3 min d'échange sur des cas d'usage).
+Durée : 4 min.
 
-Ces déclencheurs se combinent : `push` + `pull_request` est le pattern standard pour valider à la fois le développement et la revue.
+`actions/upload-artifact` envoie les fichiers de `dist/` à GitHub Actions. L'archive téléchargeable `react-dist` contient les fichiers de ce répertoire : `index.html` est à la racine de l'archive, pas sous un dossier `dist/`. La durée de rétention suit les paramètres de la plateforme sauf réglage avec `retention-days`, dans les limites autorisées. Ni commit de `dist/`, ni déploiement.
 
-Exemple concret : `workflow_dispatch` est utile pour un déploiement manuel volontaire, sans attendre un push.
-
-Échange : demander à la salle quel déclencheur conviendrait pour chacun de ces cas — "vérifier chaque contribution externe avant fusion", "publier une release tous les lundis matin", "relancer un déploiement après un incident" — et faire justifier le choix à l'oral.
-
-Transition : présenter les actions réutilisables et le cache.
+Mini-question : si `test -s` échoue, l'envoi s'exécute-t-il ? Non, cette étape est soumise au succès des étapes précédentes par défaut. Si l'envoi se lance sans trouver de fichier, `if-no-files-found: error` le fait échouer. Montrer où chercher le journal du job et les artefacts du run dans Actions, si un exemple est disponible.
 -->
 
 ---
 
-# Actions réutilisables et cache
+# GitHub Actions — `on` : événement et filtre
 
 ```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: 20
-    cache: 'npm'
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 ```
 
-<v-clicks>
+Le filtre ne vise pas la même branche selon l'événement :
 
-- Le **marketplace** fournit des actions prêtes à l'emploi (checkout, setup-node, docker/*)
-- Épingler une version (`@v4`) plutôt que `@latest` — reproductibilité
-- Le **cache** évite de réinstaller les dépendances à chaque exécution
-
-</v-clicks>
+- `push` : branche **poussée** ; ici `main` uniquement.
+- `pull_request` : branche **cible** ; ici les PR qui visent `main`.
+- `workflow_dispatch` : lancement **manuel**.
 
 <!--
-Durée : 7 min (dont ~3 min de démonstration de gain de cache).
+Durée : 5 min.
 
-Le cache est un gain de temps concret et mesurable : sans cache, `npm ci` peut prendre une minute à chaque exécution ; avec cache, quelques secondes.
+Faire prédire le résultat pour un push sur `feature/menu` sans PR puis pour un nouveau push sur cette branche avec une PR ouverte vers `main`. Dans le second cas, la mise à jour de la PR déclenche le workflow, mais le push de la branche thématique ne correspond pas au filtre `push`. Si on activait `push` sur toutes les branches ET `pull_request`, une même mise à jour pourrait lancer deux exécutions. Le push sur `main` après fusion constitue un autre événement. Pour être déclenchable manuellement, le fichier doit exister sur la branche par défaut.
 
-Exemple concret : la clé de cache est généralement basée sur le hash du fichier de verrouillage (`package-lock.json`) — elle change automatiquement dès que les dépendances changent, évitant un cache obsolète.
-
-Démonstration : montrer, dans l'historique d'exécutions du workflow présenté plus tôt, la différence de durée entre un run à froid (sans cache) et un run suivant (avec cache restauré) — rend le gain tangible plutôt que théorique.
-
-Transition : passer à GitLab CI en miroir.
 -->
 
 ---
 
-# GitLab CI — `.gitlab-ci.yml`
+# GitHub Actions — `jobs`, `runs-on`, `steps`
 
-```yaml {all|1-4|6-11|all}
-stages:
-  - install
-  - test
-
-install:
-  stage: install
-  script:
-    - npm ci
-
-test:
-  stage: test
-  script:
-    - npm test
+```yaml
+jobs:
+  react-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with: { persist-credentials: false }
+      - run: bun run build
 ```
 
-<v-clicks>
+**Extrait** · Les étapes d'installation ne sont pas affichées.
 
-- **Stages** — les grandes phases du pipeline, exécutées dans l'ordre
-- **Jobs** — chaque bloc nommé (`install`, `test`) est un job rattaché à un stage
-- **Runners** — les machines qui exécutent les jobs
-
-</v-clicks>
+- `jobs` contient les jobs nommés ; `runs-on` choisit le type de **runner**.
+- `steps` sont ordonnées dans le job. `uses` appelle une action ; `with` lui passe des paramètres. `run` exécute une commande shell.
 
 <!--
-Durée : 6 min (dont ~3 min de démonstration comparative).
+Durée : 4 min.
 
-Comparer directement avec GitHub Actions : `stages` ≈ ordre des jobs, `script` ≈ `run`, `runner` ≈ `runs-on`. Le vocabulaire diffère, les concepts sont identiques.
-
-Exemple concret : une équipe qui utilise GitLab pour héberger son code utilisera naturellement GitLab CI, sans avoir besoin d'un outil tiers — l'intégration native est l'argument principal.
-
-Démonstration comparative : ouvrir un projet GitLab avec ce pipeline et montrer la vue "Pipelines" avec ses stages exécutés côte à côte, en la mettant en parallèle visuellement avec la vue GitHub Actions montrée juste avant — souligne les concepts communs malgré des interfaces différentes.
-
-Transition : détailler variables et particularités de GitLab CI.
+Faire montrer le nom du job dans le YAML puis ce qui s'afficherait dans l'interface. Deux étapes d'un même job partagent le répertoire de travail ; deux jobs n'ont pas ce partage par défaut. L'installation de Bun doit précéder la commande `bun run build`. Mini-question : quelle ligne change si on veut remplacer une commande shell ? La ligne `run`, pas `uses`.
 -->
 
 ---
 
-# GitLab CI — variables et comparaison
+# GitHub Actions — `permissions` au minimum
 
-| Concept | GitHub Actions | GitLab CI |
-|---|---|---|
-| Fichier | `.github/workflows/*.yml` | `.gitlab-ci.yml` |
-| Regroupement | `jobs` | `stages` + `jobs` |
-| Machine d'exécution | `runs-on` (runner) | `tags` (runner) |
-| Variable secrète | `secrets.NOM` | `Settings > CI/CD > Variables` |
+```yaml
+permissions:
+  contents: read
+```
+
+**Extrait de l'exemple React** · `permissions` règle les droits du jeton automatique du workflow.
+
+- `contents: read` permet à `checkout` de lire les sources ; aucun droit d'écriture n'est demandé.
+- `persist-credentials: false` demande à `checkout` de ne pas conserver ses identifiants Git pour les étapes suivantes.
+
+**Question** : un job qui compile et archive `dist/` doit-il pouvoir modifier le dépôt ?
 
 <!--
-Durée : 6 min (dont ~3 min de questions de clarification).
+Durée : 4 min.
 
-Ce tableau sert de pont mental entre les deux outils : un étudiant qui maîtrise l'un peut lire l'autre sans repartir de zéro.
+Réponse : non. Distinguer les droits du jeton et sa persistance pour les commandes Git. Ici, `permissions` est au niveau du workflow et s'applique à son job. Lorsqu'on précise les droits ainsi, les droits non indiqués sont désactivés ; archiver les fichiers via `upload-artifact` dans ce run n'exige pas `contents: write`.
 
-Exemple concret : les variables protégées dans GitLab (masquées, restreintes à certaines branches) jouent le même rôle que les secrets GitHub — la logique de protection des informations sensibles est universelle en CI/CD.
-
-Ouvrir un temps de questions de clarification avant le TP : demander à la salle si des points de comparaison restent flous entre les deux outils, en particulier sur la déclaration des variables sensibles — clarifie les derniers doutes avant que chacun choisisse son outil pour le TP.
-
-Transition : pause avant le TP pipeline.
+Transition : après la pause, retrouver le même chemin avec les mots-clés GitLab.
 -->
 
 ---
@@ -3253,121 +3396,233 @@ duration: 20 min
 <!--
 Durée : 20 min de pause.
 
-Rester disponible pour clarifier une confusion GitHub Actions / GitLab CI avant le TP.
-
-Transition au retour : présenter le pipeline cible du TP (installation → tests → build → image Docker).
+Au retour : dans le fichier GitLab, retrouver d'abord le déclencheur, les commandes et la sortie du job.
 -->
 
 ---
 
-# Le pipeline cible du TP
+# GitLab CI — le même job au complet
 
-```mermaid {theme: 'base', themeVariables: {background: '#ffffff', primaryColor: '#f7f1ea', primaryTextColor: '#2b2620', primaryBorderColor: '#c1502e', lineColor: '#7a6f63', secondaryColor: '#e08a63', tertiaryColor: '#b45309', mainBkg: '#f7f1ea', nodeBorder: '#c1502e', clusterBkg: '#ffffff', clusterBorder: '#b45309', edgeLabelBackground: '#ffffff', arrowheadColor: '#7a6f63', textColor: '#2b2620'}}
-graph LR
-  A[Installation] --> B[Tests] --> C[Build applicatif] --> D[Build image Docker]
+Exemple de démo React (fichier actif usuel : **`.gitlab-ci.yml`** à la racine).
+
+```yaml {all|1-3|5-8|9-13|14-16|all}
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
+
+react-build:
+  image: node:24-bookworm
+  before_script:
+    - npm install --global bun@1.4.3
+  script:
+    - bun install --frozen-lockfile
+    - bunx --no-install eslint .
+    - bun run build
+    - test -s dist/index.html
+  artifacts:
+    name: react-dist
+    paths: [dist/]
 ```
 
-<v-clicks>
-
-- Chaque étape valide la précédente avant de continuer
-- Le **déploiement public n'est pas obligatoire** — construire l'image est le minimum commun
-- Choix libre : **GitHub Actions ou GitLab CI**, l'autre outil est lu et comparé
-
-</v-clicks>
-
 <!--
-Durée : 19 min (dont ~9 min de préparation d'environnement guidée).
+Durée : 4 min.
 
-Rappeler explicitement que l'objectif obligatoire s'arrête à la construction de l'image Docker — aucun credential ni configuration de déploiement n'est requis pour valider le TP.
+Faire pointer les équivalences : `workflow.rules` sélectionne les pushs de branche (`CI_COMMIT_BRANCH` est absente pour un tag) ; `image` fournit Linux et Node 24 ; `before_script` prépare Bun dans le même job ; `script` correspond aux quatre `run` ; `artifacts` conserve la sortie. Il faut un runner disponible avec un exécuteur qui prend en charge `image`, par exemple Docker ou Kubernetes : `image` ne sélectionne pas le runner.
 
-Exemple concret : montrer un exemple de log de pipeline vert qui s'arrête après le build de l'image, pour donner une cible visuelle atteignable par tout le monde.
-
-Préparation guidée avant le TP : laisser chaque étudiant/binôme choisir son outil (GitHub Actions ou GitLab CI), vérifier l'accès au dépôt fil rouge et aux droits d'exécution CI (runners activés côté GitLab, Actions activées côté GitHub), puis dérouler collectivement le repère YAML fourni ligne par ligne pour anticiper les questions avant que le chronomètre du TP ne démarre — évite de perdre du temps de TP sur des blocages d'accès plutôt que de compréhension.
-
-Transition : lancer le TP guidé.
+GitLab récupère les sources au début du job par défaut. Demander où reconnaître l'installation, le build et l'archivage déjà vus côté GitHub. Un seul job suffit ici ; inutile de déclarer `stages` ou de transférer `node_modules/`. La suite détaille les mots-clés.
 -->
 
 ---
-layout: exercise
-duration: 30 min
-type: solo
----
 
-# TP — pipeline installation → tests → build
-
-<div class="grid grid-cols-2 gap-6 items-start">
-<div>
-
-## Mission
-
-1. Choisir **GitHub Actions ou GitLab CI**
-2. Écrire le pipeline : installation des dépendances → tests → build applicatif → build de l'image Docker
-3. Déclencher le pipeline sur un commit
-4. Lire les logs et confirmer un statut vert
-
-</div>
-<div>
-
-## Repère YAML — GitHub Actions
-
-<div class="text-xs">
+# GitLab CI — `stages`, runner et `image`
 
 ```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'npm' }
-      - run: npm ci
-      - run: npm test
-      - run: npm run build
-      - uses: docker/setup-buildx-action@v3
-      ......
+stages: [verify, build]
+
+check-sources:
+  stage: verify
+  image: node:24-bookworm
+  script: [test -s package.json]
 ```
 
-</div>
-</div>
-</div>
+Un stage regroupe des jobs ; ce n'est pas une étape shell.
+
+- Sans dépendance explicite, les jobs d'un même stage peuvent tourner en parallèle ; le stage suivant attend.
+- Le **runner** exécute le job. Avec un exécuteur compatible, `image` définit son environnement ; elle ne construit pas une image.
 
 <!--
-Durée : 30 min (temps du TP).
+Durée : 5 min.
 
-Circuler dans la salle, aider ceux qui bloquent sur une erreur de syntaxe YAML (indentation) ou de contexte Docker (`.` vs `./api`).
+Question : si deux jobs sont dans `verify` et que l'un est encore en cours, un job du stage `build` peut-il démarrer par défaut ? Non. `needs` permet de déclarer des dépendances directes et de ne pas attendre tout un stage. Dans GitHub Actions, `needs` relie aussi des jobs ; `steps` désigne leurs étapes internes, pas un groupe de jobs.
 
-Exemple concret d'erreur fréquente : un `context:` pointant vers le mauvais dossier fait échouer le build Docker avec un message "Dockerfile introuvable" — vérifier le chemin en premier réflexe.
-
-Transition : matrices, conditions et parallélisation, en survol.
+Un runner Docker ou Kubernetes peut utiliser `image` ; un exécuteur shell ne l'utilise pas. Dans l'exemple React, `node:24-bookworm` donne Node sur Linux mais ne remplace ni le runner ni la préparation de Bun.
 -->
 
 ---
 
-# Au-delà du pipeline simple — survol
+# GitLab CI — `rules` : la première règle gagne
 
-<Tip type="warning">
-Ces mécanismes restent hors du périmètre évalué en ING1 — vocabulaire de culture générale seulement.
-</Tip>
+```yaml
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
+```
 
-<v-clicks>
+`workflow.rules` décide si le **pipeline** existe. Les `rules` d'un job décident s'il y participe.
 
-- **Matrices** — exécuter le même job sur plusieurs versions/systèmes
-- **Conditions** — n'exécuter une étape que si une condition est vraie
-- **Parallélisation** — des jobs indépendants s'exécutent en même temps
-- **Artefacts** — transmettre un résultat d'un job à un autre
-
-</v-clicks>
+**De haut en bas** : accepter la MR ; refuser le push si une MR est ouverte ; sinon accepter le push de branche. Sans règle applicable, pas de pipeline ici.
 
 <!--
-Durée : 13 min (dont ~9 min d'exemples YAML commentés).
+Durée : 5 min.
 
-Rester très bref sur l'exigence de maîtrise : l'objectif est que les étudiants reconnaissent ces termes s'ils les croisent, sans exiger de maîtrise pratique à ce stade.
+Faire jouer les règles pour un push sur `feature/menu` sans MR, puis pour une mise à jour de la même branche avec MR : le push est alors refusé tandis que l'événement `merge_request_event` est accepté. Demander l'effet d'inverser les deux dernières règles : le push de branche serait accepté trop tôt et pourrait doubler le pipeline de MR. Faire identifier pourquoi un push de tag ne satisfait pas la dernière règle : `CI_COMMIT_BRANCH` n'est pas définie pour un tag.
 
-Exemple concret : une équipe qui teste sur plusieurs versions de Node.js en parallèle grâce à une matrice, plutôt que d'écrire un job dupliqué par version.
+Les règles sont évaluées lors de la création du pipeline, avant les scripts. Dans l'exemple React, une seule règle suffit : on ne veut que les pushs de branches, sans pipeline de MR.
+-->
 
-Illustrer chacun des 4 concepts par un court extrait YAML projeté (une matrice `strategy: matrix: node-version: [18, 20, 22]`, une condition `if: github.ref == 'refs/heads/main'`, deux jobs indépendants sans dépendance déclarée entre eux pour la parallélisation, un `actions/upload-artifact` pour l'artefact) sans demander de les écrire soi-même — donne une intuition concrète de chaque terme au-delà de sa seule définition, tout en respectant la limite volontaire du module.
+---
 
-Transition : synthèse de séance 3 puis QCM de clôture.
+# GitLab CI — `when` : succès, échec ou clic
+
+```yaml
+resume-echec:
+  stage: diagnostics
+  when: on_failure
+  script: [echo "Un stage précédent a échoué."]
+
+verification-manuelle:
+  stage: diagnostics
+  when: manual
+  script: [node --version]
+```
+
+`diagnostics` est un stage déclaré après `build`.
+
+- **`on_success`** : comportement par défaut, après succès des stages précédents.
+- **`on_failure`** : après échec d'un stage précédent ; **`manual`** : sur clic dans l'interface.
+
+<!--
+Durée : 5 min.
+
+Question : si `build` échoue, quel job démarre sans intervention ? `resume-echec`, pas `verification-manuelle`. Un job échoué mais autorisé à échouer (`allow_failure: true`) ne déclenche pas `on_failure`. Ici `when: manual` est défini directement sur le job et n'est pas bloquant par défaut ; dans une entrée de `rules`, `when: manual` est au contraire bloquant par défaut (`allow_failure: false`). `when: never` dans la règle précédente exclut le pipeline pour l'événement qui correspond.
+-->
+
+---
+
+# GitLab CI — préparer, exécuter, diagnostiquer
+
+```yaml
+before_script:
+  - npm install --global bun@1.4.3
+script:
+  - bun install --frozen-lockfile
+  - bun run build
+after_script:
+  - ls -la
+```
+
+**Extrait d'un job** · `before_script` prépare ; `script` fait le travail ; `after_script` peut ajouter des diagnostics au **journal**.
+
+`before_script` et `script` partagent un shell. `after_script` s'exécute dans un **nouveau shell** : les variables exportées dans `script` n'y sont pas conservées.
+
+<!--
+Durée : 4 min.
+
+L'exemple React n'a pas d'`after_script`. Demander où chercher l'erreur si le build échoue mais que `ls -la` s'affiche. `after_script` peut tourner après un échec du script ; lire la première commande en échec, pas seulement la dernière ligne. Un échec dans `after_script` ne rend pas rouge un job dont le script a réussi : les vérifications obligatoires vont dans `script`. Le nouveau shell redémarre dans le répertoire de travail par défaut ; les fichiers écrits par `script` restent disponibles. La collecte du cache et des artefacts a lieu après `after_script`.
+-->
+
+---
+
+# GitLab CI — `parallel:matrix` : répéter un job
+
+```yaml
+verifier-runtime:
+  image: node:${NODE_MAJOR}-bookworm
+  parallel:
+    matrix:
+      - NODE_MAJOR: ['22', '24']
+        MODE: [development, production]
+  script:
+    - echo "Mode $MODE"
+    - node --version
+```
+
+2 versions × 2 modes = **4 jobs**. L'un reçoit `NODE_MAJOR=24` et `MODE=production`.
+
+<!--
+Durée : 4 min.
+
+Faire énumérer les quatre couples, puis faire nommer l'image sélectionnée pour le couple 24/production (`node:24-bookworm`). Le mode est simplement affiché ici ; un vrai contrôle s'en servirait comme paramètre. Les jobs peuvent tourner ensemble si la capacité des runners le permet. L'équivalent de lecture côté GitHub est `strategy.matrix`.
+-->
+
+---
+
+# GitLab CI — `cache` : accélérer, pas garantir
+
+```yaml
+variables:
+  BUN_INSTALL_CACHE_DIR: .bun-cache/
+cache:
+  key:
+    files: [bun.lock]
+  paths: [.bun-cache/]
+```
+
+La **clé** dépend du contenu de `bun.lock` ; le chemin désigne les fichiers à réutiliser.
+
+- Cache retrouvé : l'installation peut réutiliser les paquets téléchargés.
+- Cache absent : l'installation doit réussir quand même. C'est le **lockfile**, pas le cache, qui fixe les versions.
+
+<!--
+Durée : 4 min.
+
+Le cache Bun est placé dans le dossier du projet pour être collectable par GitLab. Question : que se passe-t-il au premier run, ou lorsque le lockfile change ? On peut devoir télécharger de nouveau. La disponibilité du cache dépend du runner et de sa configuration ; `bun install --frozen-lockfile` reste nécessaire. Les deux exemples React n'ajoutent pas de cache de paquets.
+-->
+
+---
+
+# GitLab CI — `artifacts` : conserver la sortie
+
+```yaml
+artifacts:
+  name: react-dist
+  paths: [dist/]
+  expire_in: 1 week
+```
+
+**Extrait avec rétention explicite** · `paths` sélectionne la sortie du job ; `expire_in` règle sa durée de conservation.
+
+- **Artefact** : récupérer le `dist/` produit par un job précis, dans l'interface ou dans un job suivant.
+- **Cache** : tenter de réutiliser des fichiers pour **gagner du temps**.
+
+<!--
+Durée : 4 min.
+
+Mini-question : pour relire l'`index.html` exact du commit vérifié, choisir cache ou artefact ? Artefact. Ici GitLab archive le chemin `dist/` relatif au dépôt ; dans l'exemple GitHub, les fichiers de ce dossier sont à la racine de l'archive. `expire_in` est illustratif : le fichier React fourni hérite de la rétention de l'instance. GitLab peut conserver le dernier pipeline réussi d'une référence au-delà de cette durée selon le réglage de conservation. En l'absence de règle contraire, `artifacts` est collecté en cas de succès.
+-->
+
+---
+
+# Les deux exemples en miroir
+
+Comparer les deux exemples complets.
+
+| Repère | GitHub Actions | GitLab CI |
+|---|---|---|
+| Déclencheur | `on.push.branches` | `workflow.rules` |
+| Environnement | `runs-on`, actions de préparation | runner compatible, `image`, `before_script` |
+| Commande de build | `run` dans `steps` | `script` dans le job |
+| Archive `react-dist` | `uses` avec `upload-artifact` | `artifacts` |
+
+**À vérifier à deux** : si `bun run build` échoue, dans quel journal et à quelle étape regarder ?
+
+<!--
+Durée : 5 min.
+
+Faire retrouver les quatre commandes identiques dans les deux fichiers et le contrôle de `dist/index.html`. En cas d'échec du build, ouvrir `react-build` et repérer le premier message TypeScript ou Vite ; l'artefact n'est pas produit par ce run. Demander aussi comment les sources arrivent : `checkout` explicite dans GitHub, récupération par défaut dans GitLab. Comparer les journaux si des runs de démonstration sont disponibles ; aucune activation des exemples dans le dépôt du cours.
 -->
 
 ---
@@ -3377,18 +3632,86 @@ section: Séance 3 — CI/CD, GitHub Actions et GitLab CI
 
 # Ce qu'il faut retenir
 
-- **CI / livraison continue / déploiement continu** : trois niveaux d'automatisation distincts
-- **Anatomie commune** : événement, job, étape, runner, artefact, statut
-- **GitHub Actions** : `on` / `jobs` / `steps` / `runs-on`, marketplace, cache
-- **GitLab CI** : `stages` / `jobs` / `script`, runners, variables
-- **Pipeline cible** : installation → tests → build applicatif → build image Docker
-- **Checklist pipeline vert** : déclencheur correct, contexte d'étape, versions épinglées, cache actif, logs lisibles
-- **Déploiement public** : bonus documenté, jamais une obligation
+- <span>**Docker** : Bun fabrique `dist/` ; nginx le sert.</span>
+- <span>**Compose** : seul le front est publié ; nginx atteint Express par le DNS interne.</span>
+- <span>**CI** : petits changements, contrôles automatisés, retour rapide sur le commit.</span>
+- <span>**GitHub Actions** : `on` déclenche le workflow ; `jobs` et `steps` décrivent le travail.</span>
+- <span>**GitLab CI** : `rules` sélectionne ; `stages` groupe les jobs ; `script` exécute les commandes.</span>
+- <span>**Artefact ≠ cache** : l'un conserve une sortie (`react-dist`), l'autre accélère les exécutions.</span>
+
+<!--
+Durée : 3 min.
+
+Faire reformuler ce qu'un build vert prouve : le front compile pour ce commit et une sortie est disponible si l'archivage a réussi. Le build du front, l'image Docker et l'application déployée restent trois résultats distincts. Passer au TP GitHub Actions.
+-->
+
+---
+
+# TP — construire le front avec GitHub Actions
+
+**Défi** : au push d'une branche, construire le front de votre choix dans votre dépôt étudiant.
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="card">
+    <div class="font-bold text-accent mb-1">1 · Déclencher</div>
+    <div class="text-sm">Écrire <code>.github/workflows/ci.yml</code> avec un seul job, déclenché au push de branche.</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">2 · Construire et vérifier</div>
+    <div class="text-sm">Compiler le front choisi avec l'outillage adapté et vérifier la sortie produite.</div>
+  </div>
+  <div class="card">
+    <div class="font-bold text-accent mb-1">3 · Garder la preuve</div>
+    <div class="text-sm">Fournir le lien du run réussi et télécharger l'artefact de build.</div>
+  </div>
+</div>
+
+**Périmètre** : seul le build du front choisi est demandé. Aucune construction ou publication d'image Docker, aucun déploiement.
+
+<!--
+Durée : 3 min.
+
+Utiliser le dépôt étudiant, accessible à l'intervenant ; le front peut être à la racine ou dans un sous-dossier, au choix. Un projet personnel de séance 2 peut servir de base, sans obligation. Les exemples de cours montrent React et Bun, mais aucun de ces choix n'est imposé. Adapter la commande de contrôle et le chemin de l'artefact à la sortie réelle du framework. Pour un front en sous-dossier, définir `working-directory` sur les étapes `run` concernées ; ne pas le placer sur une étape `uses`. Régler séparément `path` de `actions/upload-artifact` vers la sortie, relativement à la racine du dépôt. Aucun test applicatif ni lint n'est exigé.
+
+Faire identifier les livrables : un fichier visible au commit du run, les journaux du job et un artefact téléchargeable.
+-->
+
+---
+layout: exercise
+duration: 20 min
+type: solo
+---
+
+# Mise en pratique — du push à l'artefact
+
+1. **Préparer** : choisir votre projet et placer son front à la racine du dépôt étudiant ou dans un sous-dossier.
+2. **Écrire et pousser** : ajouter à la racine du dépôt `.github/workflows/ci.yml`, avec un job déclenché au push de branche.
+3. **Lire le résultat** : ouvrir le run de votre commit, vérifier le build et télécharger l'artefact correspondant à la sortie produite.
+
+**Si ça bloque** : pas de run → vérifier le chemin et `on` ; job rouge → lire la première étape en échec.
+
+<!--
+Durée : 20 min.
+
+Circuler. Si aucun run n'apparaît, vérifier que le workflow est à la racine du dépôt, que `on` accepte le push et qu'Actions est disponible. Si l'installation échoue, vérifier le lockfile du gestionnaire choisi et, uniquement pour Bun, sa préparation. Si le build échoue, lire la première étape en erreur. Vérifier que le contrôle vise la sortie effective du framework et que `path` archive bien cette sortie. Ne pas versionner la sortie de build si elle est générée. En cas de blocage, noter la première erreur et reprendre selon les consignes de l'enseignant.
+-->
+
+---
+
+# Remise du TP — grille de vérification
+
+| À fournir | Ce qui doit être visible |
+|---|---|
+| **Lien vers le dépôt accessible** | Sources du front choisi, `.github/workflows/ci.yml` à la racine et lockfile choisi si applicable, au commit du run |
+| **Lien vers le run GitHub Actions** | Bon commit, déclencheur `push` de branche et job de build réussi |
+| **Résultat téléchargeable** | Build et contrôle réussis ; artefact contenant la sortie attendue du framework |
+
+**Avant d'envoyer** : vérifier que l'enseignant a accès au dépôt et au run.
 
 <!--
 Durée : 2 min.
 
-Reprendre collectivement, à l'oral, les erreurs les plus fréquentes vues pendant le TP (déclencheur mal filtré, contexte de build incorrect, version d'action non épinglée) en les rattachant à la checklist listée ci-dessus.
+Faire ouvrir dépôt et run côte à côte : ils doivent montrer le même commit. Vérifier que l'artefact contient la sortie attendue du projet ; ne pas demander d'URL d'application déployée. Les modalités de remise sont précisées par l'enseignant.
 
 Transition : lancer le QCM de clôture de la séance 3.
 -->
@@ -3397,21 +3720,19 @@ Transition : lancer le QCM de clôture de la séance 3.
 layout: qcm
 duration: 18 min
 questions: 20
-cover: CI/livraison continue/déploiement continu, anatomie de pipeline, GitHub Actions, GitLab CI, pipeline installation → tests → build → image
+cover: Correction Docker et Compose, CI et CD, déclencheurs et jobs, GitHub Actions et GitLab CI, cache et artefacts
 ---
 
 # QCM de clôture — Séance 3
 
-
-
 <!--
 Durée : 18 min (lancement 2 min, jeu 13 min, débrief 3 min) pour 20 questions.
 
-Lancement : avant la séance, créer le quiz Kahoot (ou équivalent) à partir des 20 questions de la section « Séance 3 » de `qcm-kahoot.md`, puis remplacer le bloc QR/PIN ci-dessus par le QR code et le PIN réels générés à cette occasion — le placeholder affiché n'est pas scannable.
+Avant la séance, préparer 20 questions à partir des thèmes ci-dessus. La banque transversale `qcm.md` fournit quelques questions de départ. Afficher le lien ou le code du quiz en salle si l'outil l'exige.
 
-Verbaliser avant de lancer : ce quiz vérifie la lecture d'un pipeline déclaratif (GitHub Actions et GitLab CI), pas la mémorisation exacte de la syntaxe YAML — questions à choix conceptuel plutôt que recopie de code ; signaler explicitement les questions à réponses multiples.
+Privilégier la compréhension plutôt que la mémorisation de YAML. Signaler les questions à réponses multiples.
 
-Exemple concret de question possible : "Quel mot-clé GitLab CI regroupe les jobs en étapes séquentielles ?" (réponse attendue : `stages`) — les 20 questions réelles sont dans `qcm-kahoot.md`.
+Exemple : « Dans `pull_request.branches`, le filtre s'applique-t-il à la branche source ou à la branche cible ? » À la branche cible. Autre question : « Si vous voulez télécharger la sortie d'un run précis, cherchez-vous le cache ou un artefact ? » Un artefact.
 
 Transition : débriefer collectivement les 2-3 questions les plus ratées, puis annoncer la séance 4 — sécurité, observabilité, déploiement et audit IA.
 -->

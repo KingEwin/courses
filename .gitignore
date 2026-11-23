@@ -6,5 +6,7 @@ dist/
 exports/
 .playwright-mcp/
 *.png
+!/ING1 - 2026-2027 - Devops/tp/docker/react/src/assets/hero.png
+!/ING1 - 2026-2027 - Devops/tp/docker-compose/front/src/assets/hero.png
 .idea
 qcm-kahoot.md

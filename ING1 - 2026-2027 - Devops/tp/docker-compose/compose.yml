@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build: ./front
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./back
+    expose:
+      - "3000"

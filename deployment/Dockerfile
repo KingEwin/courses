@@ -4,7 +4,7 @@
 FROM node:20-alpine AS build
 
 ARG COURSE_DIR="ING1 - 2026-2027 - Devops"
-ARG PART="2"
+ARG PART="3"
 
 WORKDIR /workspace
 

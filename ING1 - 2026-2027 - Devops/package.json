@@ -2,7 +2,7 @@
   "name": "@g4/ing1-devops",
   "private": true,
   "scripts": {
-    "dev": "slidev slides-students-p2.md --open",
+    "dev": "slidev slides.md --open",
     "build": "slidev build",
     "export": "slidev export"
   }

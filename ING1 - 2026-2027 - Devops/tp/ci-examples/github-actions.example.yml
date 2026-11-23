@@ -1,0 +1,33 @@
+name: CI React
+
+on:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  react-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.3'
+          no-cache: true
+      - run: bun install --frozen-lockfile
+      - run: bunx --no-install eslint .
+      - run: bun run build
+      - run: test -s dist/index.html
+      - uses: actions/upload-artifact@v6
+        with:
+          name: react-dist
+          path: dist/
+          if-no-files-found: error
